@@ -23,7 +23,6 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
     }
 
     STP_Number temp;
-    STP_Number_init(&temp);
     STP_Number_copy(num, &temp);
 
     char* digits = (char*)calloc(DIGITS_BUF_DEFAULT_SIZE, sizeof(char));

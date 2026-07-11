@@ -127,6 +127,8 @@ int STP_Number_copy(const STP_Number* num, STP_Number* rhs)
     if (num == rhs)
         return 0;
 
+    if (!STP_Number_init(rhs))
+        return 0;
     if (!_STP_Number_ensure_capacity(rhs, num->capacity))
         return 0;
 
