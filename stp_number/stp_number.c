@@ -114,6 +114,8 @@ int STP_Number_conv(STP_Number* num, const char* from)
             num->scale--;
     }
 
+    if (sign == 0)
+        sign = 1;
     num->sign = sign;
     return 1;
 }
@@ -127,8 +129,6 @@ int STP_Number_copy(const STP_Number* num, STP_Number* rhs)
     if (num == rhs)
         return 0;
 
-    if (!STP_Number_init(rhs))
-        return 0;
     if (!_STP_Number_ensure_capacity(rhs, num->capacity))
         return 0;
 
@@ -158,30 +158,32 @@ int STP_Number_destroy(STP_Number* num)
 
 int main()
 {
-    STP_Number n;
-    (void)STP_Number_init(&n);
-
-    STP_String str;
-    STP_String str2;
-    STP_String_init(&str);
-    STP_String_init(&str2);
+    STP_Number n1;
+    (void)STP_Number_conv(&n1, "55340232221128654897.7484732");
 
     STP_Number n2;
-    if (!STP_Number_conv(&n2, "-55340232221128654897.7429392"))
-        goto fail;
+    (void)STP_Number_conv(&n2, "673292392.4319814");
 
-    STP_Number_print(&n, &str);
-    printf("%s\n", str.str);
+    STP_String str;
+    STP_String_init(&str);
 
-    STP_Number_print(&n2, &str2);
-    printf("%s\n", str2.str);
+    STP_Number_print(&n1, &str);
+    printf("n1 = %s\n", str.str);
+    STP_Number_print(&n2, &str);
+    printf("n2 = %s\n", str.str);
 
-    STP_Number_destroy(&n);
+    STP_Number_add(&n1, &n2);
+    STP_Number_print(&n1, &str);
+    printf("n1+n2 = %s\n", str.str);
+
+    STP_Number_destroy(&n1);
+    STP_Number_destroy(&n2);
     STP_String_destroy(&str);
     return 0;
 
 fail:
-    STP_Number_destroy(&n);
+    STP_Number_destroy(&n1);
+    STP_Number_destroy(&n2);
     STP_String_destroy(&str);
     return 1;
 }

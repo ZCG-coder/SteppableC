@@ -23,7 +23,12 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
     }
 
     STP_Number temp;
-    STP_Number_copy(num, &temp);
+    STP_Number_init(&temp);
+    if (!STP_Number_copy(num, &temp))
+    {
+        fprintf(stderr, "%s: cannot copy\n", STP_CURRENT_FUNCTION);
+        return 0;
+    }
 
     char* digits = (char*)calloc(DIGITS_BUF_DEFAULT_SIZE, sizeof(char));
     uint64_t digits_idx = 0;

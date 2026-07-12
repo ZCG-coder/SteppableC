@@ -141,3 +141,27 @@ uint8_t _STP_Number_mod10(STP_Number* num)
     ++num->scale;
     return (uint8_t)remainder;
 }
+
+int _STP_Number_align_scales(STP_Number* lhs, STP_Number* rhs)
+{
+    if (lhs == NULL || rhs == NULL)
+        return 0;
+    if (lhs == rhs)
+        return 0;
+
+    /* Align scales */
+    if (lhs->scale > rhs->scale)
+    {
+        uint64_t diff = lhs->scale - rhs->scale;
+        _STP_Number_mul_exp(lhs, diff);
+        lhs->scale = rhs->scale;
+    }
+    else if (lhs->scale < rhs->scale)
+    {
+        uint64_t diff = rhs->scale - lhs->scale;
+        _STP_Number_mul_exp(rhs, diff);
+        rhs->scale = lhs->scale;
+    }
+
+    return 1;
+}

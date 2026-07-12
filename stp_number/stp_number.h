@@ -29,3 +29,5 @@ int STP_Number_print(const STP_Number* num, STP_String* out);
 
 /* Arithmetic operations */
 int STP_Number_is_zero(const STP_Number* num);
+
+int STP_Number_add(STP_Number* lhs, const STP_Number* _rhs);

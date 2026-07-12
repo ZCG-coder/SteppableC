@@ -10,6 +10,7 @@ int _STP_Number_mul_exp(STP_Number* num, uint64_t diff_scale);
 
 uint8_t _STP_Number_mod10(STP_Number* num);
 
+int _STP_Number_align_scales(STP_Number* lhs, STP_Number* rhs);
 int _STP_Number_trim(STP_Number* num);
 
 int _STP_Number_ensure_capacity(STP_Number* num, uint64_t min_capacity);
