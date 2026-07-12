@@ -156,10 +156,22 @@ int STP_Number_destroy(STP_Number* num)
     return 1;
 }
 
+int STP_Number_clear(STP_Number* num)
+{
+    if (num == NULL || num->arr == NULL)
+        return 0;
+
+    memset(num->arr, 0, num->size * sizeof(uint64_t));
+    num->size = 1;
+    num->scale = 0;
+    num->sign = 1;
+    return 1;
+}
+
 int main()
 {
     STP_Number n1;
-    (void)STP_Number_conv(&n1, "55340232221128654897.7484732");
+    (void)STP_Number_conv(&n1, "-55340232221128654897.7484732");
 
     STP_Number n2;
     (void)STP_Number_conv(&n2, "673292392.4319814");
@@ -172,9 +184,9 @@ int main()
     STP_Number_print(&n2, &str);
     printf("n2 = %s\n", str.str);
 
-    STP_Number_add(&n1, &n2);
+    STP_Number_sub(&n1, &n2);
     STP_Number_print(&n1, &str);
-    printf("n1+n2 = %s\n", str.str);
+    printf("n1-n2 = %s\n", str.str);
 
     STP_Number_destroy(&n1);
     STP_Number_destroy(&n2);

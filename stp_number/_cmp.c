@@ -1,3 +1,4 @@
+#include "_utils.h"
 #include "helpers.h"
 #include "stp_number.h"
 
@@ -19,4 +20,63 @@ int STP_Number_is_zero(const STP_Number* num)
             return 0;
 
     return 1;
+}
+
+int STP_Number_cmp(STP_Number* lhs, STP_Number* rhs)
+{
+    if (lhs == NULL || rhs == NULL)
+        return 42;
+
+    if (STP_Number_is_zero(lhs))
+    {
+        if (STP_Number_is_zero(rhs))
+            return 0;
+        if (rhs->sign > 0)
+            return -1;
+        if (rhs->sign < 0)
+            return 1;
+    }
+
+    if (lhs->sign > rhs->sign)
+        return 1;
+    if (rhs->sign > lhs->sign)
+        return -1;
+
+    /* Signs equal, align scales */
+    _STP_Number_trim(lhs);
+    _STP_Number_trim(rhs);
+    if (!_STP_Number_align_scales(lhs, rhs))
+        return 42;
+
+    int magnitude_cmp = 0;
+
+    if (lhs->size > rhs->size)
+    {
+        magnitude_cmp = 1;
+    }
+    else if (rhs->size > lhs->size)
+    {
+        magnitude_cmp = -1;
+    }
+    else
+    {
+        for (uint64_t i = lhs->size; i > 0; i--)
+        {
+            uint64_t idx = i - 1;
+            if (lhs->arr[idx] > rhs->arr[idx])
+            {
+                magnitude_cmp = 1;
+                break;
+            }
+            if (rhs->arr[idx] > lhs->arr[idx])
+            {
+                magnitude_cmp = -1;
+                break;
+            }
+        }
+    }
+
+    if (lhs->sign > 0)
+        return magnitude_cmp;
+    return -magnitude_cmp;
 }

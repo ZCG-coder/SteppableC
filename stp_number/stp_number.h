@@ -24,10 +24,16 @@ int STP_Number_conv(STP_Number* num, const char* from);
 int STP_Number_copy(const STP_Number* num, STP_Number* rhs);
 
 int STP_Number_destroy(STP_Number* num);
+int STP_Number_clear(STP_Number* num);
 
 int STP_Number_print(const STP_Number* num, STP_String* out);
 
-/* Arithmetic operations */
+/*
+ * Arithmetic operations
+ */
+
 int STP_Number_is_zero(const STP_Number* num);
+int STP_Number_cmp(STP_Number* lhs, STP_Number* rhs);
 
 int STP_Number_add(STP_Number* lhs, const STP_Number* _rhs);
+int STP_Number_sub(STP_Number* lhs, STP_Number* rhs);
