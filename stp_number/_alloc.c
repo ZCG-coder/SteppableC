@@ -20,7 +20,7 @@ int _STP_Number_ensure_capacity(STP_Number* num, uint64_t min_capacity)
     uint64_t* new_arr = realloc(num->arr, new_capacity * sizeof(uint64_t));
     if (new_arr == NULL)
     {
-        fprintf(stderr, "%s: realloc failed", STP_CURRENT_FUNCTION);
+        fprintf(stderr, "%s: realloc failed\n", STP_CURRENT_FUNCTION);
         return 0;
     }
     uint64_t diff = new_capacity - num->capacity;

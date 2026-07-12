@@ -48,7 +48,7 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
                 free(digits);
                 STP_Number_destroy(&temp);
 
-                fprintf(stderr, "%s: realloc failed.", STP_CURRENT_FUNCTION);
+                fprintf(stderr, "%s: realloc failed.\n", STP_CURRENT_FUNCTION);
 
                 return 0;
             }
@@ -92,7 +92,7 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
     if (out_buf == NULL)
     {
         free(digits);
-        fprintf(stderr, "%s: out_buf allocation failed.", STP_CURRENT_FUNCTION);
+        fprintf(stderr, "%s: out_buf allocation failed.\n", STP_CURRENT_FUNCTION);
         return 0;
     }
     uint64_t out_idx = 0;

@@ -9,7 +9,7 @@ int _STP_String_realloc(char** p_str, uint64_t new_str_len)
     char* new_ptr = (char*)realloc(*p_str, new_str_len + 1);
     if (new_ptr == NULL)
     {
-        fprintf(stderr, "%s: realloc failed", STP_CURRENT_FUNCTION);
+        fprintf(stderr, "%s: realloc failed\n", STP_CURRENT_FUNCTION);
         return 0;
     }
     *p_str = new_ptr;

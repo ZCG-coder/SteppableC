@@ -8,7 +8,7 @@ int STP_Number_is_zero(const STP_Number* num)
 {
     if (num == NULL || num->arr == NULL)
     {
-        fprintf(stderr, "%s: Invalid number input", STP_CURRENT_FUNCTION);
+        fprintf(stderr, "%s: Invalid number input\n", STP_CURRENT_FUNCTION);
         return 0;
     }
     if (num->size == 0)

@@ -57,8 +57,8 @@ int STP_Number_conv(STP_Number* num, const char* from)
         {
             if (sign != 0 || encountered_digit || encountered_decimal)
             {
-                fprintf(stderr, "%s: ill-formatted string.", STP_CURRENT_FUNCTION);
-                fprintf(stderr, "%s: spaces after sign.", STP_CURRENT_FUNCTION);
+                fprintf(stderr, "%s: ill-formatted string.\n", STP_CURRENT_FUNCTION);
+                fprintf(stderr, "%s: spaces after sign.\n", STP_CURRENT_FUNCTION);
                 return 0;
             }
             continue;
@@ -68,8 +68,8 @@ int STP_Number_conv(STP_Number* num, const char* from)
         {
             if (encountered_decimal)
             {
-                fprintf(stderr, "%s: ill-formatted string.", STP_CURRENT_FUNCTION);
-                fprintf(stderr, "%s: duplicated decimal separators.", STP_CURRENT_FUNCTION);
+                fprintf(stderr, "%s: ill-formatted string.\n", STP_CURRENT_FUNCTION);
+                fprintf(stderr, "%s: duplicated decimal separators.\n", STP_CURRENT_FUNCTION);
                 return 0;
             }
             encountered_decimal = 1;
@@ -78,8 +78,8 @@ int STP_Number_conv(STP_Number* num, const char* from)
 
         if ((c == '+' || c == '-') && (sign != 0 || encountered_decimal || encountered_digit))
         {
-            fprintf(stderr, "%s: ill-formatted string.", STP_CURRENT_FUNCTION);
-            fprintf(stderr, "%s: duplicated sign %c.", STP_CURRENT_FUNCTION, c);
+            fprintf(stderr, "%s: ill-formatted string.\n", STP_CURRENT_FUNCTION);
+            fprintf(stderr, "%s: duplicated sign %c.\n", STP_CURRENT_FUNCTION, c);
             return 0;
         }
 
@@ -96,8 +96,8 @@ int STP_Number_conv(STP_Number* num, const char* from)
 
         if (!('0' <= c && c <= '9'))
         {
-            fprintf(stderr, "%s: ill-formatted string.", STP_CURRENT_FUNCTION);
-            fprintf(stderr, "%s: unknown character.", STP_CURRENT_FUNCTION);
+            fprintf(stderr, "%s: ill-formatted string.\n", STP_CURRENT_FUNCTION);
+            fprintf(stderr, "%s: unknown character.\n", STP_CURRENT_FUNCTION);
             return 0;
         }
 
