@@ -1,8 +1,7 @@
-#include "_utils.h"
-#include "helpers.h"
 #include "stp_string.h"
 
-#include <complex.h>
+#include "_utils.h"
+
 #include <ctype.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -336,7 +335,6 @@ int STP_String_toupper(STP_String* str)
 
     return 1;
 }
-
 
 int STP_String_tolower(STP_String* str)
 {
