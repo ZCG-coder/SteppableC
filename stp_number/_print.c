@@ -27,6 +27,7 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
     if (!STP_Number_copy(num, &temp))
     {
         fprintf(stderr, "%s: cannot copy\n", STP_CURRENT_FUNCTION);
+        STP_Number_destroy(&temp);
         return 0;
     }
 
@@ -141,6 +142,7 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
     }
 
     out_buf[out_idx] = '\0';
+    STP_String_destroy(&out);
     *out = STP_String_lit(out_buf);
 
     free(digits);

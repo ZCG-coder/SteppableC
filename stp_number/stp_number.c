@@ -199,10 +199,4 @@ int main()
     STP_Number_destroy(&n2);
     STP_String_destroy(&str);
     return 0;
-
-fail:
-    STP_Number_destroy(&n1);
-    STP_Number_destroy(&n2);
-    STP_String_destroy(&str);
-    return 1;
 }
