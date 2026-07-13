@@ -12,6 +12,13 @@ number_files = [
     'stp_number.c',
 ]
 
+executable(
+    'stp_number',
+    number_files,
+    include_directories: inc,
+    dependencies: stp_string_dep,
+)
+
 stp_number_lib = library(
     'stp_number',
     number_files,
