@@ -1,5 +1,8 @@
 test_cases = [
     'add',
+    'sub',
+    'mul',
+    'div',
     'string',
 ]
 
@@ -12,5 +15,24 @@ foreach test_case : test_cases
         file_name,
         dependencies: [stp_number_dep, stp_string_dep]
     )
-    test(test_case_name, exe)
+
+    if host_machine.system() == 'darwin'
+        if leaks_util.found()
+            leaks_util_path = leaks_util.full_path()
+            leak_env = ['MallocStackLogging=1']
+
+            test(
+                '(leak test) ' + test_case_name,
+                leaks_util,
+                args: ['--atExit', '--', exe],
+                env: leak_env
+            )
+        endif
+    else
+        test(
+                test_case_name,
+                exe
+            )
+    endif
+
 endforeach

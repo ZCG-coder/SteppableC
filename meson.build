@@ -12,6 +12,10 @@ if get_option('buildtype') == 'debug'
     add_project_arguments(extra_args, language: 'c')
 endif
 
+if host_machine.system() == 'darwin'
+    leaks_util = find_program('leaks', required: false)
+endif
+
 inc = include_directories([
     'include',
     'stp_number',

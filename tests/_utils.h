@@ -4,6 +4,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#define DEFAULT_RANDOM_LEN 152
+
 char* _generate_random_number(uint64_t len)
 {
     if (len == 0)

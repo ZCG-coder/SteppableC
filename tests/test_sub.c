@@ -38,12 +38,12 @@ int main(void)
             goto fail;
         printf("n2  = %s\n", str.str);
 
-        if (!STP_Number_add(&n1, &n2))
+        if (!STP_Number_sub(&n1, &n2))
             goto fail;
 
         if (!STP_Number_print(&n1, &str))
             goto fail;
-        printf("sum = %s\n", str.str);
+        printf("dif = %s\n", str.str);
 
         STP_String_destroy(&str);
         STP_Number_destroy(&n1);

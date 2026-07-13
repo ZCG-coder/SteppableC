@@ -142,7 +142,7 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
     }
 
     out_buf[out_idx] = '\0';
-    STP_String_destroy(&out);
+    free(out->str);
     *out = STP_String_lit(out_buf);
 
     free(digits);

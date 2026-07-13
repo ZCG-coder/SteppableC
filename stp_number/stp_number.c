@@ -168,7 +168,7 @@ int STP_Number_clear(STP_Number* num)
     return 1;
 }
 
-int main()
+int main(void)
 {
     STP_Number n1;
     (void)STP_Number_conv(
