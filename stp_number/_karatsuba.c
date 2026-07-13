@@ -8,6 +8,8 @@ int _STP_Number_add_shifted(STP_Number* out, const STP_Number* add, uint64_t shi
 
     if (out == NULL || add == NULL)
         return 0;
+    if (out->arr == NULL || add->arr == NULL)
+        return 0;
 
     if (add->size == 0)
         return 1;
@@ -46,6 +48,8 @@ int _STP_Number_mul_abs_karatsuba(STP_Number* out, const STP_Number* lhs, const 
     uint64_t n, m;
 
     if (out == NULL || lhs == NULL || rhs == NULL)
+        return 0;
+    if (out->arr == NULL || lhs->arr == NULL || rhs->arr == NULL)
         return 0;
 
     if (lhs->size == 0 || rhs->size == 0)

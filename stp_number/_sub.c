@@ -4,10 +4,12 @@
 /* precondition: |lhs| >= |rhs| */
 int _STP_Number_sub_abs(STP_Number* lhs, const STP_Number* rhs)
 {
-    uint64_t i, borrow = 0;
-
     if (lhs == NULL || rhs == NULL)
         return 0;
+    if (lhs->arr == NULL || rhs->arr == NULL)
+        return 0;
+
+    uint64_t i, borrow = 0;
 
     for (i = 0; i < lhs->size; ++i)
     {
@@ -70,7 +72,7 @@ int STP_Number_sub(STP_Number* lhs, STP_Number* rhs)
         goto fail;
 
     int lhs_sign = lhs->sign;
-    int cmp_abs = STP_Number_cmp_abs(lhs, &rhs_aligned);
+    int cmp_abs = _STP_Number_cmp_abs(lhs, &rhs_aligned);
 
     if (cmp_abs == 0)
     {

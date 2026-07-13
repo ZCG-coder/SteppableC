@@ -38,3 +38,9 @@ int STP_Number_cmp(STP_Number* lhs, STP_Number* rhs);
 int STP_Number_add(STP_Number* lhs, STP_Number* _rhs);
 int STP_Number_sub(STP_Number* lhs, STP_Number* rhs);
 int STP_Number_mul(STP_Number* lhs, STP_Number* rhs);
+
+int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_places);
+int STP_Number_mod(STP_Number* lhs, const STP_Number* rhs, STP_Number* quotient);
+
+int STP_Number_lshift(STP_Number* num, uint64_t bits);
+int STP_Number_rshift(STP_Number* num, uint64_t bits);

@@ -90,6 +90,8 @@ int _STP_Number_mul_abs(STP_Number* out, const STP_Number* lhs, const STP_Number
 
     if (out == NULL || lhs == NULL || rhs == NULL)
         return 0;
+    if (out->arr == NULL || lhs->arr == NULL || rhs->arr == NULL)
+        return 0;
 
     n = (lhs->size > rhs->size) ? lhs->size : rhs->size;
 
@@ -102,6 +104,8 @@ int _STP_Number_mul_abs(STP_Number* out, const STP_Number* lhs, const STP_Number
 int STP_Number_mul(STP_Number* lhs, STP_Number* rhs)
 {
     if (lhs == NULL || rhs == NULL)
+        return 0;
+    if (lhs->arr == NULL || rhs->arr == NULL)
         return 0;
 
     if (!_STP_Number_trim(lhs) || !_STP_Number_trim(rhs))

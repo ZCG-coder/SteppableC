@@ -48,6 +48,8 @@ int _STP_Number_add_abs(STP_Number* lhs, const STP_Number* rhs)
 
     if (lhs == NULL || rhs == NULL)
         return 0;
+    if (lhs->arr == NULL || rhs->arr == NULL)
+        return 0;
 
     max_size = (lhs->size > rhs->size) ? lhs->size : rhs->size;
     if (!_STP_Number_ensure_capacity(lhs, max_size + 1))
@@ -76,6 +78,8 @@ int _STP_Number_add_abs(STP_Number* lhs, const STP_Number* rhs)
 int STP_Number_add(STP_Number* lhs, STP_Number* _rhs)
 {
     if (lhs == NULL || _rhs == NULL)
+        return 0;
+    if (lhs->arr == NULL || _rhs->arr == NULL)
         return 0;
 
     if (lhs->sign != _rhs->sign)

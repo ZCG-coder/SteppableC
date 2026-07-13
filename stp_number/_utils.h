@@ -12,8 +12,11 @@ uint64_t _STP_add64_carry(uint64_t* acc, uint64_t value);
 /* sub */
 int _STP_Number_sub_abs(STP_Number* lhs, const STP_Number* rhs);
 
+/* mul */
+void _STP_mul64_wide(uint64_t lhs, uint64_t rhs, uint64_t* high, uint64_t* low);
+
 /* cmp */
-int STP_Number_cmp_abs(const STP_Number* lhs, const STP_Number* rhs);
+int _STP_Number_cmp_abs(const STP_Number* lhs, const STP_Number* rhs);
 
 /* scale */
 int _STP_Number_mul(STP_Number* num, uint64_t fac);

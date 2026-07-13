@@ -2,6 +2,7 @@
 #include "stp_number.h"
 
 #include <stdint.h>
+#include <string.h>
 
 static const uint64_t _EXPS[] = {
     /* 10^0  = */ 1ULL,
@@ -14,7 +15,7 @@ static const uint64_t _EXPS[] = {
 
 int _STP_Number_mul(STP_Number* num, uint64_t fac)
 {
-    if (num == NULL)
+    if (num == NULL || num->arr == NULL)
         return 0;
 
     uint64_t carry = 0;
@@ -145,6 +146,8 @@ uint8_t _STP_Number_mod10(STP_Number* num)
 int _STP_Number_align_scales(STP_Number* lhs, STP_Number* rhs)
 {
     if (lhs == NULL || rhs == NULL)
+        return 0;
+    if (lhs->arr == NULL || rhs->arr == NULL)
         return 0;
     if (lhs == rhs)
         return 0;

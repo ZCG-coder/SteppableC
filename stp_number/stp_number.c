@@ -191,9 +191,9 @@ int main()
     STP_Number_print(&n2, &str);
     printf("n2 = %s\n", str.str);
 
-    STP_Number_mul(&n1, &n2);
+    STP_Number_div(&n1, &n2, 151);
     STP_Number_print(&n1, &str);
-    printf("n1*n2 = %s\n", str.str);
+    printf("n1 / n2 = %s\n", str.str);
 
     STP_Number_destroy(&n1);
     STP_Number_destroy(&n2);

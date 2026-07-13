@@ -22,7 +22,7 @@ int STP_Number_is_zero(const STP_Number* num)
     return 1;
 }
 
-int STP_Number_cmp_abs(const STP_Number* lhs, const STP_Number* rhs)
+int _STP_Number_cmp_abs(const STP_Number* lhs, const STP_Number* rhs)
 {
     uint64_t i;
     uint64_t lhs_size;
