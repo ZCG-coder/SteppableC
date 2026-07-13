@@ -1,8 +1,9 @@
 #include "_utils.h"
+
 #include "helpers.h"
 
-#include <stdlib.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 int _STP_String_realloc(char** p_str, uint64_t new_str_len)
 {

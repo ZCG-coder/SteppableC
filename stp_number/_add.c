@@ -4,6 +4,13 @@
 
 #include <stdint.h>
 
+uint64_t _STP_add64_carry(uint64_t* acc, uint64_t value)
+{
+    uint64_t old_value = *acc;
+    *acc = old_value + value;
+    return (*acc < old_value) ? 1ULL : 0ULL;
+}
+
 int _STP_Number_add(STP_Number* num, uint64_t val)
 {
     if (num == NULL || num->arr == NULL || num->size == 0)
@@ -35,51 +42,77 @@ int _STP_Number_add(STP_Number* num, uint64_t val)
     return 1;
 }
 
-int STP_Number_add(STP_Number* lhs, const STP_Number* _rhs)
+int _STP_Number_add_abs(STP_Number* lhs, const STP_Number* rhs)
+{
+    uint64_t i, max_size, carry = 0;
+
+    if (lhs == NULL || rhs == NULL)
+        return 0;
+
+    max_size = (lhs->size > rhs->size) ? lhs->size : rhs->size;
+    if (!_STP_Number_ensure_capacity(lhs, max_size + 1))
+        return 0;
+
+    for (i = 0; i < max_size; ++i)
+    {
+        uint64_t a = (i < lhs->size) ? lhs->arr[i] : 0;
+        uint64_t b = (i < rhs->size) ? rhs->arr[i] : 0;
+
+        uint64_t s1 = a + b;
+        uint64_t c1 = (s1 < a) ? 1ULL : 0ULL;
+
+        uint64_t s2 = s1 + carry;
+        uint64_t c2 = (s2 < s1) ? 1ULL : 0ULL;
+
+        lhs->arr[i] = s2;
+        carry = c1 + c2;
+    }
+
+    lhs->arr[max_size] = carry;
+    lhs->size = max_size + (carry ? 1 : 0);
+    return _STP_Number_trim(lhs);
+}
+
+int STP_Number_add(STP_Number* lhs, STP_Number* _rhs)
 {
     if (lhs == NULL || _rhs == NULL)
         return 0;
 
-    /* Ensure signs match */
-    if (lhs->sign > _rhs->sign)
+    if (lhs->sign != _rhs->sign)
     {
+        /*
+         * Temporarily match RHS sign to LHS sign.
+         */
+        int original_rhs_sign = _rhs->sign;
+        _rhs->sign = lhs->sign;
+
+        int success = STP_Number_sub(lhs, _rhs);
+
+        _rhs->sign = original_rhs_sign;
+        return success;
     }
 
     STP_Number rhs;
-    STP_Number_init(&rhs);
-    if (!STP_Number_copy(_rhs, &rhs))
+    if (!STP_Number_init(&rhs))
         return 0;
+
+    if (!STP_Number_copy(_rhs, &rhs))
+        goto fail;
 
     if (!_STP_Number_align_scales(lhs, &rhs))
         goto fail;
 
-    uint64_t carry = 0;
-    uint64_t max_result_size = (lhs->size > rhs.size) ? lhs->size + 1 : rhs.size + 1;
-    if (!_STP_Number_ensure_capacity(lhs, max_result_size))
+    /* Same-sign addition of magnitudes */
+    if (!_STP_Number_add_abs(lhs, &rhs))
         goto fail;
 
-    for (uint64_t i = 0; i < max_result_size; i++)
-    {
-        uint64_t block_l = lhs->arr[i];
-        uint64_t block_r = (i < rhs.size) ? rhs.arr[i] : 0;
-
-        uint64_t res = block_l + block_r + carry;
-        if (carry > 0)
-            carry = (res <= block_l || res <= block_r) ? 1 : 0;
-        else
-            carry = (res < block_l) ? 1 : 0;
-
-        lhs->arr[i] = res;
-    }
-
-    lhs->size = max_result_size;
-    _STP_Number_trim(lhs);
+    /* Keep semantic sign for public API */
+    lhs->sign = (_rhs->sign >= 0) ? 1 : -1;
 
     STP_Number_destroy(&rhs);
     return 1;
 
 fail:
-    fprintf(stderr, "%s: add failed\n", STP_CURRENT_FUNCTION);
     STP_Number_destroy(&rhs);
     return 0;
 }

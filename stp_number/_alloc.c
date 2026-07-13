@@ -38,3 +38,30 @@ int _STP_Number_trim(STP_Number* num)
 
     return 1;
 }
+
+int _STP_Number_slice(STP_Number* dst, const STP_Number* src, uint64_t start, uint64_t len)
+{
+    if (dst == NULL || src == NULL)
+        return 0;
+
+    if (start >= src->size)
+    {
+        dst->size = 0;
+        dst->scale = 0;
+        dst->sign = 1;
+        return 1;
+    }
+
+    if (start + len > src->size)
+        len = src->size - start;
+
+    if (!_STP_Number_ensure_capacity(dst, len))
+        return 0;
+
+    memcpy(dst->arr, src->arr + start, len * sizeof(uint64_t));
+    dst->size = len;
+    dst->scale = 0;
+    dst->sign = 1;
+
+    return _STP_Number_trim(dst);
+}

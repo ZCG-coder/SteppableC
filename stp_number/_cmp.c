@@ -22,6 +22,42 @@ int STP_Number_is_zero(const STP_Number* num)
     return 1;
 }
 
+int STP_Number_cmp_abs(const STP_Number* lhs, const STP_Number* rhs)
+{
+    uint64_t i;
+    uint64_t lhs_size;
+    uint64_t rhs_size;
+
+    if (lhs == NULL || rhs == NULL)
+        return 0; /* invalid input */
+
+    lhs_size = lhs->size;
+    while (lhs_size > 0 && lhs->arr[lhs_size - 1] == 0)
+        --lhs_size;
+
+    rhs_size = rhs->size;
+    while (rhs_size > 0 && rhs->arr[rhs_size - 1] == 0)
+        --rhs_size;
+
+    if (lhs_size > rhs_size)
+        return 1;
+    if (lhs_size < rhs_size)
+        return -1;
+
+    for (i = lhs_size; i > 0; --i)
+    {
+        uint64_t a = lhs->arr[i - 1];
+        uint64_t b = rhs->arr[i - 1];
+
+        if (a > b)
+            return 1;
+        if (a < b)
+            return -1;
+    }
+
+    return 0;
+}
+
 int STP_Number_cmp(STP_Number* lhs, STP_Number* rhs)
 {
     if (lhs == NULL || rhs == NULL)

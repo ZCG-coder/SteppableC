@@ -1,29 +1,43 @@
 #include "_utils.h"
 #include "stp_number.h"
 
+/* precondition: |lhs| >= |rhs| */
+int _STP_Number_sub_abs(STP_Number* lhs, const STP_Number* rhs)
+{
+    uint64_t i, borrow = 0;
+
+    if (lhs == NULL || rhs == NULL)
+        return 0;
+
+    for (i = 0; i < lhs->size; ++i)
+    {
+        uint64_t a = lhs->arr[i];
+        uint64_t b = (i < rhs->size) ? rhs->arr[i] : 0;
+
+        uint64_t t = a - b;
+        uint64_t b1 = (a < b) ? 1ULL : 0ULL;
+
+        uint64_t u = t - borrow;
+        uint64_t b2 = (t < borrow) ? 1ULL : 0ULL;
+
+        lhs->arr[i] = u;
+        borrow = (b1 | b2);
+    }
+
+    if (borrow != 0)
+        return 0;
+
+    return _STP_Number_trim(lhs);
+}
+
 int STP_Number_sub(STP_Number* lhs, STP_Number* rhs)
 {
-    /*
-     * 1. Shortcuts
-     * LHS = 0 => -RHS
-     * RHS = 0 => nop
-     *
-     * LHS == RHS => zero out LHS
-     *
-     * 2. Ensure same sign
-     * LHS = l, RHS = -r => l - (-r) = l + r
-     * LHS = -l, RHS = r => -l - r = -(l + r)
-     * add, sign depend on LHS
-     *
-     * 3. Output sign
-     * |LHS| > |RHS| => out > 0
-     * |LHS| < |RHS| => out < 0
-     */
     if (lhs == NULL || rhs == NULL)
         return 0;
 
     if (STP_Number_is_zero(rhs))
         return 1;
+
     if (STP_Number_is_zero(lhs))
     {
         if (!STP_Number_copy(rhs, lhs))
@@ -32,70 +46,79 @@ int STP_Number_sub(STP_Number* lhs, STP_Number* rhs)
         return 1;
     }
 
-    int cmp_result = STP_Number_cmp(lhs, rhs);
-    if (cmp_result == 0)
-    {
-        STP_Number_clear(lhs);
-        return 1;
-    }
-
+    /* Different signs: l - (-r) = l + r,  -l - r = -(l + r) */
     if (lhs->sign != rhs->sign)
     {
         int original_rhs_sign = rhs->sign;
         rhs->sign = lhs->sign;
 
-        int success = STP_Number_add(lhs, rhs);
+        int ok = STP_Number_add(lhs, rhs);
 
         rhs->sign = original_rhs_sign;
-        return success;
+        return ok;
     }
 
-    /*
-     * If positive: cmp_result == -1 means |lhs| < |rhs|
-     * If negative: cmp_result == 1  means |lhs| < |rhs|
-     */
-    int swap_required = (lhs->sign > 0) ? (cmp_result == -1) : (cmp_result == 1);
+    /* Same-sign path: align scales, then subtract magnitudes */
+    STP_Number rhs_aligned;
+    if (!STP_Number_init(&rhs_aligned))
+        return 0;
 
-    if (swap_required)
+    if (!STP_Number_copy(rhs, &rhs_aligned))
+        goto fail;
+
+    if (!_STP_Number_align_scales(lhs, &rhs_aligned))
+        goto fail;
+
+    int lhs_sign = lhs->sign;
+    int cmp_abs = STP_Number_cmp_abs(lhs, &rhs_aligned);
+
+    if (cmp_abs == 0)
     {
-        STP_Number rhs_copy;
-        if (!STP_Number_copy(rhs, &rhs_copy))
-            return 0;
+        STP_Number_clear(lhs);
+        STP_Number_destroy(&rhs_aligned);
+        return 1;
+    }
 
-        if (!STP_Number_sub(&rhs_copy, lhs))
-        {
-            STP_Number_destroy(&rhs_copy);
-            return 0;
-        }
-
-        rhs_copy.sign = (cmp_result > 0) ? 1 : -1;
-        free(lhs->arr);
-        *lhs = rhs_copy;
+    if (cmp_abs > 0)
+    {
+        /* |lhs| > |rhs| => sign keeps lhs_sign */
+        if (!_STP_Number_sub_abs(lhs, &rhs_aligned))
+            goto fail;
+        lhs->sign = lhs_sign;
     }
     else
     {
-        /* Core Loop */
-        uint64_t borrow = 0;
-        uint64_t max_result_size = lhs->size;
+        /* |lhs| < |rhs| => result magnitude = |rhs|-|lhs|, sign flips */
+        STP_Number lhs_copy;
+        if (!STP_Number_init(&lhs_copy))
+            goto fail;
 
-        for (uint64_t i = 0; i < max_result_size; i++)
+        if (!STP_Number_copy(lhs, &lhs_copy))
         {
-            uint64_t block_l = lhs->arr[i];
-            uint64_t block_r = (i < rhs->size) ? rhs->arr[i] : 0;
-
-            uint64_t res = block_l - block_r - borrow;
-
-            if (borrow > 0)
-                borrow = (block_l <= block_r || block_l - borrow < block_r) ? 1 : 0;
-            else
-                borrow = (block_l < block_r) ? 1 : 0;
-
-            lhs->arr[i] = res;
+            STP_Number_destroy(&lhs_copy);
+            goto fail;
         }
 
-        lhs->sign = (cmp_result > 0) ? 1 : -1;
-        _STP_Number_trim(lhs);
+        if (!STP_Number_copy(&rhs_aligned, lhs))
+        {
+            STP_Number_destroy(&lhs_copy);
+            goto fail;
+        }
+
+        if (!_STP_Number_sub_abs(lhs, &lhs_copy))
+        {
+            STP_Number_destroy(&lhs_copy);
+            goto fail;
+        }
+
+        lhs->sign = -lhs_sign;
+        STP_Number_destroy(&lhs_copy);
     }
 
+    STP_Number_destroy(&rhs_aligned);
     return 1;
+
+fail:
+    STP_Number_destroy(&rhs_aligned);
+    return 0;
 }
