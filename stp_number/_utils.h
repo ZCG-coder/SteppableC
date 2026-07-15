@@ -32,3 +32,13 @@ int _STP_Number_ensure_capacity(STP_Number* num, uint64_t min_capacity);
 
 /* shift */
 int _STP_Number_lshift_blocks(STP_Number* num, uint64_t blocks);
+
+#define _STP_PRINT_NUM(n, L)             \
+    do                                   \
+    {                                    \
+        STP_String str;                  \
+        STP_String_init(&str);           \
+        STP_Number_print(&n, &str);      \
+        printf("%s = %s\n", L, str.str); \
+        STP_String_destroy(&str);        \
+    } while (0)

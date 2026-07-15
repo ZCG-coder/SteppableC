@@ -18,9 +18,14 @@ int main(void)
     char* res1 = NULL;
     char* res2 = NULL;
 
+    FILE* f = fopen("test_sub.out.txt", "wb");
+    if (f == NULL)
+        return 1;
+
+    STP_String_init(&str);
+
     for (unsigned short i = 0; i < USHRT_MAX; ++i)
     {
-        printf("i   = %hu\n", i);
         res1 = _generate_random_number(DEFAULT_RANDOM_LEN);
         res2 = _generate_random_number(DEFAULT_RANDOM_LEN);
         if (res1 == NULL || res2 == NULL)
@@ -28,24 +33,22 @@ int main(void)
 
         (void)STP_Number_conv(&n1, res1);
         (void)STP_Number_conv(&n2, res2);
-        STP_String_init(&str);
 
         if (!STP_Number_print(&n1, &str))
             goto fail;
-        printf("n1  = %s\n", str.str);
+        fprintf(f, "%s\n", str.str);
 
         if (!STP_Number_print(&n2, &str))
             goto fail;
-        printf("n2  = %s\n", str.str);
+        fprintf(f, "%s\n", str.str);
 
         if (!STP_Number_sub(&n1, &n2))
             goto fail;
 
         if (!STP_Number_print(&n1, &str))
             goto fail;
-        printf("dif = %s\n", str.str);
+        fprintf(f, "%s\n", str.str);
 
-        STP_String_destroy(&str);
         STP_Number_destroy(&n1);
         STP_Number_destroy(&n2);
         free(res1);
@@ -54,6 +57,8 @@ int main(void)
         res2 = NULL;
     }
 
+    fclose(f);
+    STP_String_destroy(&str);
     return 0;
 
 fail:
@@ -64,5 +69,6 @@ fail:
 res_fail:
     free(res1);
     free(res2);
+    fclose(f);
     return 1;
 }

@@ -61,13 +61,13 @@ int _STP_Number_add_abs(STP_Number* lhs, const STP_Number* rhs)
         uint64_t b = (i < rhs->size) ? rhs->arr[i] : 0;
 
         uint64_t s1 = a + b;
-        uint64_t c1 = (s1 < a) ? 1ULL : 0ULL;
+        uint64_t c1 = (s1 < a || s1 < b) ? 1ULL : 0ULL;
 
         uint64_t s2 = s1 + carry;
-        uint64_t c2 = (s2 < s1) ? 1ULL : 0ULL;
+        uint64_t c2 = (s2 < s1 || s2 < carry) ? 1ULL : 0ULL;
 
         lhs->arr[i] = s2;
-        carry = c1 + c2;
+        carry = c1 | c2;
     }
 
     lhs->arr[max_size] = carry;
@@ -110,7 +110,6 @@ int STP_Number_add(STP_Number* lhs, STP_Number* _rhs)
     if (!_STP_Number_add_abs(lhs, &rhs))
         goto fail;
 
-    /* Keep semantic sign for public API */
     lhs->sign = (_rhs->sign >= 0) ? 1 : -1;
 
     STP_Number_destroy(&rhs);

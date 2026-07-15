@@ -13,7 +13,7 @@ number_files = [
 ]
 
 executable(
-    'stp_number',
+    'stp_number_dbg',
     number_files,
     include_directories: inc,
     dependencies: stp_string_dep,

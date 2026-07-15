@@ -260,9 +260,7 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
         return 0;
     }
 
-    int64_t target_scale = (int64_t)lhs->scale + decimal_places - (int64_t)rhs->scale;
-    if (target_scale < 0)
-        target_scale = 0;
+    int64_t target_scale = lhs->scale + decimal_places - rhs->scale;
 
     if (decimal_places > 0)
     {

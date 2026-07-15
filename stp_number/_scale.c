@@ -81,33 +81,30 @@ int _STP_Number_mul_exp(STP_Number* num, uint64_t diff_scale)
         return 1;
 
     uint64_t remaining_diff = diff_scale;
-    while (remaining_diff >= 19)
+    while (remaining_diff >= 16)
     {
-        _STP_Number_mul(num, 10000000000000000000ULL);
-        remaining_diff -= 19;
+        _STP_Number_mul(num, 10000000000000000ULL); /* 10^16 */
+        remaining_diff -= 16;
     }
 
     /*
      * remaining_diff = 37
      *
-     * Pass 1 -> * 10^19
-     * remaining_diff = 18
+     * Pass 1 -> * 10^16, * 10^16
+     * remaining_diff = 5
      *
      * Pass 2
-     * 18 = 0b10010
-     *        16 2
-     * -> * 10^16
-     * remainding_diff = 0b00010
-     *
-     * Pass 3
-     * -> * 10^2
-     * remainding_diff = 0b00000
+     * 5 = 0b101
+     *       4 1
+     * -> * 10^4, * 10^1
      */
     for (uint64_t index = 1; remaining_diff > 0; index++)
     {
         if (remaining_diff & 1ULL)
-            _STP_Number_mul(num, _EXPS[index]);
-
+        {
+            if (!_STP_Number_mul(num, _EXPS[index]))
+                return 0;
+        }
         remaining_diff >>= 1;
     }
     return 1;
@@ -139,7 +136,6 @@ uint8_t _STP_Number_mod10(STP_Number* num)
     }
 
     _STP_Number_trim(num);
-    ++num->scale;
     return (uint8_t)remainder;
 }
 
