@@ -171,18 +171,13 @@ int STP_Number_clear(STP_Number* num)
 int main(void)
 {
     STP_Number n1;
-    /* (void)STP_Number_conv(
-        &n1, "63102545059764899202300402793880349.6962156457572452827794091712773728642552989024998588374156534"); */
-    (void)STP_Number_conv(
-        &n1, "63102545059764899202300402793880349.6962156457572452827794091712773728642552989024998588374156534");
+    STP_Number quotient;
+    STP_Number_init(&quotient);
+
+    (void)STP_Number_conv(&n1, "1");
 
     STP_Number n2;
-    /* (void)STP_Number_conv(&n2,
-                          "55795239344640319440322276715163260960547518690714412386449884054167032203908497046766395705"
-                          "6119091678850000000000000000000000000000000000000000000000000000000000000"); */
-    (void)STP_Number_conv(&n2,
-                          "55795239344640319440322276715163260960547518690714412386449884054167032203908497046766395705"
-                          "611909167885");
+    (void)STP_Number_conv(&n2, "7");
 
     STP_String str;
     STP_String_init(&str);
@@ -192,12 +187,13 @@ int main(void)
     STP_Number_print(&n2, &str);
     printf("n2 = %s\n", str.str);
 
-    STP_Number_add(&n1, &n2);
+    STP_Number_div(&n1, &n2, 151);
     STP_Number_print(&n1, &str);
-    printf("n1 = %s\n", str.str);
+    printf("q  = %s\n", str.str);
 
     STP_Number_destroy(&n1);
     STP_Number_destroy(&n2);
+    STP_Number_destroy(&quotient);
     STP_String_destroy(&str);
     return 0;
 }
