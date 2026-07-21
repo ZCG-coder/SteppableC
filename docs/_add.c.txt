@@ -1,0 +1,9 @@
++===================================================================
+  File:      _ADD.C
+
+  Functions: _STP_add64_carry - Add value to acc, returning the carry
+             _STP_Number_add - Add a 64-bit value to num.
+             _STP_Number_add_abs - Add two numbers together.
+
+  Copyright (C) 2026 Andy Zhang, licensed under MIT License
+===================================================================+

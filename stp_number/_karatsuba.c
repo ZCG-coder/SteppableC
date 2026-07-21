@@ -40,6 +40,17 @@ fail:
     return 0;
 }
 
+/**
+ * Multiplies lhs and rhs using Karatsuba algorithm, returning result in out
+ *
+ * ARG lhs multiplicand
+ * ARG rhs multiplier
+ * ARG out product output
+ * RETURNS 1 if successful, 0 if fail
+ *
+ * REQUIRES lhs and rhs are not NULL
+ * REQUIRES out is initialized
+ */
 int _STP_Number_mul_abs_karatsuba(STP_Number* out, const STP_Number* lhs, const STP_Number* rhs)
 {
     STP_Number x0, x1, y0, y1;

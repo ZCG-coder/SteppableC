@@ -1,0 +1,17 @@
+F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Function: _STP_Number_add
+
+  Summary:  Add a 64-bit value to num.
+
+  Args:     STP_Number* num
+              lhs.
+            uint64_t val
+              value to be added.
+
+  Returns:  int
+              1 if successful, 0 if not
+
+  Requires: * num is not null
+
+  Note:     1. a new block is created automatically in case of carry spill
+-----------------------------------------------------------------F-F

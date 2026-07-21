@@ -1,0 +1,5 @@
+ERRs
+001: unable to parse function signature
+002: wrong doc comment format
+
+010: unable to open file

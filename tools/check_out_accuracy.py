@@ -49,7 +49,7 @@ def main():
                 # Perform operation
                 py_result = fn(lhs, rhs)
                 diff = abs(result - py_result)
-                equal = diff < 10**(-args.prec + 1)
+                equal = diff < 10 ** (-args.prec + 1)
                 if not equal:
                     print("FAIL")
                     print(f"LHS = {lhs:f}")
@@ -62,6 +62,7 @@ def main():
                 print("PASS", end="\r")
 
     print()
+
 
 if __name__ == "__main__":
     main()
