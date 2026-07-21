@@ -3,3 +3,4 @@ ERRs
 002: wrong doc comment format
 
 010: unable to open file
+011: no directories specified

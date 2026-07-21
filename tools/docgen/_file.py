@@ -1,7 +1,7 @@
 from pathlib import Path
 
 from ._function import Function
-from . import OUTPUT_PATH, COPYRIGHT_NOTICE
+from . import COPYRIGHT_NOTICE
 
 
 class File:
@@ -13,8 +13,8 @@ class File:
     def add_fn(self, fn: Function):
         self.functions.append(fn)
 
-    def generate_documentation(self) -> str:
-        dir_name = OUTPUT_PATH / (self.path.name + ".dir")
+    def generate_documentation(self, output_path: Path) -> None:
+        dir_name = output_path / (self.path.name + ".dir")
         dir_name.mkdir(parents=True, exist_ok=True)
 
         for i in self.functions:
@@ -30,14 +30,16 @@ class File:
 
         result = header + "\n"
         result += f"  File:      {self.path.name.upper()}\n\n"
-        result += "  Functions: "
-        first = self.functions[0]
-        result += first.name + " - " + first.brief + "\n"
 
-        for idx in range(1, len(self.functions)):
-            fn = self.functions[idx]
-            result += "             "
-            result += fn.name + " - " + fn.brief + "\n"
+        if self.functions:
+            result += "  Functions: "
+            first = self.functions[0]
+            result += first.name + " - " + first.brief + "\n"
+
+            for idx in range(1, len(self.functions)):
+                fn = self.functions[idx]
+                result += "             "
+                result += fn.name + " - " + fn.brief + "\n"
 
         result = result.rstrip("\n")
 
@@ -45,8 +47,6 @@ class File:
         result += "  " + COPYRIGHT_NOTICE
         result += "\n" + footer
 
-        self_output = OUTPUT_PATH / (self.path.name + ".txt")
+        self_output = output_path / (self.path.name + ".txt")
         with self_output.open("w", encoding="utf-8") as f:
             f.write(result)
-
-        return ""

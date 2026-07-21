@@ -87,17 +87,17 @@ def _process_file(file: Path) -> File:
     return current_file_obj
 
 
-def process_file(file: Path) -> List[Tuple[dict, str]]:
+def process_file(file: Path) -> File:
     res = []
     try:
         res = _process_file(file)
     except FileNotFoundError:
         print("E002 - unable to open file")
-        print(f"{FILE} is not found")
+        print(f"{file} is not found")
         exit(1)
     except UnicodeDecodeError:
         print("E003 - unable to decode file as utf-8")
-        print(f"{FILE} contains invalid unicode")
+        print(f"{file} contains invalid unicode")
         exit(1)
 
     return res

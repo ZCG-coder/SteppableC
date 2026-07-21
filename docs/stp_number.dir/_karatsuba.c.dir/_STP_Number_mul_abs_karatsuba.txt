@@ -1,0 +1,18 @@
+F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Function: _STP_Number_mul_abs_karatsuba
+
+  Summary:  Multiplies lhs and rhs using Karatsuba algorithm, returning result in out
+
+  Args:     const STP_Number* lhs
+              multiplicand.
+            const STP_Number* rhs
+              multiplier.
+            STP_Number* out
+              product output.
+
+  Returns:  int
+              1 if successful, 0 if fail
+
+  Requires: * lhs and rhs are not NULL
+            * out is initialized
+-----------------------------------------------------------------F-F

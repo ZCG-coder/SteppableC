@@ -4,7 +4,6 @@ from .handlers._requires_handler import requires_handler
 from .handlers._note_handler import note_handler
 from .handlers._modifies_handler import modifies_handler
 
-
 _MAPPING = {
     "ARG": arg_handler,
     "RETURNS": returns_handler,
@@ -38,11 +37,19 @@ class Function(object):
 
         if self.name.startswith("_"):
             # private API function
-            header = "F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-            footer = "-----------------------------------------------------------------F-F"
+            header = (
+                "F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+            )
+            footer = (
+                "-----------------------------------------------------------------F-F"
+            )
         else:
-            header = "F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F"
-            footer = "F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F"
+            header = (
+                "F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F"
+            )
+            footer = (
+                "F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F"
+            )
 
         result += header + "\n"
 
