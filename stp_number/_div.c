@@ -49,6 +49,12 @@ int _STP_Number_div_abs(const STP_Number* lhs, const STP_Number* rhs, STP_Number
     if (lhs->arr == NULL || rhs->arr == NULL)
         return 0;
 
+    if (STP_Number_is_zero(rhs))
+    {
+        fprintf(stderr, "%s: division by zero\n", STP_CURRENT_FUNCTION);
+        return 0;
+    }
+
     /* Find true sizes in 32-bit digit lengths, ignoring leading zeros */
     uint64_t u_len = lhs->size * 2;
     while (u_len > 0 && _STP_get_digit32(lhs, u_len - 1) == 0)
@@ -60,11 +66,11 @@ int _STP_Number_div_abs(const STP_Number* lhs, const STP_Number* rhs, STP_Number
 
     if (v_len == 0)
     {
-        fprintf(stderr, "%s: Division by zero\n", STP_CURRENT_FUNCTION);
+        fprintf(stderr, "%s: division by zero\n", STP_CURRENT_FUNCTION);
         return 0;
     }
 
-    /* Base Case 1: Dividend < Divisor */
+    /* lhs < rhs, quotient is 0 */
     if (u_len < v_len || (u_len == v_len && _STP_Number_cmp_abs(lhs, rhs) < 0))
     {
         if (quotient && !STP_Number_clear(quotient))
@@ -121,7 +127,6 @@ int _STP_Number_div_abs(const STP_Number* lhs, const STP_Number* rhs, STP_Number
         s++;
     }
 
-    /* Allocate normalized workspace arrays */
     uint32_t* v_norm = (uint32_t*)calloc(v_len, sizeof(uint32_t));
     uint32_t* u_norm = (uint32_t*)calloc(u_len + 1, sizeof(uint32_t));
     uint64_t m = u_len - v_len;
@@ -130,10 +135,7 @@ int _STP_Number_div_abs(const STP_Number* lhs, const STP_Number* rhs, STP_Number
     if (!v_norm || !u_norm || !q32)
     {
         fprintf(stderr, "%s: Memory allocation failed\n", STP_CURRENT_FUNCTION);
-        free(v_norm);
-        free(u_norm);
-        free(q32);
-        return 0;
+        goto fail;
     }
 
     /* Normalize inputs via bit shift stream maps */
@@ -213,23 +215,13 @@ int _STP_Number_div_abs(const STP_Number* lhs, const STP_Number* rhs, STP_Number
 
     /* Handle packing results and true remainder denormalization */
     if (quotient && !_STP_pack_from_32(quotient, q32, m + 1))
-    {
-        free(v_norm);
-        free(u_norm);
-        free(q32);
-        return 0;
-    }
+        goto fail;
 
     if (remainder != NULL)
     {
         uint32_t* r32 = (uint32_t*)calloc(v_len, sizeof(uint32_t));
         if (!r32)
-        {
-            free(v_norm);
-            free(u_norm);
-            free(q32);
-            return 0;
-        }
+            goto fail;
 
         if (s == 0)
         {
@@ -250,18 +242,19 @@ int _STP_Number_div_abs(const STP_Number* lhs, const STP_Number* rhs, STP_Number
         int pack_ok = _STP_pack_from_32(remainder, r32, v_len);
         free(r32);
         if (!pack_ok)
-        {
-            free(v_norm);
-            free(u_norm);
-            free(q32);
-            return 0;
-        }
+            goto fail;
     }
 
     free(v_norm);
     free(u_norm);
     free(q32);
     return 1;
+
+fail:
+    free(v_norm);
+    free(u_norm);
+    free(q32);
+    return 0;
 }
 
 int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_places)
@@ -272,14 +265,13 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
     STP_Number tmp_q;
 
     if (lhs == NULL || rhs == NULL)
-    {
-        fprintf(stderr, "%s: Null pointer passed\n", STP_CURRENT_FUNCTION);
         return 0;
-    }
+    if (lhs->arr == NULL || rhs->arr == NULL)
+        return 0;
 
     if (STP_Number_is_zero(rhs))
     {
-        fprintf(stderr, "%s: Division by zero\n", STP_CURRENT_FUNCTION);
+        fprintf(stderr, "%s: division by zero\n", STP_CURRENT_FUNCTION);
         return 0;
     }
 
@@ -301,7 +293,7 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
     if (!STP_Number_init(&tmp_q))
         goto tmp_rhs_fail;
 
-    /* Calculate the net scaling factor required to achieve the exact target scale */
+    /* calculate the net scaling factor required to achieve the exact target scale */
     target_exp = lhs->scale - tmp_rhs.scale + (int64_t)decimal_places;
 
     if (target_exp > 0)
@@ -315,7 +307,7 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
             goto fail;
     }
 
-    /* Execute the absolute value base division */
+    /* execute the absolute value base division */
     STP_Number r;
     if (!STP_Number_init(&r))
         goto fail;
@@ -323,21 +315,20 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
     if (!_STP_Number_div_abs(lhs, &tmp_rhs, &tmp_q, &r))
         goto fail;
 
-    /* r *= 2*/
+    /* r *= 2 */
     if (!STP_Number_lshift(&r, 1))
         goto r_fail;
+    /* if remainder > 1/2 of rhs, round answer off */
     if (STP_Number_cmp(&r, &tmp_rhs) == 1)
         if (!_STP_Number_add(&tmp_q, 1))
             goto r_fail;
 
-    if (!STP_Number_copy(&tmp_q, lhs))
-        goto r_fail;
-
+    free(lhs->arr);
+    *lhs = tmp_q;
     lhs->scale = -(int64_t)decimal_places;
     lhs->sign = final_sign;
 
     STP_Number_destroy(&tmp_rhs);
-    STP_Number_destroy(&tmp_q);
     STP_Number_destroy(&r);
 
     return 1;
