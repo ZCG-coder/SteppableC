@@ -167,33 +167,3 @@ int STP_Number_clear(STP_Number* num)
     num->sign = 1;
     return 1;
 }
-
-int main(void)
-{
-    STP_Number n1;
-    STP_Number quotient;
-    STP_Number_init(&quotient);
-
-    (void)STP_Number_conv(&n1, "1");
-
-    STP_Number n2;
-    (void)STP_Number_conv(&n2, "7");
-
-    STP_String str;
-    STP_String_init(&str);
-
-    STP_Number_print(&n1, &str);
-    printf("n1 = %s\n", str.str);
-    STP_Number_print(&n2, &str);
-    printf("n2 = %s\n", str.str);
-
-    STP_Number_div(&n1, &n2, 151);
-    STP_Number_print(&n1, &str);
-    printf("q  = %s\n", str.str);
-
-    STP_Number_destroy(&n1);
-    STP_Number_destroy(&n2);
-    STP_Number_destroy(&quotient);
-    STP_String_destroy(&str);
-    return 0;
-}
