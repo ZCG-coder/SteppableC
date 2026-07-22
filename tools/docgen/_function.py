@@ -1,8 +1,8 @@
 from .handlers._arg_handler import arg_handler
-from .handlers._returns_handler import returns_handler
-from .handlers._requires_handler import requires_handler
-from .handlers._note_handler import note_handler
 from .handlers._modifies_handler import modifies_handler
+from .handlers._note_handler import note_handler
+from .handlers._requires_handler import requires_handler
+from .handlers._returns_handler import returns_handler
 
 _MAPPING = {
     "ARG": arg_handler,

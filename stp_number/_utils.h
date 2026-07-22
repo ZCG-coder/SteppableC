@@ -5,11 +5,58 @@
 #include <stdint.h>
 
 /* add */
+/**
+ * Add a 64-bit value to num.
+ *
+ * ARG num lhs
+ * ARG rhs value to be added
+ * RETURNS 1 if successful, 0 if not
+ *
+ * REQUIRES num is not null
+ *
+ * NOTE a new block is created automatically in case of carry spill
+ */
 int _STP_Number_add(STP_Number* num, uint64_t rhs);
+
+/**
+ * Add rhs to lhs without considering scales.
+ *
+ * ARG lhs
+ * ARG rhs
+ * RETURNS 1 if successful, 0 if not
+ *
+ * REQUIRES lhs and rhs are not null
+ *
+ * NOTE scale is not used
+ * MODIFIES size and arr of lhs
+ */
 int _STP_Number_add_abs(STP_Number* lhs, const STP_Number* rhs);
+
+/**
+ * Add value to acc, returning the carry
+ *
+ * ARG acc pointer to lhs
+ * ARG value rhs to be added to lhs
+ * RETURNS carry after add
+ *
+ * NOTE This does not null-check acc.
+ */
 uint64_t _STP_add64_carry(uint64_t* acc, uint64_t value);
 
 /* sub */
+/**
+ * Subtracts rhs from lhs without considering scales.
+ *
+ * ARG lhs
+ * ARG rhs
+ * RETURNS 1 if successful, 0 if not
+ *
+ * REQUIRES lhs and rhs are not null
+ * REQUIRES lhs >= rhs
+ *
+ * NOTE scale is not used
+ * MODIFIES size and arr of lhs
+ */
 int _STP_Number_sub_abs(STP_Number* lhs, const STP_Number* rhs);
 
 /* mul */

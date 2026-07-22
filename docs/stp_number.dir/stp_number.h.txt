@@ -1,5 +1,11 @@
 +===================================================================
   File:      STP_NUMBER.H
 
+  Functions: STP_Number_init - Initializes a STP_Number instance.
+             STP_Number_conv - Creates a STP_Number from string representation
+             STP_Number_copy - Copies memory from num to rhs.
+             STP_Number_destroy - Frees up memory by destroying num.
+             STP_Number_add - Add two numbers together.
+
   Copyright (C) 2026 Andy Zhang, licensed under MIT License
 ===================================================================+

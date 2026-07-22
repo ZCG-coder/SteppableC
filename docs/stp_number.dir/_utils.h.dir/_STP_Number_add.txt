@@ -5,7 +5,7 @@ F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   Args:     STP_Number* num
               lhs.
-            uint64_t val
+            uint64_t rhs
               value to be added.
 
   Returns:  int

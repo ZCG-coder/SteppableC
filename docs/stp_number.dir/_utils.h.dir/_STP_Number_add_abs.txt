@@ -1,7 +1,7 @@
 F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Function: _STP_Number_add_abs
 
-  Summary:  Add two numbers together.
+  Summary:  Add rhs to lhs without considering scales.
 
   Args:     STP_Number* lhs
               .
@@ -13,8 +13,7 @@ F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   Requires: * lhs and rhs are not null
 
-  Note:     1. scale is not handled
-            2. carry is handled automatically
+  Note:     1. scale is not used
 
-  Modifies: capacity, size and arr of lhs
+  Modifies: size and arr of lhs
 -----------------------------------------------------------------F-F

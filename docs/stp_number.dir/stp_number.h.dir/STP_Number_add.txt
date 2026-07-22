@@ -1,0 +1,20 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_add
+
+  Summary:  Add two numbers together.
+
+  Args:     STP_Number* lhs
+              .
+            STP_Number* _rhs
+              .
+
+  Returns:  int
+              1 if successful, 0 if not
+
+  Requires: * lhs and rhs are not null
+
+  Note:     1. scale is not handled
+            2. carry is handled automatically
+
+  Modifies: capacity, size and arr of lhs
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

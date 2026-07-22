@@ -1,1 +1,3 @@
+prompt-toolkit >= 3.0.52
+pypager >= 3.0.1
 pyparsing >= 3.3.2

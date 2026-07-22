@@ -1,0 +1,11 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_init
+
+  Summary:  Initializes a STP_Number instance.
+
+  Args:     STP_Number* num
+              pointer to unitialized number.
+
+  Returns:  int
+              1 always.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

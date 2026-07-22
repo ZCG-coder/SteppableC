@@ -1,0 +1,20 @@
+F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Function: _STP_Number_sub_abs
+
+  Summary:  Subtracts rhs from lhs without considering scales.
+
+  Args:     STP_Number* lhs
+              .
+            const STP_Number* rhs
+              .
+
+  Returns:  int
+              1 if successful, 0 if not
+
+  Requires: * lhs and rhs are not null
+            * lhs >= rhs
+
+  Note:     1. scale is not used
+
+  Modifies: size and arr of lhs
+-----------------------------------------------------------------F-F

@@ -4,3 +4,6 @@ ERRs
 
 010: unable to open file
 011: no directories specified
+012: unable to open dir
+
+021: unable to find documentation

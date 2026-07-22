@@ -1,0 +1,13 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_destroy
+
+  Summary:  Frees up memory by destroying num.
+
+  Args:     STP_Number* num
+              number to be destroyed.
+
+  Returns:  int
+              1 if successfully destroyed
+
+  Requires: * num is already initialized.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

@@ -1,11 +1,12 @@
 from pathlib import Path
-import pyparsing as pp
 from typing import List, Tuple
 
-from ._parse_c import parse_c_signature
-from ._parse_doc import parse_doc
+import pyparsing as pp
+
 from ._file import File
 from ._function import Function
+from ._parse_c import parse_c_signature
+from ._parse_doc import parse_doc
 
 
 def _process_fn(doc_comment: str, signature_parsed: dict) -> Function:
@@ -36,18 +37,16 @@ def _process_file(file: Path) -> File:
             line = line.strip()
 
             if can_read_signature:
-                # look for end of function signatures
-                if ";" in line or "{" in line:
-                    # doc comment and signature read. done for this one.
-                    if parsed := parse_c_signature(signature):
-                        can_read_signature = False
+                # doc comment and signature read. done for this one.
+                if parsed := parse_c_signature(signature):
+                    can_read_signature = False
 
-                        fn = _process_fn(doc_comment, parsed)
-                        current_file_obj.add_fn(fn)
+                    fn = _process_fn(doc_comment, parsed)
+                    current_file_obj.add_fn(fn)
 
-                        signature = ""
-                        doc_comment = ""
-                        continue
+                    signature = ""
+                    doc_comment = ""
+                    continue
 
                 # keep looking
                 signature += line + "\n"

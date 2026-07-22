@@ -1,0 +1,17 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_copy
+
+  Summary:  Copies memory from num to rhs.
+
+  Args:     const STP_Number* num
+              pointer to initialized number.
+            STP_Number* rhs
+              destination to copy to.
+
+  Returns:  int
+              1 if successfully copied
+
+  Note:     1. capacity and properties are handled successfully
+
+  Requires: * rhs is initialized already
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

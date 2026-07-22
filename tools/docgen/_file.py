@@ -1,7 +1,7 @@
 from pathlib import Path
 
-from ._function import Function
 from . import COPYRIGHT_NOTICE
+from ._function import Function
 
 
 class File:
@@ -14,15 +14,17 @@ class File:
         self.functions.append(fn)
 
     def generate_documentation(self, output_path: Path) -> None:
-        dir_name = output_path / (self.path.name + ".dir")
-        dir_name.mkdir(parents=True, exist_ok=True)
+        output_path.mkdir(exist_ok=True, parents=True)
+        if self.functions:
+            dir_name = output_path / (self.path.name + ".dir")
+            dir_name.mkdir(parents=True, exist_ok=True)
 
-        for i in self.functions:
-            doc = i.generate_documentation()
-            file_name = dir_name / (i.name + ".txt")
+            for i in self.functions:
+                doc = i.generate_documentation()
+                file_name = dir_name / (i.name + ".txt")
 
-            with file_name.open("w", encoding="utf-8") as f:
-                f.write(doc)
+                with file_name.open("w", encoding="utf-8") as f:
+                    f.write(doc)
 
         # build file header
         header = "+==================================================================="

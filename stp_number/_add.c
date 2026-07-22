@@ -3,15 +3,6 @@
 
 #include <stdint.h>
 
-/**
- * Add value to acc, returning the carry
- *
- * ARG acc pointer to lhs
- * ARG value rhs to be added to lhs
- * RETURNS carry after add
- *
- * NOTE This does not null-check acc.
- */
 uint64_t _STP_add64_carry(uint64_t* acc, uint64_t value)
 {
     uint64_t old_value = *acc;
@@ -19,17 +10,6 @@ uint64_t _STP_add64_carry(uint64_t* acc, uint64_t value)
     return (*acc < old_value) ? 1ULL : 0ULL;
 }
 
-/**
- * Add a 64-bit value to num.
- *
- * ARG num lhs
- * ARG val value to be added
- * RETURNS 1 if successful, 0 if not
- *
- * REQUIRES num is not null
- *
- * NOTE a new block is created automatically in case of carry spill
- */
 int _STP_Number_add(STP_Number* num, uint64_t val)
 {
     if (num == NULL || num->arr == NULL || num->size == 0)
@@ -61,20 +41,6 @@ int _STP_Number_add(STP_Number* num, uint64_t val)
     return 1;
 }
 
-/**
- * Add two numbers together.
- *
- * ARG lhs
- * ARG rhs
- * RETURNS 1 if successful, 0 if not
- *
- * REQUIRES lhs and rhs are not null
- *
- * NOTE scale is not handled
- * NOTE carry is handled automatically
- *
- * MODIFIES capacity, size and arr of lhs
- */
 int _STP_Number_add_abs(STP_Number* lhs, const STP_Number* rhs)
 {
     uint64_t i, max_size, carry = 0;
