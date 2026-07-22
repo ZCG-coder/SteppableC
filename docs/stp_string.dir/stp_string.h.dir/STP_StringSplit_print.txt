@@ -1,0 +1,11 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_StringSplit_print
+
+  Summary:  Print out chunks in strsp, for debugging.
+
+  Args:     const STP_StringSplit* strsp
+              STP_StringSplit object written.
+
+  Returns:  int
+              1 if successful, 0 otherwise.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

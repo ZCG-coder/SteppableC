@@ -11,6 +11,8 @@ def _c_fn_parser():
         | pp.Keyword("unsigned")
         | pp.Keyword("struct")
         | pp.Keyword("enum")
+        | pp.Keyword("static")
+        | pp.Keyword("inline")
     )
     pointers = pp.ZeroOrMore("*")
 

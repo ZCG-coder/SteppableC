@@ -1,0 +1,13 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_String_tolower
+
+  Summary:  Convert each character to lowercase in str.
+
+  Args:     STP_String* str
+              .
+
+  Returns:  int
+              1 if successful, 0 otherwise
+
+  Requires: * str is a valid string.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

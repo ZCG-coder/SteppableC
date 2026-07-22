@@ -1,7 +1,7 @@
 F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Function: _STP_Number_mul_abs_karatsuba
 
-  Summary:  Multiplies lhs and rhs using Karatsuba algorithm, returning result in out
+  Summary:  Multiplies lhs and rhs using Karatsuba algorithm, returning result in out.
 
   Args:     const STP_Number* lhs
               multiplicand.

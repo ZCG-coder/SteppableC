@@ -14,7 +14,7 @@ F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Requires: * lhs and rhs are not null
             * lhs >= rhs
 
-  Note:     1. scale is not used
+  Note:     1. sign and scale are not used
 
   Modifies: size and arr of lhs
 -----------------------------------------------------------------F-F

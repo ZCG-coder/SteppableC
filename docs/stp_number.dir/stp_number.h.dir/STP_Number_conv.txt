@@ -1,7 +1,7 @@
 F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
   Function: STP_Number_conv
 
-  Summary:  Creates a STP_Number from string representation
+  Summary:  Creates a STP_Number from string representation.
 
   Args:     STP_Number* num
               pointer to unitialized number.

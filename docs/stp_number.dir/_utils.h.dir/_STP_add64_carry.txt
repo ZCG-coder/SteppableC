@@ -1,7 +1,7 @@
 F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   Function: _STP_add64_carry
 
-  Summary:  Add value to acc, returning the carry
+  Summary:  Add value to acc, returning the carry.
 
   Args:     uint64_t* acc
               pointer to lhs.

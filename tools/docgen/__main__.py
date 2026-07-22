@@ -7,7 +7,6 @@ from pypager.source import FormattedTextSource
 
 from . import COPYRIGHT_NOTICE
 from ._format_docpage import highlight_docblock
-from ._parse_c import parse_c_signature
 from ._read_dir import process_dir
 from ._read_file import process_file
 from ._search_file import search_file
@@ -38,7 +37,7 @@ def readman_cb(args: argparse.Namespace):
         print(f"E012 - {directory} is not a directory")
         exit(1)
 
-    matches = search_file(f"{help_item}.txt", directory)
+    matches = search_file(f"{help_item}.txt", directory, args.ignore_case)
 
     selected_path: Path
     if len(matches) > 1:
@@ -109,6 +108,12 @@ def main():
         "--search-directory",
         help="directory to find documentation from",
         default="docs",
+    )
+    readman_parser.add_argument(
+        "-n",
+        "--ignore-case",
+        help="ignore case while searching",
+        action="store_true"
     )
     readman_parser.set_defaults(func=readman_cb)
 

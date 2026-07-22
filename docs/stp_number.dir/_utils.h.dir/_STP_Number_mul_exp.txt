@@ -1,0 +1,17 @@
+F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Function: _STP_Number_mul_exp
+
+  Summary:  Quickly multiply num be an exponent of 10, i.e., 10^diff_scale.
+
+  Args:     STP_Number* num
+              .
+            uint64_t diff_scale
+              .
+
+  Returns:  int
+              1 if successful, 0 if not.
+
+  Requires: * num is not NULL
+
+  Modifies: arr of num
+-----------------------------------------------------------------F-F

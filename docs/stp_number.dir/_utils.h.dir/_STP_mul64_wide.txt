@@ -1,0 +1,15 @@
+F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Function: _STP_mul64_wide
+
+  Summary:  Multiply lhs and rhs, returning 128-bit number in high and low halves.
+
+  Args:     uint64_t lhs
+              .
+            uint64_t rhs
+              .
+
+  Returns:  void
+              carry after multiplication
+
+  Requires: * high and low are not NULL.
+-----------------------------------------------------------------F-F

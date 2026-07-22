@@ -1,0 +1,15 @@
+F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Function: _STP_Number_mul
+
+  Summary:  Multiply a number by a factor.
+
+  Args:     STP_Number* num
+              .
+            uint64_t fac
+              factor.
+
+  Returns:  int
+              1 if successful, 0 otherwise.
+
+  Requires: * num is not NULL
+-----------------------------------------------------------------F-F

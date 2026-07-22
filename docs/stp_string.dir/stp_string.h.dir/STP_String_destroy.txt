@@ -1,0 +1,10 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_String_destroy
+
+  Summary:  Destroys str.
+
+  Args:     STP_String* str
+              .
+
+  Requires: * str is initialized
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

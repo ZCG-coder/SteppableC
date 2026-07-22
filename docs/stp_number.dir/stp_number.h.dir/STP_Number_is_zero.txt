@@ -1,0 +1,13 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_is_zero
+
+  Summary:  Checks if the number is zero.
+
+  Args:     const STP_Number* num
+              .
+
+  Returns:  int
+              1 if number is zero, 0 if not, another arbitrary is returned if an error occured.
+
+  Requires: * num is not NULL.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

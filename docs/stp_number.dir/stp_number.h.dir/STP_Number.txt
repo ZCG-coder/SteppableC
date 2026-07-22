@@ -1,0 +1,16 @@
+S+S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S
+  Struct:   STP_Number
+
+  Summary:  Number object.
+
+  Fields:   uint64_t size
+              Number of blocks used.
+            uint64_t capacity
+              Number of blocks allocated.
+            uint64_t* arr
+              Array of blocks.
+            int64_t scale
+              Exponent n, multiplies 10^n to number.
+            int8_t sign
+              Sign of number. +1 if positive, -1 if negative; 0 if zero (not enforced).
+S---S---S---S---S---S---S---S---S---S---S---S---S---S---S---S---S-S

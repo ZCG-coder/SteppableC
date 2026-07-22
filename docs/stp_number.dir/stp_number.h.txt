@@ -2,10 +2,21 @@
   File:      STP_NUMBER.H
 
   Functions: STP_Number_init - Initializes a STP_Number instance.
-             STP_Number_conv - Creates a STP_Number from string representation
+             STP_Number_conv - Creates a STP_Number from string representation.
              STP_Number_copy - Copies memory from num to rhs.
              STP_Number_destroy - Frees up memory by destroying num.
-             STP_Number_add - Add two numbers together.
+             STP_Number_clear - Clears all blocks from the number, sets its value to zero.
+             STP_Number_print - Print out num in decimal to out.
+             STP_Number_is_zero - Checks if the number is zero.
+             STP_Number_cmp - Compares two numbers.
+             STP_Number_add - Add two numbers together. Result stored in lhs.
+             STP_Number_sub - Subtracts rhs from lhs. Result stored in lhs.
+             STP_Number_mul - Multiplies lhs and rhs. Result stored in lhs.
+             STP_Number_div - Divides lhs by rhs. Result stored in lhs.
+             STP_Number_lshift - Left-shifts a number by bits. Result stored in num.
+             STP_Number_rshift - Right-shifts a number by bits. Result stored in num.
+
+  Structs:   STP_Number - Number object.
 
   Copyright (C) 2026 Andy Zhang, licensed under MIT License
 ===================================================================+

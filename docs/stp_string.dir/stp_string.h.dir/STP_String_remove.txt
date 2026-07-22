@@ -1,0 +1,18 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_String_remove
+
+  Summary:  Removes a section from str.
+
+  Args:     STP_String* str
+              .
+            uint64_t start
+              start of section to remove (inclusive).
+            uint64_t end
+              end of section to remove (inclusive).
+
+  Returns:  int
+              1 if successful, 0 otherwise
+
+  Requires: * str and rhs are valid strings
+            * start < end < str->length
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

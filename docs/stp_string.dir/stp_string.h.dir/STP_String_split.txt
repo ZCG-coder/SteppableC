@@ -1,0 +1,15 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_String_split
+
+  Summary:  Split str into chunks separated by tok.
+
+  Args:     STP_String* str
+              .
+            STP_String* tok
+              token.
+            STP_StringSplit* res
+              where result is written to.
+
+  Returns:  int
+              1 if successful, 0 otherwise.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

@@ -1,5 +1,32 @@
 +===================================================================
   File:      STP_STRING.H
 
+  Functions: STP_String_init - Initializes str.
+             STP_String_destroy - Destroys str.
+             STP_String_copy - Copies rhs to str.
+             STP_String_assign_buf - Assigns buffer in rhs to str.
+             STP_String_lit - Constructs a string object from a literal.
+             STP_String_append - Appends data from rhs to str.
+             STP_String_prepend - Prepends data from rhs to str.
+             STP_String_insert - Inserts rhs to str, at index of where.
+             STP_String_eq - Checks if rhs is the same as str.
+             STP_String_remove - Removes a section from str.
+             STP_String_rtrim - Trim away trailing spaces in str.
+             STP_String_ltrim - Trim away leading spaces in str.
+             STP_String_trim - Trim away spaces from both ends in str.
+             STP_String_substr - Create a substring from a section from str.
+             STP_String_lfind - Find a substring find in str, starting at start.
+             STP_String_rfind - Find a substring find in str, starting at end.
+             STP_String_replace - Replace all occurrences of find with replace in str.
+             STP_String_tolower - Convert each character to lowercase in str.
+             STP_String_toupper - Convert each character to uppercase in str.
+             STP_String_length - Get length of str.
+             STP_String_split - Split str into chunks separated by tok.
+             STP_StringSplit_print - Print out chunks in strsp, for debugging.
+             STP_StringSplit_destroy - Destroys strsp to free up memory.
+
+  Structs:   STP_String - Dynamically-reallocating string.
+             STP_StringSplit - Split string.
+
   Copyright (C) 2026 Andy Zhang, licensed under MIT License
 ===================================================================+

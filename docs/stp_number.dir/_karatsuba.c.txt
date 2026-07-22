@@ -1,7 +1,7 @@
 +===================================================================
   File:      _KARATSUBA.C
 
-  Functions: _STP_Number_mul_abs_karatsuba - Multiplies lhs and rhs using Karatsuba algorithm, returning result in out
+  Functions: _STP_Number_mul_abs_karatsuba - Multiplies lhs and rhs using Karatsuba algorithm, returning result in out.
 
   Copyright (C) 2026 Andy Zhang, licensed under MIT License
 ===================================================================+

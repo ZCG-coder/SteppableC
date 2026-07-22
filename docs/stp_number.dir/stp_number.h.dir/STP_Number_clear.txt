@@ -1,0 +1,15 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_clear
+
+  Summary:  Clears all blocks from the number, sets its value to zero.
+
+  Args:     STP_Number* num
+              .
+
+  Returns:  int
+              1 if successful, 0 otherwise
+
+  Modifies: size and capacity of num. first element of arr is set to zero.
+
+  Requires: * num is not NULL.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

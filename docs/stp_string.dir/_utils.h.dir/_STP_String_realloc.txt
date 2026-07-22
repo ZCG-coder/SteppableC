@@ -1,0 +1,15 @@
+F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Function: _STP_String_realloc
+
+  Summary:  Reallocates memory for string.
+
+  Args:     char** p_str
+              pointer to string to be resized.
+            uint64_t new_str_len
+              .
+
+  Returns:  int
+              1 if successful, 0 otherwise
+
+  Modifies: p_str to increase in size to new_str_len + 1. May change pointer.
+-----------------------------------------------------------------F-F

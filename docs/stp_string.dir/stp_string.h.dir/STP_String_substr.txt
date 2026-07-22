@@ -1,0 +1,20 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_String_substr
+
+  Summary:  Create a substring from a section from str.
+
+  Args:     STP_String* str
+              .
+            STP_String* res
+              pointer to string where substring is written.
+            uint64_t start
+              start of section to copy (inclusive).
+            uint64_t end
+              end of section to copy (inclusive).
+
+  Returns:  int
+              1 if successful, 0 otherwise
+
+  Requires: * str and res are valid, initialized strings
+            * start < end < str->length
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

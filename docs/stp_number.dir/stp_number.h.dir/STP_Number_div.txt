@@ -1,0 +1,19 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_div
+
+  Summary:  Divides lhs by rhs. Result stored in lhs.
+
+  Args:     STP_Number* lhs
+              .
+            const STP_Number* rhs
+              .
+            uint64_t decimal_places
+              number of decimal places that result is accurate to.
+
+  Returns:  int
+              1 if successful, 0 otherwise.
+
+  Requires: * lhs and rhs are not null
+
+  Modifies: scale of lhs.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

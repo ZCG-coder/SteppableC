@@ -1,0 +1,13 @@
+F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Function: _STP_Number_trim
+
+  Summary:  Trims leading zero blocks from num.
+
+  Args:     STP_Number* num
+              .
+
+  Returns:  int
+              1 if successful, 0 otherwise
+
+  Modifies: shrinks size of num
+-----------------------------------------------------------------F-F

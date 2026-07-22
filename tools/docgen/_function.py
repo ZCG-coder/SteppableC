@@ -23,6 +23,8 @@ class Function(object):
         self.doc = doc
 
         self.brief = doc["brief"]
+        if not self.brief.endswith("."):
+            self.brief += "."
 
         self.counters: dict = dict.fromkeys(_MAPPING.keys(), 0)
 

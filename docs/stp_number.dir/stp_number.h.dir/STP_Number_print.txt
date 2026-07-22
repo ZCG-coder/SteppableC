@@ -1,0 +1,17 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_print
+
+  Summary:  Print out num in decimal to out.
+
+  Args:     const STP_Number* num
+              .
+            STP_String* out
+              output string.
+
+  Returns:  int
+              1 if successful, 0 otherwise.
+
+  Requires: * num is not NULL
+
+  Note:     1. out can be a non-initialized string.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

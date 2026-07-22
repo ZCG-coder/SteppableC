@@ -1,0 +1,17 @@
+F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Function: _STP_Number_lshift_blocks
+
+  Summary:  Left-shift the number by blocks of 64-bit blocks.
+
+  Args:     STP_Number* num
+              .
+            uint64_t blocks
+              number of blocks to left-shift.
+
+  Returns:  int
+              1 if successful, 0 otherwise
+
+  Note:     1. carry is handled automatically
+
+  Requires: * num is not NULL
+-----------------------------------------------------------------F-F

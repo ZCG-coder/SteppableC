@@ -1,0 +1,10 @@
+S+S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S
+  Struct:   STP_StringSplit
+
+  Summary:  Split string.
+
+  Fields:   uint64_t length
+              number of chunks the string is split into.
+            STP_String* items
+              chunks.
+S---S---S---S---S---S---S---S---S---S---S---S---S---S---S---S---S-S

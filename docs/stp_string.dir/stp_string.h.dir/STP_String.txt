@@ -1,0 +1,10 @@
+S+S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S
+  Struct:   STP_String
+
+  Summary:  Dynamically-reallocating string.
+
+  Fields:   uint64_t length
+              length of string.
+            char* str
+              actual string bytes.
+S---S---S---S---S---S---S---S---S---S---S---S---S---S---S---S---S-S

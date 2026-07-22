@@ -1,0 +1,13 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_String_lit
+
+  Summary:  Constructs a string object from a literal.
+
+  Args:     const char* rhs
+              literal.
+
+  Returns:  STP_String
+              constructed string object
+
+  Requires: * rhs is a valid string literal / char*
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

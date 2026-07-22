@@ -1,7 +1,7 @@
 F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
   Function: STP_Number_add
 
-  Summary:  Add two numbers together.
+  Summary:  Add two numbers together. Result stored in lhs.
 
   Args:     STP_Number* lhs
               .
@@ -13,8 +13,7 @@ F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
 
   Requires: * lhs and rhs are not null
 
-  Note:     1. scale is not handled
-            2. carry is handled automatically
+  Note:     1. carry is handled automatically
 
   Modifies: capacity, size and arr of lhs
 F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

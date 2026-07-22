@@ -1,0 +1,17 @@
+F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Function: _STP_Number_ensure_capacity
+
+  Summary:  Ensure the number has capacity of at least min_capacity.
+
+  Args:     STP_Number* num
+              .
+            uint64_t min_capacity
+              .
+
+  Returns:  int
+              1 if resize is successful
+
+  Modifies: capacity and arr of num.
+
+  Note:     1. newly allocated memory is automatically zero-filled.
+-----------------------------------------------------------------F-F

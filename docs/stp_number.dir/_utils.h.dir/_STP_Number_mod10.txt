@@ -1,0 +1,15 @@
+F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Function: _STP_Number_mod10
+
+  Summary:  Divide a number by 10 and return the remainder (0-9 inclusive).
+
+  Args:     STP_Number* num
+              .
+
+  Returns:  uint8_t
+              remainder of the division (0-9 inclusive)
+
+  Requires: * num is not NULL
+
+  Modifies: arr of num. Stores quotient of division in num.
+-----------------------------------------------------------------F-F

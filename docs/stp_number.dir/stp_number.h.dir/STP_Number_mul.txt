@@ -1,0 +1,15 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_mul
+
+  Summary:  Multiplies lhs and rhs. Result stored in lhs.
+
+  Args:     STP_Number* lhs
+              .
+            STP_Number* rhs
+              .
+
+  Returns:  int
+              1 if successful, 0 if not
+
+  Requires: * lhs and rhs are not NULL
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

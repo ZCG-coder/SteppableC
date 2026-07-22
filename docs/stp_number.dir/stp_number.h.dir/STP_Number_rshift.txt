@@ -1,0 +1,15 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_rshift
+
+  Summary:  Right-shifts a number by bits. Result stored in num.
+
+  Args:     STP_Number* num
+              .
+            uint64_t bits
+              .
+
+  Returns:  int
+              1 if successful, 0 otherwise.
+
+  Requires: * num is not NULL.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

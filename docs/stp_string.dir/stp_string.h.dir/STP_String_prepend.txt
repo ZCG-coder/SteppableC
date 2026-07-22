@@ -1,0 +1,15 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_String_prepend
+
+  Summary:  Prepends data from rhs to str.
+
+  Args:     STP_String* str
+              .
+            const STP_String* rhs
+              .
+
+  Returns:  int
+              1 if successful, 0 otherwise
+
+  Requires: * str and rhs are valid strings
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

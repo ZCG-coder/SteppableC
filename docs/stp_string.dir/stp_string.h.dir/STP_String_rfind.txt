@@ -1,0 +1,17 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_String_rfind
+
+  Summary:  Find a substring find in str, starting at end.
+
+  Args:     STP_String* str
+              .
+            STP_String* find
+              substring to find.
+            uint64_t end
+              .
+
+  Returns:  uint64_t
+              index to first character of last occurrence of find. UINT64_MAX if not found.
+
+  Requires: * str and find are all initialized, valid strings.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

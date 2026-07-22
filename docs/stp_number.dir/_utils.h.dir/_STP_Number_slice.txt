@@ -1,0 +1,14 @@
+F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Function: _STP_Number_slice
+
+  Summary:  Copy a number of blocks from src to dst.
+
+  Args:     STP_Number* dst
+              destination to write blocks to.
+            const STP_Number* src
+              source.
+            uint64_t start
+              start index of block.
+            uint64_t len
+              number of blocks to copy.
+-----------------------------------------------------------------F-F

@@ -3,8 +3,18 @@
 
   Functions: _STP_Number_add - Add a 64-bit value to num.
              _STP_Number_add_abs - Add rhs to lhs without considering scales.
-             _STP_add64_carry - Add value to acc, returning the carry
+             _STP_add64_carry - Add value to acc, returning the carry.
              _STP_Number_sub_abs - Subtracts rhs from lhs without considering scales.
+             _STP_mul64_wide - Multiply lhs and rhs, returning 128-bit number in high and low halves.
+             _STP_Number_cmp_abs - Compare absolute magnitude of rhs and lhs.
+             _STP_Number_mul - Multiply a number by a factor.
+             _STP_Number_mul_exp - Quickly multiply num be an exponent of 10, i.e., 10^diff_scale.
+             _STP_Number_mod10 - Divide a number by 10 and return the remainder (0-9 inclusive).
+             _STP_Number_align_scales - Align scales of lhs and rhs.
+             _STP_Number_trim - Trims leading zero blocks from num.
+             _STP_Number_slice - Copy a number of blocks from src to dst.
+             _STP_Number_ensure_capacity - Ensure the number has capacity of at least min_capacity.
+             _STP_Number_lshift_blocks - Left-shift the number by blocks of 64-bit blocks.
 
   Copyright (C) 2026 Andy Zhang, licensed under MIT License
 ===================================================================+

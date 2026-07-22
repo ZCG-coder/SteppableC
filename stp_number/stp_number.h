@@ -7,6 +7,16 @@
 #define _STP_NUMBER_DEFAULT_CAPACITY 4
 #define DECIMAL_SEP '.'
 
+/**
+ * Number object
+ *
+ * FLD size Number of blocks used
+ * FLD capacity Number of blocks allocated
+ * FLD arr Array of blocks
+ *
+ * FLD scale Exponent n, multiplies 10^n to number
+ * FLD sign Sign of number. +1 if positive, -1 if negative; 0 if zero (not enforced).
+ */
 typedef struct
 {
     uint64_t size;
@@ -57,19 +67,57 @@ int STP_Number_copy(const STP_Number* num, STP_Number* rhs);
  * REQUIRES num is already initialized.
  */
 int STP_Number_destroy(STP_Number* num);
+
+/**
+ * Clears all blocks from the number, sets its value to zero.
+ *
+ * ARG num
+ * RETURNS 1 if successful, 0 otherwise
+ *
+ * MODIFIES size and capacity of num. first element of arr is set to zero.
+ * REQUIRES num is not NULL.
+ */
 int STP_Number_clear(STP_Number* num);
 
+/**
+ * Print out num in decimal to out.
+ *
+ * ARG num
+ * ARG out output string
+ *
+ * RETURNS 1 if successful, 0 otherwise.
+ * REQUIRES num is not NULL
+ * NOTE out can be a non-initialized string.
+ */
 int STP_Number_print(const STP_Number* num, STP_String* out);
 
 /*
  * Arithmetic operations
  */
-
+/**
+ * Checks if the number is zero
+ *
+ * ARG num
+ * RETURNS 1 if number is zero, 0 if not, another arbitrary is returned if an error occured.
+ *
+ * REQUIRES num is not NULL.
+ */
 int STP_Number_is_zero(const STP_Number* num);
+
+/**
+ * Compares two numbers
+ *
+ * ARG lhs
+ * ARG rhs
+ * RETURNS 1 if lhs > rhs, 0 if lhs == rhs, -1 if lhs < rhs.
+ *
+ * REQUIRES lhs and rhs are not NULL.
+ * NOTE scales of lhs and rhs are considered.
+ */
 int STP_Number_cmp(STP_Number* lhs, STP_Number* rhs);
 
 /**
- * Add two numbers together.
+ * Add two numbers together. Result stored in lhs.
  *
  * ARG lhs
  * ARG _rhs
@@ -77,18 +125,66 @@ int STP_Number_cmp(STP_Number* lhs, STP_Number* rhs);
  *
  * REQUIRES lhs and rhs are not null
  *
- * NOTE scale is not handled
  * NOTE carry is handled automatically
  *
  * MODIFIES capacity, size and arr of lhs
  */
 int STP_Number_add(STP_Number* lhs, STP_Number* _rhs);
 
+/**
+ * Subtracts rhs from lhs. Result stored in lhs.
+ *
+ * ARG lhs
+ * ARG rhs
+ * RETURNS 1 if successful, 0 if not
+ *
+ * REQUIRES lhs and rhs are not null
+ */
 int STP_Number_sub(STP_Number* lhs, STP_Number* rhs);
+
+/**
+ * Multiplies lhs and rhs. Result stored in lhs.
+ *
+ * ARG lhs
+ * ARG rhs
+ * RETURNS 1 if successful, 0 if not
+ *
+ * REQUIRES lhs and rhs are not NULL
+ */
 int STP_Number_mul(STP_Number* lhs, STP_Number* rhs);
 
+/**
+ * Divides lhs by rhs. Result stored in lhs.
+ *
+ * ARG lhs
+ * ARG rhs
+ * ARG decimal_places number of decimal places that result is accurate to.
+ * RETURNS 1 if successful, 0 otherwise.
+ *
+ * REQUIRES lhs and rhs are not null
+ * MODIFIES scale of lhs.
+ */
 int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_places);
-int STP_Number_mod(STP_Number* lhs, const STP_Number* rhs, STP_Number* quotient);
 
+/**
+ * Left-shifts a number by bits. Result stored in num.
+ *
+ * ARG num
+ * ARG bits
+ * RETURNS 1 if successful, 0 otherwise.
+ *
+ * REQUIRES num is not NULL.
+ * NOTE carry handled automatically
+ */
 int STP_Number_lshift(STP_Number* num, uint64_t bits);
+
+/**
+ * Right-shifts a number by bits. Result stored in num.
+ *
+ * ARG num
+ * ARG bits
+ * RETURNS 1 if successful, 0 otherwise.
+ *
+ * REQUIRES num is not NULL.
+ */
 int STP_Number_rshift(STP_Number* num, uint64_t bits);

@@ -1,0 +1,17 @@
+F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Function: _STP_Number_align_scales
+
+  Summary:  Align scales of lhs and rhs.
+
+  Args:     STP_Number* lhs
+              .
+            STP_Number* rhs
+              .
+
+  Returns:  int
+              1 if successful, 0 otherwise
+
+  Requires: * lhs and rhs are not NULL
+
+  Modifies: lhs and rhs scales (sets them to become equal), lhs and rhs arr (multiplies exponent of 10 to them)
+-----------------------------------------------------------------F-F
