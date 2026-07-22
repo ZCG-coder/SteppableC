@@ -3,6 +3,8 @@
 #include "stp_number.h"
 
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /* Helper to extract a 32-bit digit from a little-endian uint64_t array */

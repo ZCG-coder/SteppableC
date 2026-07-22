@@ -3,6 +3,7 @@
 #include "stp_number.h"
 
 #include <stdint.h>
+#include <stdio.h>
 #include <string.h>
 
 int STP_Number_is_zero(const STP_Number* num)

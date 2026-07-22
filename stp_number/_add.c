@@ -2,6 +2,7 @@
 #include "stp_number.h"
 
 #include <stdint.h>
+#include <stdlib.h>
 
 uint64_t _STP_add64_carry(uint64_t* acc, uint64_t value)
 {

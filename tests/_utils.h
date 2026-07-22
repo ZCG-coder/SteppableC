@@ -21,7 +21,7 @@ char* _generate_random_number(uint64_t len)
     {
         if (!placed_decimal && i != 0)
         {
-            float place_decimal_now = (float)rand() / RAND_MAX;
+            float place_decimal_now = (float)rand() / (float)RAND_MAX;
             if (place_decimal_now < (1.0F / len))
             {
                 out[i] = '.';

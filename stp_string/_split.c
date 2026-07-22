@@ -1,6 +1,9 @@
 #include "stp_string.h"
 
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 int STP_String_split(STP_String* str, STP_String* tok, STP_StringSplit* res)
 {

@@ -1,7 +1,8 @@
-#include <stdio.h>
 #include "stp_string.h"
 
-int main()
+#include <stdio.h>
+
+int main(void)
 {
     STP_String str = STP_String_lit("Hello world");
 

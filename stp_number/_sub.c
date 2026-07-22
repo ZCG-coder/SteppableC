@@ -1,6 +1,8 @@
 #include "_utils.h"
 #include "stp_number.h"
 
+#include <string.h>
+
 /* precondition: |lhs| >= |rhs| */
 int _STP_Number_sub_abs(STP_Number* lhs, const STP_Number* rhs)
 {

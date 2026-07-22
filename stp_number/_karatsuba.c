@@ -2,6 +2,8 @@
 #include "_utils.h"
 #include "stp_number.h"
 
+#include <string.h>
+
 int _STP_Number_add_shifted(STP_Number* out, const STP_Number* add, uint64_t shift)
 {
     STP_Number shifted;

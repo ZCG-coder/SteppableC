@@ -3,6 +3,9 @@
 #include "stp_number.h"
 
 #include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 int _STP_Number_ensure_capacity(STP_Number* num, uint64_t min_capacity)
 {

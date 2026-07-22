@@ -5,6 +5,7 @@
 
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define DIGITS_BUF_DEFAULT_SIZE 256
 

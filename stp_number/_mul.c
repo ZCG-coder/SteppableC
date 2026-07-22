@@ -3,6 +3,9 @@
 #include "_utils.h"
 #include "stp_number.h"
 
+#include <stdlib.h>
+#include <string.h>
+
 void _STP_mul64_wide(uint64_t lhs, uint64_t rhs, uint64_t* high, uint64_t* low)
 {
     uint64_t l_low = lhs & 0xFFFFFFFFULL;

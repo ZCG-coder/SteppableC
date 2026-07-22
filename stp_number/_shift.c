@@ -1,6 +1,8 @@
 #include "_utils.h"
 #include "stp_number.h"
 
+#include <string.h>
+
 uint64_t _raw_shift_left(uint64_t* blocks, uint64_t size, uint32_t bits)
 {
     if (bits == 0 || size == 0)
