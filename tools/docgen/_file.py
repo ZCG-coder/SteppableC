@@ -31,6 +31,9 @@ class File:
                 with file_name.open("w", encoding="utf-8") as f:
                     f.write(doc)
 
+        if not (self.functions or self.structs):
+            return
+
         # build file header
         header = "+==================================================================="
         footer = "===================================================================+"
