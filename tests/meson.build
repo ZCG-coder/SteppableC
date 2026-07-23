@@ -7,6 +7,7 @@ test_cases = [
     'self_sub',
     'self_mul',
     'self_div',
+    'sqr',
     'string',
 ]
 

@@ -13,6 +13,7 @@
              STP_Number_add - Add two numbers together. Result stored in lhs.
              STP_Number_sub - Subtracts rhs from lhs. Result stored in lhs.
              STP_Number_mul - Multiplies lhs and rhs. Result stored in lhs.
+             STP_Number_sqr - Squares num. Result stored in num.
              STP_Number_div - Divides lhs by rhs. Result stored in lhs.
              STP_Number_lshift - Left-shifts a number by bits. Result stored in num.
              STP_Number_rshift - Right-shifts a number by bits. Result stored in num.

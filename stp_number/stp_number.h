@@ -164,6 +164,15 @@ int STP_Number_sub(STP_Number* lhs, STP_Number* rhs);
 int STP_Number_mul(STP_Number* lhs, STP_Number* rhs);
 
 /**
+ * Squares num. Result stored in num.
+ *
+ * ARG num
+ * RETURNS 1 if successful, 0 otherwise.
+ * REQUIRES num is valid and initialized.
+ */
+int STP_Number_sqr(STP_Number* num);
+
+/**
  * Divides lhs by rhs. Result stored in lhs.
  *
  * ARG lhs

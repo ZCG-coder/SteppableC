@@ -8,6 +8,7 @@ number_files = [
     '_print.c',
     '_scale.c',
     '_shift.c',
+    '_sqr.c',
     '_sub.c',
     'stp_number.c',
 ]
