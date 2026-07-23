@@ -124,19 +124,13 @@ int STP_Number_mul(STP_Number* lhs, STP_Number* rhs)
 
     STP_Number out_abs;
 
-    int8_t lhs_sign = 0;
-    int8_t rhs_sign = 0;
-    int64_t lhs_scale = 0;
-    int64_t rhs_scale = 0;
-    int8_t final_sign = 1;
-    int64_t final_scale = 0;
-    lhs_sign = lhs->sign;
-    rhs_sign = rhs->sign;
-    lhs_scale = lhs->scale;
-    rhs_scale = rhs->scale;
+    int8_t lhs_sign = lhs->sign;
+    int8_t rhs_sign = rhs->sign;
+    int64_t lhs_scale = lhs->scale;
+    int64_t rhs_scale = rhs->scale;
 
-    final_sign = (lhs_sign == rhs_sign) ? 1 : -1;
-    final_scale = lhs_scale + rhs_scale;
+    int8_t final_sign = (lhs_sign == rhs_sign) ? 1 : -1;
+    int64_t final_scale = lhs_scale + rhs_scale;
 
     if (!STP_Number_init(&out_abs))
         return 0;
@@ -146,16 +140,18 @@ int STP_Number_mul(STP_Number* lhs, STP_Number* rhs)
     lhs->scale = 0;
     rhs->scale = 0;
 
-    if (!_STP_Number_mul_abs(&out_abs, lhs, rhs))
+    int status = _STP_Number_mul_abs(&out_abs, lhs, rhs);
+
+    lhs->sign = lhs_sign;
+    lhs->scale = lhs_scale;
+    rhs->sign = rhs_sign;
+    rhs->scale = rhs_scale;
+
+    if (!status)
     {
-        lhs->sign = lhs_sign;
-        lhs->scale = lhs_scale;
-        rhs->sign = rhs_sign;
-        rhs->scale = rhs_scale;
         STP_Number_destroy(&out_abs);
         return 0;
     }
-
     out_abs.scale = final_scale;
     out_abs.sign = STP_Number_is_zero(&out_abs) ? 1 : final_sign;
 
@@ -163,7 +159,5 @@ int STP_Number_mul(STP_Number* lhs, STP_Number* rhs)
     free(lhs->arr);
     *lhs = out_abs;
 
-    rhs->sign = rhs_sign;
-    rhs->scale = rhs_scale;
     return 1;
 }

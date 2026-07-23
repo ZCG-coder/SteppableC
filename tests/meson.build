@@ -3,6 +3,10 @@ test_cases = [
     'sub',
     'mul',
     'div',
+    'self_add',
+    'self_sub',
+    'self_mul',
+    'self_div',
     'string',
 ]
 

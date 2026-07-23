@@ -1,0 +1,15 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_abs
+
+  Summary:  Takes absolute value.
+
+  Args:     STP_Number* num
+              .
+
+  Returns:  int
+              1 if successful, 0 otherwise.
+
+  Requires: * num is not NULL.
+
+  Modifies: sign of num
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

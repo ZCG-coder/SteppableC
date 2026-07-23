@@ -13,15 +13,12 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
 {
     if (num == NULL || num->arr == NULL)
     {
-        *out = STP_String_lit("(invalid)");
+        STP_String_assign_buf(out, "(invalid)");
         return 0;
     }
 
     if (STP_Number_is_zero(num))
-    {
-        *out = STP_String_lit(" 0.");
-        return 1;
-    }
+        return STP_String_assign_buf(out, " 0.");
 
     STP_Number temp;
     STP_Number_init(&temp);
@@ -143,8 +140,7 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
     }
 
     out_buf[out_idx] = '\0';
-    free(out->str);
-    *out = STP_String_lit(out_buf);
+    STP_String_assign_buf(out, out_buf);
 
     free(digits);
     free(out_buf);

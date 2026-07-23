@@ -167,3 +167,20 @@ int STP_Number_clear(STP_Number* num)
     num->sign = 1;
     return 1;
 }
+
+int STP_Number_to_one(STP_Number* num)
+{
+    if (num == NULL || num->arr == NULL)
+        return 0;
+    if (num->size == 0)
+    {
+        _STP_Number_ensure_capacity(num, 1);
+        num->size = 1;
+    }
+
+    num->arr[0] = 1;
+    num->size = 1;
+    num->sign = 1;
+    num->scale = 0;
+    return 1;
+}

@@ -38,10 +38,12 @@ int STP_String_assign_buf(STP_String* str, const char* rhs)
 {
     if (rhs == NULL)
         return 0;
+    if (rhs == str->str)
+        return 0;
 
     str->length = strlen(rhs);
     _STP_STRING_REALLOC_S(str, str->length);
-    memmove(str->str, rhs, str->length);
+    memcpy(str->str, rhs, str->length);
     str->str[str->length] = '\0';
 
     return 1;

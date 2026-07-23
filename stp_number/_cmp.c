@@ -64,6 +64,10 @@ int STP_Number_cmp(STP_Number* lhs, STP_Number* rhs)
     if (lhs == NULL || rhs == NULL)
         return 42;
 
+    /* Same address, same value */
+    if (lhs == rhs)
+        return 0;
+
     if (STP_Number_is_zero(lhs))
     {
         if (STP_Number_is_zero(rhs))

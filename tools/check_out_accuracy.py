@@ -56,7 +56,11 @@ def main():
                     print(f"RHS = {rhs:f}")
                     print(f"res = {result:f}")
                     print(f"cor = {py_result:f}")
-                    print(f"dif = {diff} ({diff / py_result * 100:.2f}%)")
+
+                    if py_result != 0:
+                        print(f"dif = {diff} ({diff / py_result * 100:.2f}%)")
+                    else:
+                        print(f"dif = --")
                     break
 
                 print("PASS", end="\r")

@@ -271,6 +271,9 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
     if (lhs->arr == NULL || rhs->arr == NULL)
         return 0;
 
+    if (lhs == rhs)
+        return STP_Number_to_one(lhs);
+
     if (STP_Number_is_zero(rhs))
     {
         fprintf(stderr, "%s: division by zero\n", STP_CURRENT_FUNCTION);
@@ -291,6 +294,13 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
 
     if (!STP_Number_copy(rhs, &tmp_rhs))
         goto tmp_rhs_fail;
+
+    if (STP_Number_cmp(lhs, &tmp_rhs) == 0)
+    {
+        /* lhs == rhs, set lhs to 1 */
+        STP_Number_destroy(&tmp_rhs);
+        return STP_Number_to_one(lhs);
+    }
 
     if (!STP_Number_init(&tmp_q))
         goto tmp_rhs_fail;

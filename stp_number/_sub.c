@@ -39,6 +39,9 @@ int STP_Number_sub(STP_Number* lhs, STP_Number* rhs)
     if (lhs == NULL || rhs == NULL)
         return 0;
 
+    if (STP_Number_cmp(lhs, rhs) == 0)
+        return STP_Number_clear(lhs);
+
     if (STP_Number_is_zero(rhs))
         return 1;
 

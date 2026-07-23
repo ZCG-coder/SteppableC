@@ -80,6 +80,16 @@ int STP_Number_destroy(STP_Number* num);
 int STP_Number_clear(STP_Number* num);
 
 /**
+ * Sets STP_Number to 1.
+ *
+ * ARG num
+ * RETURNS 1 if successful, 0 otherwise
+ *
+ * REQUIRES num is not NULL
+ */
+int STP_Number_to_one(STP_Number* num);
+
+/**
  * Print out num in decimal to out.
  *
  * ARG num
@@ -188,3 +198,15 @@ int STP_Number_lshift(STP_Number* num, uint64_t bits);
  * REQUIRES num is not NULL.
  */
 int STP_Number_rshift(STP_Number* num, uint64_t bits);
+
+/* abs */
+/**
+ * Takes absolute value
+ *
+ * ARG num
+ * RETURNS 1 if successful, 0 otherwise.
+ * REQUIRES num is not NULL.
+ *
+ * MODIFIES sign of num
+ */
+int STP_Number_abs(STP_Number* num);
