@@ -107,6 +107,8 @@ int _STP_Number_mul(STP_Number* num, uint64_t fac);
  */
 int _STP_Number_mul_exp(STP_Number* num, uint64_t diff_scale);
 
+void _STP_Number_div_uint32(STP_Number* num, uint32_t divisor);
+
 /**
  * Divide a number by 10 and return the remainder (0-9 inclusive)
  *
@@ -163,6 +165,15 @@ int _STP_Number_slice(STP_Number* dst, const STP_Number* src, uint64_t start, ui
  * NOTE newly allocated memory is automatically zero-filled.
  */
 int _STP_Number_ensure_capacity(STP_Number* num, uint64_t min_capacity);
+
+/**
+ * Count number of occupied bits in num
+ *
+ * ARG num
+ * RETURNS number of occupied bits
+ * REQUIRES num is not NULL.
+ */
+uint64_t _STP_Number_bit_count(STP_Number* num);
 
 /* shift */
 /**

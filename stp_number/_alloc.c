@@ -68,3 +68,25 @@ int _STP_Number_slice(STP_Number* dst, const STP_Number* src, uint64_t start, ui
 
     return _STP_Number_trim(dst);
 }
+
+uint64_t _STP_Number_bit_count(STP_Number* num)
+{
+    if (num == NULL || num->arr == NULL)
+        return 0;
+
+    if (!_STP_Number_trim(num))
+        return 0;
+
+    uint64_t block_cnt = num->size;
+    uint64_t highest_block = num->arr[block_cnt - 1];
+    uint64_t occupied_bits = 0;
+
+    while (highest_block > 0)
+    {
+        highest_block >>= 1;
+        ++occupied_bits;
+    }
+
+    uint64_t bit_cnt = (block_cnt - 1) * 64 + occupied_bits;
+    return bit_cnt;
+}

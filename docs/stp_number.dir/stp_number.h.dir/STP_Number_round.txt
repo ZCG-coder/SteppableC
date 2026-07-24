@@ -1,0 +1,19 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_round
+
+  Summary:  Rounds num to precision of wp.
+
+  Args:     STP_Number* num
+              .
+            int64_t wp
+              new working precision.
+
+  Returns:  int
+              1 if successful, 0 otherwise.
+
+  Requires: * num is non-NULL
+            * wp is positive
+
+  Note:     1. This method relies on repeated modulus by 10. It is therefore very slow.
+            2. Call it only before returning.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

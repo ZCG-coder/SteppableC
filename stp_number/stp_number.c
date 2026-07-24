@@ -2,7 +2,6 @@
 
 #include "_utils.h"
 #include "helpers.h"
-#include "stp_string.h"
 
 #include <stdint.h>
 #include <stdio.h>
@@ -168,7 +167,7 @@ int STP_Number_clear(STP_Number* num)
     return 1;
 }
 
-int STP_Number_to_one(STP_Number* num)
+int STP_Number_set(STP_Number* num, uint64_t block)
 {
     if (num == NULL || num->arr == NULL)
         return 0;
@@ -178,7 +177,7 @@ int STP_Number_to_one(STP_Number* num)
         num->size = 1;
     }
 
-    num->arr[0] = 1;
+    num->arr[0] = block;
     num->size = 1;
     num->sign = 1;
     num->scale = 0;

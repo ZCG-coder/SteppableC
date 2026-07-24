@@ -1,0 +1,13 @@
+F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  Function: _STP_Number_bit_count
+
+  Summary:  Count number of occupied bits in num.
+
+  Args:     STP_Number* num
+              .
+
+  Returns:  uint64_t
+              number of occupied bits
+
+  Requires: * num is not NULL.
+-----------------------------------------------------------------F-F

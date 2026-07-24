@@ -38,7 +38,7 @@ int STP_Number_init(STP_Number* num);
 /**
  * Creates a STP_Number from string representation
  *
- * ARG num pointer to unitialized number
+ * ARG num pointer to UNINTIALIZED number
  * ARG from string of digits/decimal point...
  * RETURNS 1 if successful. 0 otherwise
  *
@@ -80,14 +80,15 @@ int STP_Number_destroy(STP_Number* num);
 int STP_Number_clear(STP_Number* num);
 
 /**
- * Sets STP_Number to 1.
+ * Sets STP_Number to a single block.
  *
  * ARG num
+ * ARG block value
  * RETURNS 1 if successful, 0 otherwise
  *
  * REQUIRES num is not NULL
  */
-int STP_Number_to_one(STP_Number* num);
+int STP_Number_set(STP_Number* num, uint64_t block);
 
 /**
  * Print out num in decimal to out.
@@ -219,3 +220,28 @@ int STP_Number_rshift(STP_Number* num, uint64_t bits);
  * MODIFIES sign of num
  */
 int STP_Number_abs(STP_Number* num);
+
+/**
+ * Calculate exp(x), i.e., e^x
+ *
+ * ARG x
+ * ARG wp precision to be accurate to
+ * RETURNS 1 if successful, 0 otherwise
+ * REQUIRES x is initialized
+ */
+int STP_Number_exp(STP_Number* x, int64_t wp);
+
+/* round */
+/**
+ * Rounds num to precision of wp
+ *
+ * ARG num
+ * ARG wp new working precision
+ * RETURNS 1 if successful, 0 otherwise.
+ * REQUIRES num is non-NULL
+ * REQUIRES wp is positive
+ *
+ * NOTE This method relies on repeated modulus by 10. It is therefore very slow.
+ * NOTE Call it only before returning.
+ */
+int STP_Number_round(STP_Number* num, int64_t wp);

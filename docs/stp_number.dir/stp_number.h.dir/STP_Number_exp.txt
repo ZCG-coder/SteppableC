@@ -1,0 +1,15 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_exp
+
+  Summary:  Calculate exp(x), i.e., e^x.
+
+  Args:     STP_Number* x
+              .
+            int64_t wp
+              precision to be accurate to.
+
+  Returns:  int
+              1 if successful, 0 otherwise
+
+  Requires: * x is initialized
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

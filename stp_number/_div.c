@@ -272,7 +272,7 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
         return 0;
 
     if (lhs == rhs)
-        return STP_Number_to_one(lhs);
+        return STP_Number_set(lhs, 0x1ULL);
 
     if (STP_Number_is_zero(rhs))
     {
@@ -299,7 +299,7 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
     {
         /* lhs == rhs, set lhs to 1 */
         STP_Number_destroy(&tmp_rhs);
-        return STP_Number_to_one(lhs);
+        return STP_Number_set(lhs, 0x1ULL);
     }
 
     if (!STP_Number_init(&tmp_q))

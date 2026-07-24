@@ -1,0 +1,15 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_set
+
+  Summary:  Sets STP_Number to a single block.
+
+  Args:     STP_Number* num
+              .
+            uint64_t block
+              value.
+
+  Returns:  int
+              1 if successful, 0 otherwise
+
+  Requires: * num is not NULL
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

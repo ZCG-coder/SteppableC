@@ -14,6 +14,7 @@
              _STP_Number_trim - Trims leading zero blocks from num.
              _STP_Number_slice - Copy a number of blocks from src to dst.
              _STP_Number_ensure_capacity - Ensure the number has capacity of at least min_capacity.
+             _STP_Number_bit_count - Count number of occupied bits in num.
              _STP_Number_lshift_blocks - Left-shift the number by blocks of 64-bit blocks.
 
   Copyright (C) 2026 Andy Zhang, licensed under MIT License
