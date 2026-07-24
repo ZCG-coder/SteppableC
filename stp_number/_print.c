@@ -6,8 +6,67 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define DIGITS_BUF_DEFAULT_SIZE 256
+
+char* _to_string(const STP_Number* num, uint64_t* len)
+{
+    STP_Number copy;
+    STP_Number_init(&copy);
+    if (!STP_Number_copy(num, &copy))
+    {
+        fprintf(stderr, "%s: cannot copy num", STP_CURRENT_FUNCTION);
+        return NULL;
+    }
+
+    /* 2^64 = 18446744073709551616, 20 digits/block */
+    uint64_t max_chars = (copy.size * 20) + 1;
+    char* buffer = malloc(max_chars);
+    if (!buffer)
+    {
+        fprintf(stderr, "%s: cannot create buffer", STP_CURRENT_FUNCTION);
+        STP_Number_destroy(&copy);
+        return NULL;
+    }
+
+    char* ptr = buffer + max_chars - 1;
+    *ptr = '\0';
+
+    const uint32_t chunk_base = 1E9L;
+
+    while (1)
+    {
+        uint64_t remainder = _STP_Number_mod(&copy, chunk_base);
+
+        if (copy.size == 0)
+        {
+            char temp[12];
+            int tmp_len = snprintf(temp, sizeof(temp), "%llu", (uint64_t)remainder);
+            ptr -= tmp_len;
+            memcpy(ptr, temp, tmp_len);
+
+            break;
+        }
+        else
+        {
+            char temp[12];
+            snprintf(temp, sizeof(temp), "%09llu", (uint64_t)remainder);
+            ptr -= 9;
+            memcpy(ptr, temp, 9);
+        }
+    }
+
+    /* shift bytes to front */
+    size_t final_length = (buffer + max_chars) - ptr;
+    memmove(buffer, ptr, final_length);
+
+    if (len)
+        *len = final_length - 1;
+
+    STP_Number_destroy(&copy);
+    return buffer;
+}
 
 int STP_Number_print(const STP_Number* num, STP_String* out)
 {
@@ -20,46 +79,13 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
     if (STP_Number_is_zero(num))
         return STP_String_assign_buf(out, " 0.");
 
-    STP_Number temp;
-    STP_Number_init(&temp);
-    if (!STP_Number_copy(num, &temp))
-    {
-        fprintf(stderr, "%s: cannot copy\n", STP_CURRENT_FUNCTION);
-        STP_Number_destroy(&temp);
-        return 0;
-    }
-
-    char* digits = (char*)calloc(DIGITS_BUF_DEFAULT_SIZE, sizeof(char));
-    uint64_t digits_idx = 0;
-    uint64_t digits_size = DIGITS_BUF_DEFAULT_SIZE;
-
-    while (!STP_Number_is_zero(&temp))
-    {
-        uint8_t digit = _STP_Number_mod10(&temp);
-        digits[digits_idx++] = '0' + (char)digit;
-
-        if (digits_idx == digits_size)
-        {
-            /* Expand buffer */
-            char* digits_new = (char*)realloc(digits, (digits_size << 1) * sizeof(char));
-            if (digits_new == NULL)
-            {
-                free(digits);
-                STP_Number_destroy(&temp);
-
-                fprintf(stderr, "%s: realloc failed.\n", STP_CURRENT_FUNCTION);
-
-                return 0;
-            }
-            digits_size <<= 1;
-            digits = digits_new;
-        }
-    }
-
-    STP_Number_destroy(&temp);
-
-    int64_t scale = num->scale;
     uint64_t out_size = 0;
+    char* digits = digits = _to_string(num, &out_size);
+    if (digits == NULL)
+        return 0;
+
+    uint64_t digits_count = out_size;
+    int64_t scale = num->scale;
 
     /*
      * Exemplars of output
@@ -76,15 +102,15 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
      */
     if (scale >= 0)
     {
-        out_size = 1 + digits_idx + scale + 1 + 1;
+        out_size += 1 + scale + 1 + 1;
     }
     else
     {
-        int64_t total_fractional_places = -scale;
-        if (digits_idx <= (uint64_t)total_fractional_places)
-            out_size = 1 + 1 + 1 + (uint64_t)total_fractional_places + 1;
+        int64_t dec_places = -scale;
+        if (out_size <= (uint64_t)dec_places)
+            out_size = 1 + 1 + 1 + (uint64_t)dec_places + 1;
         else
-            out_size = 1 + digits_idx + 1 + 1;
+            out_size = 1 + out_size + 1 + 1;
     }
 
     char* out_buf = malloc(out_size * sizeof(char));
@@ -103,7 +129,7 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
 
     if (scale >= 0)
     {
-        for (int64_t i = (int64_t)digits_idx - 1; i >= 0; i--)
+        for (uint64_t i = 0; i < digits_count; i++)
             out_buf[out_idx++] = digits[i];
         for (int64_t i = 0; i < scale; i++)
             out_buf[out_idx++] = '0';
@@ -113,28 +139,26 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
     {
         int64_t total_fractional_places = -scale;
 
-        if (digits_idx <= (uint64_t)total_fractional_places)
+        if (digits_count <= (uint64_t)total_fractional_places)
         {
             out_buf[out_idx++] = '0';
             out_buf[out_idx++] = DECIMAL_SEP;
 
-            uint64_t leading_zeros = (uint64_t)total_fractional_places - digits_idx;
+            uint64_t leading_zeros = (uint64_t)total_fractional_places - digits_count;
             for (uint64_t i = 0; i < leading_zeros; i++)
                 out_buf[out_idx++] = '0';
-            for (int64_t i = (int64_t)digits_idx - 1; i >= 0; i--)
+            for (uint64_t i = 0; i < digits_count; i++)
                 out_buf[out_idx++] = digits[i];
         }
         else
         {
-            uint64_t integer_digits = digits_idx - (uint64_t)total_fractional_places;
-
-            uint64_t written = 0;
-            for (int64_t i = (int64_t)digits_idx - 1; written < integer_digits; i--, written++)
+            uint64_t integer_digits = digits_count - (uint64_t)total_fractional_places;
+            for (uint64_t i = 0; i < integer_digits; i++)
                 out_buf[out_idx++] = digits[i];
 
             out_buf[out_idx++] = DECIMAL_SEP;
 
-            for (int64_t i = (int64_t)digits_idx - 1 - integer_digits; i >= 0; i--)
+            for (uint64_t i = integer_digits; i < digits_count; i++)
                 out_buf[out_idx++] = digits[i];
         }
     }

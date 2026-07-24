@@ -36,7 +36,7 @@ int _STP_Number_ensure_capacity(STP_Number* num, uint64_t min_capacity)
 
 int _STP_Number_trim(STP_Number* num)
 {
-    while (num->size > 1 && num->arr[num->size - 1] == 0)
+    while (num->size > 0 && num->arr[num->size - 1] == 0)
         num->size--;
 
     return 1;

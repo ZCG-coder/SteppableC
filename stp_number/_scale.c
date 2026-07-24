@@ -110,7 +110,7 @@ int _STP_Number_mul_exp(STP_Number* num, uint64_t diff_scale)
     return 1;
 }
 
-uint8_t _STP_Number_mod10(STP_Number* num)
+uint64_t _STP_Number_mod(STP_Number* num, uint64_t base)
 {
     if (num == NULL || num->arr == NULL || num->size == 0)
         return 0;
@@ -125,19 +125,21 @@ uint8_t _STP_Number_mod10(STP_Number* num)
         uint64_t low_half = current_block & 0xFFFFFFFF;
 
         uint64_t temp_high = (remainder << 32) | high_half;
-        uint64_t quot_high = temp_high / 10;
-        remainder = temp_high % 10;
+        uint64_t quot_high = temp_high / base;
+        remainder = temp_high % base;
 
         uint64_t temp_low = (remainder << 32) | low_half;
-        uint64_t quot_low = temp_low / 10;
-        remainder = temp_low % 10;
+        uint64_t quot_low = temp_low / base;
+        remainder = temp_low % base;
 
         num->arr[i] = (quot_high << 32) | quot_low;
     }
 
     _STP_Number_trim(num);
-    return (uint8_t)remainder;
+    return remainder;
 }
+
+uint8_t _STP_Number_mod10(STP_Number* num) { return (uint8_t)_STP_Number_mod(num, 10); }
 
 int _STP_Number_align_scales(STP_Number* lhs, STP_Number* rhs)
 {

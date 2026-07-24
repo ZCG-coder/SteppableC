@@ -10,6 +10,7 @@ test_cases = [
     'sqr',
     'exp',
     'string',
+    'print',
 ]
 
 foreach test_case : test_cases

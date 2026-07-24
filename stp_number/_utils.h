@@ -107,7 +107,7 @@ int _STP_Number_mul(STP_Number* num, uint64_t fac);
  */
 int _STP_Number_mul_exp(STP_Number* num, uint64_t diff_scale);
 
-void _STP_Number_div_uint32(STP_Number* num, uint32_t divisor);
+uint64_t _STP_Number_mod(STP_Number* num, uint64_t base);
 
 /**
  * Divide a number by 10 and return the remainder (0-9 inclusive)
