@@ -1,7 +1,7 @@
-#include "../stp_number/_utils.h"
 #include "_utils.h"
 #include "deps/acutest.h"
 #include "stp_number.h"
+#include "stp_string.h"
 
 #include <limits.h>
 #include <stdio.h>
@@ -89,8 +89,31 @@ fail:
     STP_Number_destroy(&n2);
 }
 
+void test_inv_e(void)
+{
+    STP_Number n1;
+    STP_Number n2;
+
+    STP_String str;
+    STP_String_init(&str);
+
+    (void)STP_Number_conv(&n1, "-1");
+    (void)STP_Number_conv(
+        &n2, "0.3678794411714423215955237701614608674458111310317678345078368016974614957448998033571472743459196437");
+    if (!STP_Number_exp(&n1, 100))
+        goto fail;
+
+    STP_Number_print(&n1, &str);
+    TEST_ASSERT_(STP_Number_cmp(&n1, &n2) == 0, "%s", str.str);
+fail:
+    STP_Number_destroy(&n1);
+    STP_Number_destroy(&n2);
+    STP_String_destroy(&str);
+}
+
 TEST_LIST = {
     { "test_exp", test_exp },
     { "test_e_generation", test_e_generation },
+    { "test_inv_e", test_inv_e },
     { NULL, NULL },
 };

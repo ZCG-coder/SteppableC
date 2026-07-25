@@ -108,9 +108,6 @@ int STP_Number_exp(STP_Number* x, int64_t wp)
         return 0;
     }
 
-    int is_negative = (x_copy.sign < 0);
-    x_copy.sign = 1;
-
     uint64_t k = _STP_Number_bit_count(&x_copy) + 1;
     uint64_t max_x = (1ULL << k);
     uint64_t integer_digits = (max_x * 435ULL) / 1000ULL;
@@ -145,6 +142,7 @@ int STP_Number_exp(STP_Number* x, int64_t wp)
         STP_Number_destroy(&x_copy);
         return 0;
     }
+    x_copy.sign = 1;
 
     for (uint64_t i = 0; i < k; ++i)
     {
@@ -165,27 +163,6 @@ int STP_Number_exp(STP_Number* x, int64_t wp)
         x_copy.scale = -wp_internal;
     }
     STP_Number_destroy(&truncate_divisor);
-
-    /* e^-x = 1/(e^x) */
-    if (is_negative)
-    {
-        STP_Number one;
-        if (!STP_Number_conv(&one, "1"))
-        {
-            STP_Number_destroy(&x_copy);
-            return 0;
-        }
-
-        if (!STP_Number_div(&one, &x_copy, 0))
-        {
-            STP_Number_destroy(&one);
-            STP_Number_destroy(&x_copy);
-            return 0;
-        }
-
-        STP_Number_destroy(&x_copy);
-        x_copy = one;
-    }
 
     STP_Number_round(&x_copy, wp);
     free(x->arr);
