@@ -4,6 +4,15 @@
 
 #include <stdint.h>
 
+static const uint64_t _EXPS[] = {
+    /* 10^0  = */ 1ULL,
+    /* 10^1  = */ 10ULL,
+    /* 10^2  = */ 100ULL,
+    /* 10^4  = */ 10000ULL,
+    /* 10^8  = */ 100000000ULL,
+    /* 10^16 = */ 10000000000000000ULL
+};
+
 /* add */
 /**
  * Add a 64-bit value to num.
