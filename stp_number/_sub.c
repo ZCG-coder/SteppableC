@@ -11,26 +11,27 @@ int _STP_Number_sub_abs(STP_Number* lhs, const STP_Number* rhs)
     if (lhs->arr == NULL || rhs->arr == NULL)
         return 0;
 
-    uint64_t i, borrow = 0;
-
-    for (i = 0; i < lhs->size; ++i)
+    uint64_t borrow = 0;
+    for (uint64_t i = 0; i < lhs->size; ++i)
     {
         uint64_t a = lhs->arr[i];
         uint64_t b = (i < rhs->size) ? rhs->arr[i] : 0;
 
-        uint64_t t = a - b;
-        uint64_t b1 = (a < b) ? 1ULL : 0ULL;
-
-        uint64_t u = t - borrow;
-        uint64_t b2 = (t < borrow) ? 1ULL : 0ULL;
-
-        lhs->arr[i] = u;
-        borrow = (b1 | b2);
+        uint64_t sub = b + borrow;
+        if (a < sub)
+        {
+            lhs->arr[i] = _BASE_10_19 - (sub - a);
+            borrow = 1;
+        }
+        else
+        {
+            lhs->arr[i] = a - sub;
+            borrow = 0;
+        }
     }
 
     if (borrow != 0)
         return 0;
-
     return _STP_Number_trim(lhs);
 }
 
@@ -95,7 +96,7 @@ int STP_Number_sub(STP_Number* lhs, STP_Number* rhs)
     }
     else
     {
-        /* |lhs| < |rhs| => result magnitude = |rhs|-|lhs|, sign flips */
+        /* |lhs| < |rhs| => result magnitude = |rhs| - |lhs|, sign flips */
         STP_Number lhs_copy;
         if (!STP_Number_init(&lhs_copy))
             goto fail;

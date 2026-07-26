@@ -1,6 +1,6 @@
 test_cases = [
-    # 'add',
-    # 'sub',
+    'add',
+    'sub',
     # 'mul',
     # 'div',
     # 'self_add',

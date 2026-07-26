@@ -57,18 +57,18 @@ int _STP_Number_add_abs(STP_Number* lhs, const STP_Number* rhs)
         uint64_t a = (i < lhs->size) ? lhs->arr[i] : 0;
         uint64_t b = (i < rhs->size) ? rhs->arr[i] : 0;
 
-        uint64_t sum = a + b + carry;
-        if (sum >= _BASE_10_19)
+        /* b + carry <= 10^19 */
+        uint64_t limit = _BASE_10_19 - b - carry;
+        if (a >= limit)
         {
-            sum -= _BASE_10_19;
+            lhs->arr[i] = a - limit;
             carry = 1;
         }
         else
         {
+            lhs->arr[i] = a + b + carry;
             carry = 0;
         }
-
-        lhs->arr[i] = sum;
     }
 
     if (carry > 0)

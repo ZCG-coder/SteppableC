@@ -27,6 +27,7 @@ int _to_string(const STP_Number* num, STP_String* str)
         offset += sprintf(buffer + offset, "%019" PRIu64, num->arr[i]);
 
     *str = STP_String_lit(buffer);
+    free(buffer);
     return 1;
 }
 
@@ -73,10 +74,9 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
         uint64_t len = digits.length;
         if (decimal_places >= len)
         {
-            STP_String_prepend(&digits, &zerodot);
-
-            for (int64_t i = 0; i < (len - decimal_places); ++i)
+            for (int64_t i = 0; i < (decimal_places - len); ++i)
                 STP_String_prepend(&digits, &zero);
+            STP_String_prepend(&digits, &zerodot);
         }
         else
         {

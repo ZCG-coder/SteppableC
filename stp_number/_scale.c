@@ -4,61 +4,40 @@
 #include <stdint.h>
 #include <string.h>
 
-int _STP_Number_mul(STP_Number* num, uint64_t fac)
+int _mul10(STP_Number* num, uint64_t fac)
 {
     if (num == NULL || num->arr == NULL)
         return 0;
+    if (fac == 1)
+        return 1;
+    if (fac == 0)
+    {
+        num->arr[0] = 0;
+        num->size = 1;
+        return 1;
+    }
 
+    uint64_t D = _BASE_10_19 / fac;
     uint64_t carry = 0;
-    uint64_t f_low = fac & 0xFFFFFFFF;
-    uint64_t f_high = fac >> 32;
 
     for (uint64_t i = 0; i < num->size; ++i)
     {
-        /*
-         * [block] 0x11111111 22222222
-         * [fac]   0xAAAAAAAA BBBBBBBB
-         *
-         * ll = 0x22222222 * 0xBBBBBBBB         hl = 0x11111111 * 0xBBBBBBBB
-         * lh = 0x22222222 * 0xAAAAAAAA         hh = 0x11111111 * 0xAAAAAAAA
-         *
-         *       h  l (f)             -> Goes on to more significant bits
-         *   *   h  l (num->arr[i])
-         * ----------
-         *      lh ll + carry
-         *   hh hl
-         *      (1) middle low, low + carry => carry
-         * (2) next carry = hh + middle (h) + middle carry
-         */
-
         uint64_t block = num->arr[i];
-        uint64_t b_low = block & 0xFFFFFFFF;
-        uint64_t b_high = block >> 32;
 
-        uint64_t prod_ll = b_low * f_low;
-        uint64_t prod_lh = b_low * f_high;
-        uint64_t prod_hl = b_high * f_low;
-        uint64_t prod_hh = b_high * f_high;
+        uint64_t high = block / D;
+        uint64_t low = block % D;
 
-        uint64_t current_prod = carry + prod_ll;
-        uint64_t middle_term = prod_lh + prod_hl;
-        uint64_t middle_term_shifted = middle_term << 32;
-        uint64_t middle_carry = (middle_term < prod_lh) ? 1ULL << 32 : 0;
-
-        current_prod += middle_term_shifted;
-        if (current_prod < middle_term_shifted)
-            middle_carry += 1;
-        carry = prod_hh + (middle_term >> 32) + middle_carry;
-        num->arr[i] = current_prod;
+        /* (low * fac) + carry < 10^19 <= UINT64_MAX */
+        num->arr[i] = (low * fac) + carry;
+        carry = high;
     }
 
     if (carry > 0)
     {
-        if (_STP_Number_ensure_capacity(num, num->size + 1))
-        {
-            num->arr[num->size] = carry;
-            num->size++;
-        }
+        if (!_STP_Number_ensure_capacity(num, num->size + 1))
+            return 0;
+
+        num->arr[num->size++] = carry;
     }
 
     return 1;
@@ -74,7 +53,7 @@ int _STP_Number_mul_exp(STP_Number* num, uint64_t diff_scale)
     uint64_t remaining_diff = diff_scale;
     while (remaining_diff >= 16)
     {
-        _STP_Number_mul(num, 10000000000000000ULL); /* 10^16 */
+        _mul10(num, 10000000000000000ULL); /* 10^16 */
         remaining_diff -= 16;
     }
 
@@ -93,7 +72,7 @@ int _STP_Number_mul_exp(STP_Number* num, uint64_t diff_scale)
     {
         if (remaining_diff & 1ULL)
         {
-            if (!_STP_Number_mul(num, _EXPS[index]))
+            if (!_mul10(num, _EXPS[index]))
                 return 0;
         }
         remaining_diff >>= 1;

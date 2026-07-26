@@ -93,16 +93,6 @@ void _STP_mul64_wide(uint64_t lhs, uint64_t rhs, uint64_t* high, uint64_t* low);
 int _STP_Number_cmp_abs(const STP_Number* lhs, const STP_Number* rhs);
 
 /* scale */
-/**
- * Multiply a number by a factor
- *
- * ARG num
- * ARG fac factor
- * RETURNS 1 if successful, 0 otherwise.
- *
- * REQUIRES num is not NULL
- */
-int _STP_Number_mul(STP_Number* num, uint64_t fac);
 
 /**
  * Quickly multiply num be an exponent of 10, i.e., 10^diff_scale.
