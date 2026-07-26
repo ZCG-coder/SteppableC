@@ -41,17 +41,6 @@ int _STP_Number_add(STP_Number* num, uint64_t rhs);
  */
 int _STP_Number_add_abs(STP_Number* lhs, const STP_Number* rhs);
 
-/**
- * Add value to acc, returning the carry
- *
- * ARG acc pointer to lhs
- * ARG value rhs to be added to lhs
- * RETURNS carry after add
- *
- * NOTE This does not null-check acc.
- */
-uint64_t _STP_add64_carry(uint64_t* acc, uint64_t value);
-
 /* sub */
 /**
  * Subtracts rhs from lhs without considering scales.
@@ -67,18 +56,6 @@ uint64_t _STP_add64_carry(uint64_t* acc, uint64_t value);
  * MODIFIES size and arr of lhs
  */
 int _STP_Number_sub_abs(STP_Number* lhs, const STP_Number* rhs);
-
-/* mul */
-/**
- * Multiply lhs and rhs, returning 128-bit number in high and low halves.
- *
- * ARG lhs
- * ARG rhs
- *
- * RETURNS carry after multiplication
- * REQUIRES high and low are not NULL.
- */
-void _STP_mul64_wide(uint64_t lhs, uint64_t rhs, uint64_t* high, uint64_t* low);
 
 /* cmp */
 /**
@@ -105,19 +82,6 @@ int _STP_Number_cmp_abs(const STP_Number* lhs, const STP_Number* rhs);
  * MODIFIES arr of num
  */
 int _STP_Number_mul_exp(STP_Number* num, uint64_t diff_scale);
-
-uint64_t _STP_Number_mod(STP_Number* num, uint64_t base);
-
-/**
- * Divide a number by 10 and return the remainder (0-9 inclusive)
- *
- * ARG num
- * RETURNS remainder of the division (0-9 inclusive)
- *
- * REQUIRES num is not NULL
- * MODIFIES arr of num. Stores quotient of division in num.
- */
-uint8_t _STP_Number_mod10(STP_Number* num);
 
 /* alloc */
 /**

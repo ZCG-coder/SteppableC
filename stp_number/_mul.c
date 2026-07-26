@@ -6,23 +6,36 @@
 #include <stdlib.h>
 #include <string.h>
 
-void _STP_mul64_wide(uint64_t lhs, uint64_t rhs, uint64_t* high, uint64_t* low)
+void _mul_add(uint64_t A, uint64_t B, uint64_t C, uint64_t K, uint64_t* out_digit, uint64_t* out_carry)
 {
-    uint64_t l_low = lhs & 0xFFFFFFFFULL;
-    uint64_t l_high = lhs >> 32;
-    uint64_t r_low = rhs & 0xFFFFFFFFULL;
-    uint64_t r_high = rhs >> 32;
+    /* A, B, C, K -> 3 base-10^9 blocks */
+    uint64_t a0 = A % _BASE_10_9, a1 = (A / _BASE_10_9) % _BASE_10_9, a2 = A / (_BASE_10_9 * _BASE_10_9);
+    uint64_t b0 = B % _BASE_10_9, b1 = (B / _BASE_10_9) % _BASE_10_9, b2 = B / (_BASE_10_9 * _BASE_10_9);
+    uint64_t c0 = C % _BASE_10_9, c1 = (C / _BASE_10_9) % _BASE_10_9, c2 = C / (_BASE_10_9 * _BASE_10_9);
+    uint64_t k0 = K % _BASE_10_9, k1 = (K / _BASE_10_9) % _BASE_10_9, k2 = K / (_BASE_10_9 * _BASE_10_9);
 
-    uint64_t p_ll = l_low * r_low;
-    uint64_t p_lh = l_low * r_high;
-    uint64_t p_hl = l_high * r_low;
-    uint64_t p_hh = l_high * r_high;
+    uint64_t p0 = a0 * b0 + c0 + k0;
+    uint64_t p1 = a0 * b1 + a1 * b0 + c1 + k1;
+    uint64_t p2 = a0 * b2 + a1 * b1 + a2 * b0 + c2 + k2;
+    uint64_t p3 = a1 * b2 + a2 * b1;
+    uint64_t p4 = a2 * b2;
 
-    uint64_t mid = (p_ll >> 32) + (p_lh & 0xFFFFFFFFULL) + (p_hl & 0xFFFFFFFFULL);
-    uint64_t carry_mid = (mid >> 32);
+    uint64_t d0 = p0 % _BASE_10_9;
+    p1 += p0 / _BASE_10_9;
 
-    *low = (p_ll & 0xFFFFFFFFULL) | (mid << 32);
-    *high = p_hh + (p_lh >> 32) + (p_hl >> 32) + carry_mid;
+    uint64_t d1 = p1 % _BASE_10_9;
+    p2 += p1 / _BASE_10_9;
+
+    uint64_t d2 = p2 % _BASE_10_9;
+    p3 += p2 / _BASE_10_9;
+
+    uint64_t d3 = p3 % _BASE_10_9;
+    p4 += p3 / _BASE_10_9;
+
+    uint64_t d4 = p4; /* p4 <= 100 */
+
+    *out_digit = d0 + (d1 * _BASE_10_9) + ((d2 % 10) * 1000000000000000000ULL);
+    *out_carry = (d2 / 10) + (d3 * 100000000ULL) + (d4 * 100000000000000000ULL);
 }
 
 int _STP_Number_mul_abs_schoolbook(STP_Number* out, const STP_Number* lhs, const STP_Number* rhs)
@@ -55,27 +68,12 @@ int _STP_Number_mul_abs_schoolbook(STP_Number* out, const STP_Number* lhs, const
 
         for (uint64_t j = 0; j < rhs->size; ++j)
         {
-            uint64_t high = 0;
-            uint64_t low = 0;
-            uint64_t idx = i + j;
-            uint64_t c1 = 0;
-            uint64_t c2 = 0;
-
-            _STP_mul64_wide(lhs->arr[i], rhs->arr[j], &high, &low);
-
-            c1 = _STP_add64_carry(&out->arr[idx], low);
-            c2 = _STP_add64_carry(&out->arr[idx], carry);
-
-            carry = high + c1 + c2;
+            uint64_t digit = 0;
+            _mul_add(lhs->arr[i], rhs->arr[j], out->arr[i + j], carry, &digit, &carry);
+            out->arr[i + j] = digit;
         }
 
-        for (uint64_t k = i + rhs->size; carry != 0; ++k)
-        {
-            if (k >= out->size)
-                return 0;
-
-            carry = _STP_add64_carry(&out->arr[k], carry);
-        }
+        out->arr[i + rhs->size] = carry;
     }
 
     if (!_STP_Number_trim(out))

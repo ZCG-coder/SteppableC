@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #define _STP_NUMBER_DEFAULT_CAPACITY 4
+#define _BASE_10_9 1000000000ULL
 #define _BASE_10_19 10000000000000000000ULL
 #define DECIMAL_SEP '.'
 
@@ -186,29 +187,6 @@ int STP_Number_sqr(STP_Number* num);
  * MODIFIES scale of lhs.
  */
 int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_places);
-
-/**
- * Left-shifts a number by bits. Result stored in num.
- *
- * ARG num
- * ARG bits
- * RETURNS 1 if successful, 0 otherwise.
- *
- * REQUIRES num is not NULL.
- * NOTE carry handled automatically
- */
-int STP_Number_lshift(STP_Number* num, uint64_t bits);
-
-/**
- * Right-shifts a number by bits. Result stored in num.
- *
- * ARG num
- * ARG bits
- * RETURNS 1 if successful, 0 otherwise.
- *
- * REQUIRES num is not NULL.
- */
-int STP_Number_rshift(STP_Number* num, uint64_t bits);
 
 /* abs */
 /**

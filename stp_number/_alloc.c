@@ -90,7 +90,7 @@ int _STP_Number_slice(STP_Number* dst, const STP_Number* src, uint64_t start, ui
         return 1;
     }
 
-    if (start + len > src->size)
+    if (len > src->size - start)
         len = src->size - start;
 
     if (!_STP_Number_ensure_capacity(dst, len))

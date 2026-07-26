@@ -26,7 +26,8 @@ def main():
     fn = SUPPORTED_OPS[opcode]
     filename = args.filename
 
-    getcontext().prec = args.prec * 2
+    prec = int(args.prec)
+    getcontext().prec = prec * 2
 
     line_counter = 0
     lhs: Decimal
@@ -49,7 +50,7 @@ def main():
                 # Perform operation
                 py_result = fn(lhs, rhs)
                 diff = abs(result - py_result)
-                equal = diff < 10 ** (-args.prec + 1)
+                equal = diff < 10 ** (-prec - 1)
                 if not equal:
                     print("FAIL")
                     print(f"LHS = {lhs:f}")

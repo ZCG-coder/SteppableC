@@ -1,10 +1,11 @@
 #include "_mul.h"
+#include "_shift.h"
 #include "_utils.h"
 #include "stp_number.h"
 
 #include <string.h>
 
-int _STP_Number_add_shifted(STP_Number* out, const STP_Number* add, uint64_t shift)
+int _add_shifted(STP_Number* out, const STP_Number* add, uint64_t shift)
 {
     STP_Number shifted;
 
@@ -142,11 +143,11 @@ int _STP_Number_mul_abs_karatsuba(STP_Number* out, const STP_Number* lhs, const 
     out->sign = 1;
     memset(out->arr, 0, out->size * sizeof(uint64_t));
 
-    if (!_STP_Number_add_shifted(out, &z0, 0))
+    if (!_add_shifted(out, &z0, 0))
         goto fail;
-    if (!_STP_Number_add_shifted(out, &z1, m))
+    if (!_add_shifted(out, &z1, m))
         goto fail;
-    if (!_STP_Number_add_shifted(out, &z2, 2 * m))
+    if (!_add_shifted(out, &z2, 2 * m))
         goto fail;
 
     if (!_STP_Number_trim(out))
