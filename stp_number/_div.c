@@ -79,10 +79,10 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
         goto fail;
 
     /* r *= 2 */
-    if (!STP_Number_lshift(&r, 1))
+    if (!STP_Number_add(&r, &r))
         goto r_fail;
     /* if remainder > 1/2 of rhs, round answer off */
-    if (STP_Number_cmp(&r, &tmp_rhs) == 1)
+    if (_STP_Number_cmp_abs(&r, &tmp_rhs) == 1)
         if (!_STP_Number_add(&tmp_q, 1))
             goto r_fail;
 

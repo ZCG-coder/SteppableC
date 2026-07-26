@@ -2,7 +2,7 @@ test_cases = [
     'add',
     'sub',
     'mul',
-    # 'div',
+    'div',
     # 'self_add',
     # 'self_sub',
     # 'self_mul',

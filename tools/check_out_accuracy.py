@@ -1,7 +1,7 @@
 """Checks accuracy of add, sub, mul, div outputs"""
 
 import argparse
-from decimal import Decimal, getcontext
+from decimal import Decimal, getcontext, ROUND_HALF_UP
 
 SUPPORTED_OPS = {
     "add": lambda x, y: x + y,
@@ -28,6 +28,7 @@ def main():
 
     prec = int(args.prec)
     getcontext().prec = prec * 2
+    getcontext().rounding = ROUND_HALF_UP
 
     line_counter = 0
     lhs: Decimal
@@ -49,6 +50,7 @@ def main():
 
                 # Perform operation
                 py_result = fn(lhs, rhs)
+                py_result = round(py_result, prec)
                 diff = abs(result - py_result)
                 equal = diff < 10 ** (-prec - 1)
                 if not equal:

@@ -8,7 +8,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define DECIMALS 151
+#define DECIMALS 152
 
 int main(void)
 {

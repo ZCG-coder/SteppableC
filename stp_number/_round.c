@@ -4,11 +4,25 @@
 #include <stdint.h>
 #include <string.h>
 
+uint64_t _get_pow10(uint64_t exp)
+{
+    uint64_t res = _EXPS[0];
+    if (exp & 1)
+        res *= _EXPS[1];
+    if (exp & 2)
+        res *= _EXPS[2];
+    if (exp & 4)
+        res *= _EXPS[3];
+    if (exp & 8)
+        res *= _EXPS[4];
+    if (exp & 16)
+        res *= _EXPS[5];
+    return res;
+}
+
 int STP_Number_round(STP_Number* num, int64_t wp)
 {
-    if (num == NULL || num->arr == NULL)
-        return 0;
-    if (wp < 0)
+    if (num == NULL || num->arr == NULL || wp < 0)
         return 0;
 
     /* why round if already integral? */
@@ -16,35 +30,70 @@ int STP_Number_round(STP_Number* num, int64_t wp)
         return 1;
 
     int64_t current_wp = -num->scale;
-    int64_t orig_diff = current_wp - wp;
     if (current_wp <= wp)
         return 1;
 
     int64_t diff = current_wp - wp;
-    uint64_t last_digit = 0;
+    int64_t orig_diff = diff;
 
-    while (diff >= 9)
+    uint64_t nblocks = diff / 19;
+    uint64_t rem_diff = diff % 19;
+
+    uint64_t rounding_digit = 0;
+    uint64_t digit_limb_idx = (diff - 1) / 19;
+    uint64_t digit_rem_idx = (diff - 1) % 19;
+
+    if (digit_limb_idx < num->size)
     {
-        uint64_t remainder = _STP_Number_mod(num, 1000000000ULL);
-        last_digit = remainder / 100000000ULL;
-        diff -= 9;
+        uint64_t pow_divisor = _get_pow10(digit_rem_idx);
+        rounding_digit = (num->arr[digit_limb_idx] / pow_divisor) % 10;
     }
 
-    for (uint64_t index = 1; diff > 0; index++)
+    if (nblocks > 0)
     {
-        if (diff & 1ULL)
+        if (nblocks >= num->size)
         {
-            uint64_t divisor = _EXPS[index];
-            uint64_t remainder = _STP_Number_mod(num, divisor);
-            last_digit = remainder / (divisor / 10ULL);
+            num->size = 1;
+            num->arr[0] = 0;
         }
-        diff >>= 1;
+        else
+        {
+            uint64_t new_size = num->size - nblocks;
+            for (uint64_t i = 0; i < new_size; i++)
+                num->arr[i] = num->arr[i + nblocks];
+
+            for (uint64_t i = new_size; i < num->size; i++)
+                num->arr[i] = 0;
+
+            num->size = new_size;
+        }
     }
 
-    if (last_digit >= 5)
+    if (rem_diff > 0 && !(num->size == 1 && num->arr[0] == 0))
+    {
+        uint64_t P = _get_pow10(rem_diff);
+        uint64_t Q = _get_pow10(19 - rem_diff);
+
+        for (uint64_t i = 0; i < num->size; i++)
+        {
+            uint64_t lower_part = num->arr[i] / P;
+            uint64_t upper_part = 0;
+            if (i + 1 < num->size)
+                upper_part = (num->arr[i + 1] % P) * Q;
+
+            num->arr[i] = lower_part + upper_part;
+        }
+
+        _STP_Number_trim(num);
+    }
+
+    if (rounding_digit >= 5)
         _STP_Number_add(num, 1);
 
     num->scale += orig_diff;
+
+    if (num->size == 1 && num->arr[0] == 0)
+        num->scale = 0;
 
     return 1;
 }
