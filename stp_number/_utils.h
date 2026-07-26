@@ -13,6 +13,8 @@ static const uint64_t _EXPS[] = {
     /* 10^16 = */ 10000000000000000ULL
 };
 
+int _clz64(uint64_t x);
+
 /* add */
 /**
  * Add a 64-bit value to num.

@@ -231,6 +231,8 @@ int STP_Number_abs(STP_Number* num);
  */
 int STP_Number_exp(STP_Number* x, int64_t wp);
 
+int STP_Number_ln(STP_Number* n, int64_t wp);
+
 /* round */
 /**
  * Rounds num to precision of wp

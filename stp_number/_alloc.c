@@ -7,6 +7,41 @@
 #include <stdlib.h>
 #include <string.h>
 
+int _clz64(uint64_t x)
+{
+    if (x == 0)
+        return 64;
+    int n = 0;
+    if ((x >> 32) == 0)
+    {
+        n += 32;
+        x <<= 32;
+    }
+    if ((x >> 48) == 0)
+    {
+        n += 16;
+        x <<= 16;
+    }
+    if ((x >> 56) == 0)
+    {
+        n += 8;
+        x <<= 8;
+    }
+    if ((x >> 60) == 0)
+    {
+        n += 4;
+        x <<= 4;
+    }
+    if ((x >> 62) == 0)
+    {
+        n += 2;
+        x <<= 2;
+    }
+    if ((x >> 63) == 0)
+        n += 1;
+    return n;
+}
+
 int _STP_Number_ensure_capacity(STP_Number* num, uint64_t min_capacity)
 {
     if (num == NULL || num->arr == NULL)
