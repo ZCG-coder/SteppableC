@@ -13,8 +13,6 @@ static const uint64_t _EXPS[] = {
     /* 10^16 = */ 10000000000000000ULL
 };
 
-int _clz64(uint64_t x);
-
 /* add */
 /**
  * Add a 64-bit value to num.
@@ -176,28 +174,6 @@ int _STP_Number_slice(STP_Number* dst, const STP_Number* src, uint64_t start, ui
  * NOTE newly allocated memory is automatically zero-filled.
  */
 int _STP_Number_ensure_capacity(STP_Number* num, uint64_t min_capacity);
-
-/**
- * Count number of occupied bits in num
- *
- * ARG num
- * RETURNS number of occupied bits
- * REQUIRES num is not NULL.
- */
-uint64_t _STP_Number_bit_count(STP_Number* num);
-
-/* shift */
-/**
- * Left-shift the number by blocks of 64-bit blocks.
- *
- * ARG num
- * ARG blocks number of blocks to left-shift
- * RETURNS 1 if successful, 0 otherwise
- *
- * NOTE carry is handled automatically
- * REQUIRES num is not NULL
- */
-int _STP_Number_lshift_blocks(STP_Number* num, uint64_t blocks);
 
 #define _STP_PRINT_NUM(n, L)             \
     do                                   \

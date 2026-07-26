@@ -31,12 +31,9 @@ int STP_Number_init(STP_Number* num)
 
 int STP_Number_conv(STP_Number* num, const char* from)
 {
-    if (!STP_Number_init(num))
-        return 0;
-
     /*
      * NOTE
-     * This is not the C++ Steppable. Integer format support is very limited.
+     * This is not the C++ Steppable. Number format support is very limited.
      * Ensure string is NULL-terminated or expect out-of-bounds memory access.
      *
      * Supported formats
@@ -45,21 +42,48 @@ int STP_Number_conv(STP_Number* num, const char* from)
      *
      * Define DECIMAL_SEP in stp_number.h to support other decimal separators.
      */
-    int sign = 0;
+
+    if (num == NULL || from == NULL)
+        return 0;
+
+    if (!STP_Number_init(num))
+        return 0;
+
+    int sign = 1;
     int encountered_decimal = 0;
     int encountered_digit = 0;
 
-    for (uint64_t i = 0; from[i] != '\0'; i++)
+    int64_t start_idx = -1;
+    int64_t end_idx = -1;
+    int64_t decimal_idx = -1;
+
+    uint64_t str_len = strlen(from);
+
+    /* read metadata */
+    for (uint64_t i = 0; i < str_len; i++)
     {
         char c = from[i];
+
         if (c == ' ')
         {
-            if (sign != 0 || encountered_digit || encountered_decimal)
+            if (sign != 1 || encountered_digit || encountered_decimal)
             {
-                fprintf(stderr, "%s: ill-formatted string.\n", STP_CURRENT_FUNCTION);
-                fprintf(stderr, "%s: spaces after sign.\n", STP_CURRENT_FUNCTION);
+                fprintf(stderr, "%s: ill-formatted string\n", STP_CURRENT_FUNCTION);
+                fprintf(stderr, "spaces after sign/digits");
                 return 0;
             }
+            continue;
+        }
+
+        if (c == '+' || c == '-')
+        {
+            if (sign != 1 || encountered_decimal || encountered_digit)
+            {
+                fprintf(stderr, "%s: ill-formatted string\n", STP_CURRENT_FUNCTION);
+                fprintf(stderr, "misplaced/duplicate sign");
+                return 0;
+            }
+            sign = (c == '-') ? -1 : 1;
             continue;
         }
 
@@ -67,56 +91,86 @@ int STP_Number_conv(STP_Number* num, const char* from)
         {
             if (encountered_decimal)
             {
-                fprintf(stderr, "%s: ill-formatted string.\n", STP_CURRENT_FUNCTION);
-                fprintf(stderr, "%s: duplicated decimal separators.\n", STP_CURRENT_FUNCTION);
+                fprintf(stderr, "%s: ill-formatted string\n", STP_CURRENT_FUNCTION);
+                fprintf(stderr, "duplicate decimal");
                 return 0;
             }
             encountered_decimal = 1;
+            decimal_idx = (int64_t)i;
             continue;
         }
 
-        if ((c == '+' || c == '-') && (sign != 0 || encountered_decimal || encountered_digit))
+        if (c < '0' || c > '9')
         {
-            fprintf(stderr, "%s: ill-formatted string.\n", STP_CURRENT_FUNCTION);
-            fprintf(stderr, "%s: duplicated sign %c.\n", STP_CURRENT_FUNCTION, c);
+            fprintf(stderr, "%s: ill-formatted string\n", STP_CURRENT_FUNCTION);
+            fprintf(stderr, "unknown character '%c'", c);
             return 0;
         }
 
-        if (c == '-')
+        if (!encountered_digit)
         {
-            sign = -1;
-            continue;
+            start_idx = (int64_t)i;
+            encountered_digit = 1;
         }
-        if (c == '+')
-        {
-            sign = 1;
-            continue;
-        }
-
-        if (!('0' <= c && c <= '9'))
-        {
-            fprintf(stderr, "%s: ill-formatted string.\n", STP_CURRENT_FUNCTION);
-            fprintf(stderr, "%s: unknown character.\n", STP_CURRENT_FUNCTION);
-            return 0;
-        }
-
-        uint8_t digit = c - '0';
-        encountered_digit = 1;
-
-        if (!_STP_Number_mul_exp(num, 1))
-            return 0;
-
-        if (!_STP_Number_add(num, digit))
-            return 0;
-
-        if (encountered_decimal)
-            num->scale--;
+        end_idx = (int64_t)i;
     }
 
-    if (sign == 0)
-        sign = 1;
+    if (!encountered_digit)
+    {
+        fprintf(stderr, "%s: ill-formatted string\n", STP_CURRENT_FUNCTION);
+        fprintf(stderr, "no digits found");
+        return 0;
+    }
+
+    uint64_t total_digits = (uint64_t)(end_idx - start_idx + 1);
+    /* -1 decimal place */
+    if (encountered_decimal && decimal_idx >= start_idx && decimal_idx <= end_idx)
+        total_digits--;
+
+    uint64_t num_blocks = (total_digits + 18) / 19;
+    if (!_STP_Number_ensure_capacity(num, num_blocks))
+        return 0;
+
+    int64_t scale = 0;
+    if (encountered_decimal && end_idx > decimal_idx)
+        scale = -(end_idx - decimal_idx);
+
+    uint64_t limb_idx = 0;
+    uint64_t current_block = 0;
+    uint64_t place_multiplier = 1;
+    uint64_t digits_in_block = 0;
+
+    for (int64_t j = end_idx + 1; j >= start_idx + 1; j--)
+    {
+        int64_t i = j - 1;
+        char c = from[i];
+
+        if (c == DECIMAL_SEP)
+            continue;
+
+        uint64_t digit = (uint64_t)(c - '0');
+        current_block += digit * place_multiplier;
+        place_multiplier *= 10;
+        digits_in_block++;
+
+        /* parse every 19 digits */
+        if (digits_in_block == 19)
+        {
+            num->arr[limb_idx++] = current_block;
+            current_block = 0;
+            place_multiplier = 1;
+            digits_in_block = 0;
+        }
+    }
+
+    if (digits_in_block > 0)
+        num->arr[limb_idx++] = current_block;
+
+    num->size = limb_idx;
     num->sign = sign;
-    return 1;
+    num->scale = scale;
+
+    return _STP_Number_trim(num);
 }
 
 int STP_Number_copy(const STP_Number* num, STP_Number* rhs)

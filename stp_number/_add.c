@@ -6,9 +6,15 @@
 
 uint64_t _STP_add64_carry(uint64_t* acc, uint64_t value)
 {
-    uint64_t old_value = *acc;
-    *acc = old_value + value;
-    return (*acc < old_value) ? 1ULL : 0ULL;
+    *acc += value;
+
+    if (*acc >= _BASE_10_19)
+    {
+        *acc -= _BASE_10_19;
+        return 1ULL;
+    }
+
+    return 0ULL;
 }
 
 int _STP_Number_add(STP_Number* num, uint64_t val)
@@ -16,27 +22,20 @@ int _STP_Number_add(STP_Number* num, uint64_t val)
     if (num == NULL || num->arr == NULL || num->size == 0)
         return 0;
 
-    uint64_t carry = val;
+    uint64_t carry = val / _BASE_10_19;
+    uint64_t remainder = val % _BASE_10_19;
 
-    for (uint64_t i = 0; i < num->size && carry > 0; i++)
-    {
-        uint64_t old_val = num->arr[i];
-        num->arr[i] += carry;
+    carry += _STP_add64_carry(&num->arr[0], remainder);
 
-        /* When overflow, carry to next block */
-        if (num->arr[i] < old_val)
-            carry = 1;
-        else
-            carry = 0;
-    }
+    for (uint64_t i = 1; i < num->size && carry > 0; i++)
+        carry = _STP_add64_carry(&num->arr[i], carry);
 
     if (carry > 0)
     {
         if (!_STP_Number_ensure_capacity(num, num->size + 1))
             return 0;
 
-        num->arr[num->size] = carry;
-        num->size++;
+        num->arr[num->size++] = carry;
     }
 
     return 1;
@@ -44,34 +43,44 @@ int _STP_Number_add(STP_Number* num, uint64_t val)
 
 int _STP_Number_add_abs(STP_Number* lhs, const STP_Number* rhs)
 {
-    uint64_t i, max_size, carry = 0;
-
-    if (lhs == NULL || rhs == NULL)
-        return 0;
-    if (lhs->arr == NULL || rhs->arr == NULL)
+    if (lhs == NULL || rhs == NULL || lhs->arr == NULL || rhs->arr == NULL)
         return 0;
 
-    max_size = (lhs->size > rhs->size) ? lhs->size : rhs->size;
+    uint64_t max_size = (lhs->size > rhs->size) ? lhs->size : rhs->size;
     if (!_STP_Number_ensure_capacity(lhs, max_size + 1))
         return 0;
 
-    for (i = 0; i < max_size; ++i)
+    uint64_t carry = 0;
+
+    for (uint64_t i = 0; i < max_size; ++i)
     {
         uint64_t a = (i < lhs->size) ? lhs->arr[i] : 0;
         uint64_t b = (i < rhs->size) ? rhs->arr[i] : 0;
 
-        uint64_t s1 = a + b;
-        uint64_t c1 = (s1 < a || s1 < b) ? 1ULL : 0ULL;
+        uint64_t sum = a + b + carry;
+        if (sum >= _BASE_10_19)
+        {
+            sum -= _BASE_10_19;
+            carry = 1;
+        }
+        else
+        {
+            carry = 0;
+        }
 
-        uint64_t s2 = s1 + carry;
-        uint64_t c2 = (s2 < s1 || s2 < carry) ? 1ULL : 0ULL;
-
-        lhs->arr[i] = s2;
-        carry = c1 | c2;
+        lhs->arr[i] = sum;
     }
 
-    lhs->arr[max_size] = carry;
-    lhs->size = max_size + (carry ? 1 : 0);
+    if (carry > 0)
+    {
+        lhs->arr[max_size] = carry;
+        lhs->size = max_size + 1;
+    }
+    else
+    {
+        lhs->size = max_size;
+    }
+
     return _STP_Number_trim(lhs);
 }
 

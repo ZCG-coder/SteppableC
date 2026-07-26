@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #define _STP_NUMBER_DEFAULT_CAPACITY 4
+#define _BASE_10_19 10000000000000000000ULL
 #define DECIMAL_SEP '.'
 
 /**
@@ -12,7 +13,7 @@
  *
  * FLD size Number of blocks used
  * FLD capacity Number of blocks allocated
- * FLD arr Array of blocks
+ * FLD arr Array of blocks (10^19-base)
  *
  * FLD scale Exponent n, multiplies 10^n to number
  * FLD sign Sign of number. +1 if positive, -1 if negative; 0 if zero (not enforced).

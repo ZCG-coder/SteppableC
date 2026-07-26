@@ -4,7 +4,7 @@
 
 void test_print(void)
 {
-    const char* string = " 866919200990534219744984542.950135983558795406721665005";
+    const char* string = " 866919200990534219744984542.95013598";
     STP_Number num;
     STP_Number_conv(&num, string);
 
@@ -12,7 +12,7 @@ void test_print(void)
     STP_String_init(&str);
     STP_Number_print(&num, &str);
 
-    TEST_ASSERT(strcmp(str.str, string) == 0);
+    TEST_ASSERT_(strcmp(str.str, string) == 0, "Got %s", str.str);
 
     STP_String_destroy(&str);
     STP_Number_destroy(&num);

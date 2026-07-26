@@ -1,71 +1,33 @@
-#include "_utils.h"
 #include "helpers.h"
 #include "stp_number.h"
 #include "stp_string.h"
 
+#include <inttypes.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#define DIGITS_BUF_DEFAULT_SIZE 256
-
-char* _to_string(const STP_Number* num, uint64_t* len)
+int _to_string(const STP_Number* num, STP_String* str)
 {
-    STP_Number copy;
-    STP_Number_init(&copy);
-    if (!STP_Number_copy(num, &copy))
-    {
-        fprintf(stderr, "%s: cannot copy num", STP_CURRENT_FUNCTION);
-        return NULL;
-    }
-
-    /* 2^64 = 18446744073709551616, 20 digits/block */
-    uint64_t max_chars = (copy.size * 20) + 1;
+    /* 19 digits/block + NULL */
+    uint64_t max_chars = (num->size * 19) + 1;
     char* buffer = malloc(max_chars);
     if (!buffer)
     {
         fprintf(stderr, "%s: cannot create buffer", STP_CURRENT_FUNCTION);
-        STP_Number_destroy(&copy);
-        return NULL;
+        return 0;
     }
+    size_t offset = 0;
 
-    char* ptr = buffer + max_chars - 1;
-    *ptr = '\0';
+    uint64_t msb = num->arr[num->size - 1];
+    offset += sprintf(buffer + offset, "%" PRIu64, msb);
 
-    const uint32_t chunk_base = 1E9L;
+    for (int64_t i = (int64_t)num->size - 2; i >= 0; i--)
+        offset += sprintf(buffer + offset, "%019" PRIu64, num->arr[i]);
 
-    while (1)
-    {
-        uint64_t remainder = _STP_Number_mod(&copy, chunk_base);
-
-        if (copy.size == 0)
-        {
-            char temp[12];
-            int tmp_len = snprintf(temp, sizeof(temp), "%llu", (uint64_t)remainder);
-            ptr -= tmp_len;
-            memcpy(ptr, temp, tmp_len);
-
-            break;
-        }
-        else
-        {
-            char temp[12];
-            snprintf(temp, sizeof(temp), "%09llu", (uint64_t)remainder);
-            ptr -= 9;
-            memcpy(ptr, temp, 9);
-        }
-    }
-
-    /* shift bytes to front */
-    size_t final_length = (buffer + max_chars) - ptr;
-    memmove(buffer, ptr, final_length);
-
-    if (len)
-        *len = final_length - 1;
-
-    STP_Number_destroy(&copy);
-    return buffer;
+    *str = STP_String_lit(buffer);
+    return 1;
 }
 
 int STP_Number_print(const STP_Number* num, STP_String* out)
@@ -79,12 +41,11 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
     if (STP_Number_is_zero(num))
         return STP_String_assign_buf(out, " 0.");
 
-    uint64_t out_size = 0;
-    char* digits = digits = _to_string(num, &out_size);
-    if (digits == NULL)
+    STP_String digits;
+    STP_String_init(&digits);
+    if (!_to_string(num, &digits))
         return 0;
 
-    uint64_t digits_count = out_size;
     int64_t scale = num->scale;
 
     /*
@@ -92,82 +53,51 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
      * - integer
      *   format: " 110000."
      * - 0 < |decimal| < 1
-     *   format: "-0.11"
+     *   format: "-0.11" (scale = -2, len = 2)
+     *   format: "-0.01" (scale = -2, len = 1)
      * - |decimal| > 1
-     *   format: " 17.45"
-     *
-     * Memory allocation
-     * [sign] + [digits] + [trailing zeros] + [decimal dot] + [NULL]
-     * " "      "11"       "0000"             "."             "\0"
+     *   format: " 17.456" (scale = -2, len = 5)
      */
-    if (scale >= 0)
+    STP_String zero = STP_String_lit("0");
+    STP_String dot = STP_String_lit((char[2]){ DECIMAL_SEP, '\0' });
+    STP_String zerodot = STP_String_lit((char[3]){ '0', DECIMAL_SEP, '\0' });
+    if (scale > 0)
     {
-        out_size += 1 + scale + 1 + 1;
+        for (int64_t i = 0; i < scale; ++i)
+            STP_String_append(&digits, &zero);
+        STP_String_append(&digits, &dot);
     }
-    else
+    else if (scale < 0)
     {
-        int64_t dec_places = -scale;
-        if (out_size <= (uint64_t)dec_places)
-            out_size = 1 + 1 + 1 + (uint64_t)dec_places + 1;
+        int64_t decimal_places = -scale;
+        uint64_t len = digits.length;
+        if (decimal_places >= len)
+        {
+            STP_String_prepend(&digits, &zerodot);
+
+            for (int64_t i = 0; i < (len - decimal_places); ++i)
+                STP_String_prepend(&digits, &zero);
+        }
         else
-            out_size = 1 + out_size + 1 + 1;
+        {
+            /* place decimal dot */
+            STP_String_insert(&digits, len - decimal_places, &dot);
+        }
     }
 
-    char* out_buf = malloc(out_size * sizeof(char));
-    if (out_buf == NULL)
-    {
-        free(digits);
-        fprintf(stderr, "%s: out_buf allocation failed.\n", STP_CURRENT_FUNCTION);
-        return 0;
-    }
-    uint64_t out_idx = 0;
-
+    STP_String sign;
     if (num->sign < 0)
-        out_buf[out_idx++] = '-';
+        sign = STP_String_lit("-");
     else
-        out_buf[out_idx++] = ' ';
+        sign = STP_String_lit(" ");
+    STP_String_prepend(&digits, &sign);
 
-    if (scale >= 0)
-    {
-        for (uint64_t i = 0; i < digits_count; i++)
-            out_buf[out_idx++] = digits[i];
-        for (int64_t i = 0; i < scale; i++)
-            out_buf[out_idx++] = '0';
-        out_buf[out_idx++] = DECIMAL_SEP;
-    }
-    else
-    {
-        int64_t total_fractional_places = -scale;
+    free(out->str);
+    *out = digits;
 
-        if (digits_count <= (uint64_t)total_fractional_places)
-        {
-            out_buf[out_idx++] = '0';
-            out_buf[out_idx++] = DECIMAL_SEP;
-
-            uint64_t leading_zeros = (uint64_t)total_fractional_places - digits_count;
-            for (uint64_t i = 0; i < leading_zeros; i++)
-                out_buf[out_idx++] = '0';
-            for (uint64_t i = 0; i < digits_count; i++)
-                out_buf[out_idx++] = digits[i];
-        }
-        else
-        {
-            uint64_t integer_digits = digits_count - (uint64_t)total_fractional_places;
-            for (uint64_t i = 0; i < integer_digits; i++)
-                out_buf[out_idx++] = digits[i];
-
-            out_buf[out_idx++] = DECIMAL_SEP;
-
-            for (uint64_t i = integer_digits; i < digits_count; i++)
-                out_buf[out_idx++] = digits[i];
-        }
-    }
-
-    out_buf[out_idx] = '\0';
-    STP_String_assign_buf(out, out_buf);
-
-    free(digits);
-    free(out_buf);
-
+    STP_String_destroy(&sign);
+    STP_String_destroy(&zero);
+    STP_String_destroy(&dot);
+    STP_String_destroy(&zerodot);
     return 1;
 }

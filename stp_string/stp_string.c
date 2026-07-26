@@ -113,7 +113,7 @@ int STP_String_insert(STP_String* str, uint64_t where, const STP_String* rhs)
     if (rhs != str)
     {
         _STP_STRING_REALLOC_S(str, new_length);
-        memmove(str->str + where + old_length, str->str + where, old_length - where);
+        memmove(str->str + where + rhs_length, str->str + where, old_length - where);
         memmove(str->str + where, rhs->str, rhs_length);
     }
     else
