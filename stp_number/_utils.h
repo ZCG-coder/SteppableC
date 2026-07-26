@@ -13,6 +13,8 @@ static const uint64_t _EXPS[] = {
     /* 10^16 = */ 10000000000000000ULL
 };
 
+int _clz64(uint64_t x);
+
 /* add */
 /**
  * Add a 64-bit value to num.
@@ -128,6 +130,8 @@ int _STP_Number_slice(STP_Number* dst, const STP_Number* src, uint64_t start, ui
  * NOTE newly allocated memory is automatically zero-filled.
  */
 int _STP_Number_ensure_capacity(STP_Number* num, uint64_t min_capacity);
+
+int _STP_Number_count_digits(const STP_Number* num);
 
 #define _STP_PRINT_NUM(n, L)             \
     do                                   \

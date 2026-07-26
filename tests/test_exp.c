@@ -13,6 +13,9 @@ void test_exp(void)
     STP_Number n1;
     STP_Number n2;
 
+    STP_String str;
+    STP_String_init(&str);
+
     (void)STP_Number_conv(&n1, "500");
     (void)STP_Number_conv(
         &n2,
@@ -24,11 +27,13 @@ void test_exp(void)
     if (!STP_Number_exp(&n1, 200))
         goto fail;
 
-    TEST_ASSERT(STP_Number_cmp(&n1, &n2) == 0);
+    STP_Number_print(&n1, &str);
+    TEST_ASSERT_(STP_Number_cmp(&n1, &n2) == 0, "%s", str.str);
 
 fail:
     STP_Number_destroy(&n1);
     STP_Number_destroy(&n2);
+    STP_String_destroy(&str);
 }
 
 void test_e_generation(void)

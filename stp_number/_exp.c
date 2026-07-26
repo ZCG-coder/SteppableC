@@ -18,17 +18,11 @@ int _STP_Number_exp_taylor(STP_Number* num, int64_t wp)
     STP_Number term;
     STP_Number sum;
     STP_Number k;
-    STP_Number truncate_divisor;
 
     STP_Number_init(&term);
     STP_Number_init(&sum);
     STP_Number_init(&k);
-    STP_Number_init(&truncate_divisor);
 
-    if (!STP_Number_set(&truncate_divisor, 1) || !_STP_Number_mul_exp(&truncate_divisor, wp))
-        goto fail;
-
-    /* i = 1 */
     if (!STP_Number_set(&sum, 1) || !STP_Number_copy(num, &term) || !STP_Number_add(&sum, &term))
         goto fail;
 
@@ -42,14 +36,7 @@ int _STP_Number_exp_taylor(STP_Number* num, int64_t wp)
             break;
         }
 
-        /* truncate divide */
-        term.scale = 0;
-        if (!STP_Number_div(&term, &truncate_divisor, 0))
-        {
-            status = 0;
-            break;
-        }
-        term.scale = -wp;
+        STP_Number_round(&term, wp);
 
         if (!STP_Number_set(&k, i) || !STP_Number_div(&term, &k, wp))
         {
@@ -80,12 +67,10 @@ int _STP_Number_exp_taylor(STP_Number* num, int64_t wp)
 
     STP_Number_destroy(&term);
     STP_Number_destroy(&k);
-    STP_Number_destroy(&truncate_divisor);
 
     return status;
 
 fail:
-    STP_Number_destroy(&truncate_divisor);
     STP_Number_destroy(&term);
     STP_Number_destroy(&sum);
     STP_Number_destroy(&k);
@@ -108,34 +93,19 @@ int STP_Number_exp(STP_Number* x, int64_t wp)
         return 0;
     }
 
-    uint64_t k = _STP_Number_bit_count(&x_copy) + 1;
-    uint64_t max_x = (1ULL << k);
-    uint64_t integer_digits = (max_x * 435ULL) / 1000ULL;
-    int64_t wp_internal = wp + integer_digits + 8;
+    uint64_t integer_digits = _STP_Number_count_digits(&x_copy);
+    uint64_t msb = x_copy.arr[x_copy.size - 1];
+    while (msb >= 10)
+        msb /= 10;
+    uint64_t leading_digit = msb;
 
-    STP_Number truncate_divisor;
-    STP_Number_init(&truncate_divisor);
-    STP_Number_set(&truncate_divisor, 1);
-    _STP_Number_mul_exp(&truncate_divisor, wp_internal);
-    if (k > 0)
-    {
-        STP_Number divisor;
-        if (!STP_Number_init(&divisor))
-        {
-            STP_Number_destroy(&x_copy);
-            return 0;
-        }
+    int64_t safe_bound = leading_digit + 1;
+    for (uint64_t i = 1; i < integer_digits; ++i)
+        safe_bound *= 10;
 
-        if (!STP_Number_set(&divisor, 1) || !STP_Number_lshift(&divisor, k) ||
-            !STP_Number_div(&x_copy, &divisor, wp_internal))
-        {
-            STP_Number_destroy(&divisor);
-            STP_Number_destroy(&x_copy);
-            return 0;
-        }
-
-        STP_Number_destroy(&divisor);
-    }
+    int64_t extra_dp = (safe_bound * 435ULL) / 1000ULL;
+    int64_t wp_internal = wp + integer_digits + extra_dp + 8;
+    x_copy.scale -= integer_digits;
 
     if (!_STP_Number_exp_taylor(&x_copy, wp_internal))
     {
@@ -144,25 +114,36 @@ int STP_Number_exp(STP_Number* x, int64_t wp)
     }
     x_copy.sign = 1;
 
-    for (uint64_t i = 0; i < k; ++i)
+    STP_Number x2, x4;
+    STP_Number_init(&x2);
+    STP_Number_init(&x4);
+    for (int64_t i = 0; i < integer_digits; ++i)
     {
-        if (!STP_Number_sqr(&x_copy))
-        {
-            STP_Number_destroy(&truncate_divisor);
-            STP_Number_destroy(&x_copy);
-            return 0;
-        }
+        if (!STP_Number_copy(&x_copy, &x2) || !STP_Number_sqr(&x2))
+            goto exp_reconstruct_fail;
+        STP_Number_round(&x2, wp_internal);
 
-        x_copy.scale = 0;
-        if (!STP_Number_div(&x_copy, &truncate_divisor, 0))
-        {
-            STP_Number_destroy(&truncate_divisor);
-            STP_Number_destroy(&x_copy);
-            return 0;
-        }
-        x_copy.scale = -wp_internal;
+        if (!STP_Number_copy(&x2, &x4) || !STP_Number_sqr(&x4))
+            goto exp_reconstruct_fail;
+        STP_Number_round(&x4, wp_internal);
+
+        if (!STP_Number_mul(&x_copy, &x4))
+            goto exp_reconstruct_fail;
+        STP_Number_round(&x_copy, wp_internal);
+
+        if (!STP_Number_sqr(&x_copy))
+            goto exp_reconstruct_fail;
+        STP_Number_round(&x_copy, wp_internal);
+        continue;
+
+    exp_reconstruct_fail:
+        STP_Number_destroy(&x2);
+        STP_Number_destroy(&x4);
+        STP_Number_destroy(&x_copy);
+        return 0;
     }
-    STP_Number_destroy(&truncate_divisor);
+    STP_Number_destroy(&x2);
+    STP_Number_destroy(&x4);
 
     STP_Number_round(&x_copy, wp);
     free(x->arr);

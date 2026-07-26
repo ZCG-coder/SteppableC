@@ -8,7 +8,7 @@ test_cases = [
     # 'self_mul',
     # 'self_div',
     # 'sqr',
-    # 'exp',
+    'exp',
     'string',
     'print',
 ]

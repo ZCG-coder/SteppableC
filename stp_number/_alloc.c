@@ -42,6 +42,54 @@ int _clz64(uint64_t x)
     return n;
 }
 
+uint64_t _count_digits(uint64_t x)
+{
+    if (x >= 10000000000000000000ULL)
+        return 20;
+    if (x >= 1000000000000000000ULL)
+        return 19;
+    if (x >= 100000000000000000ULL)
+        return 18;
+    if (x >= 10000000000000000ULL)
+        return 17;
+    if (x >= 1000000000000000ULL)
+        return 16;
+    if (x >= 100000000000000ULL)
+        return 15;
+    if (x >= 10000000000000ULL)
+        return 14;
+    if (x >= 1000000000000ULL)
+        return 13;
+    if (x >= 100000000000ULL)
+        return 12;
+    if (x >= 10000000000ULL)
+        return 11;
+    if (x >= 1000000000ULL)
+        return 10;
+    if (x >= 100000000ULL)
+        return 9;
+    if (x >= 10000000ULL)
+        return 8;
+    if (x >= 1000000ULL)
+        return 7;
+    if (x >= 100000ULL)
+        return 6;
+    if (x >= 10000ULL)
+        return 5;
+    if (x >= 1000ULL)
+        return 4;
+    if (x >= 100ULL)
+        return 3;
+    if (x >= 10ULL)
+        return 2;
+    return 1;
+}
+
+int _STP_Number_count_digits(const STP_Number* num)
+{
+    return _count_digits(num->arr[num->size - 1]) + (num->size - 1) * 19 + num->scale;
+}
+
 int _STP_Number_ensure_capacity(STP_Number* num, uint64_t min_capacity)
 {
     if (num == NULL || num->arr == NULL)
@@ -102,26 +150,4 @@ int _STP_Number_slice(STP_Number* dst, const STP_Number* src, uint64_t start, ui
     dst->sign = 1;
 
     return _STP_Number_trim(dst);
-}
-
-uint64_t _STP_Number_bit_count(STP_Number* num)
-{
-    if (num == NULL || num->arr == NULL)
-        return 0;
-
-    if (!_STP_Number_trim(num))
-        return 0;
-
-    uint64_t block_cnt = num->size;
-    uint64_t highest_block = num->arr[block_cnt - 1];
-    uint64_t occupied_bits = 0;
-
-    while (highest_block > 0)
-    {
-        highest_block >>= 1;
-        ++occupied_bits;
-    }
-
-    uint64_t bit_cnt = (block_cnt - 1) * 64 + occupied_bits;
-    return bit_cnt;
 }

@@ -5,7 +5,7 @@ number_files = [
     '_div.c',
     # '_newtondiv.c',
     '_knuth.c',
-    # '_exp.c',
+    '_exp.c',
     '_karatsuba.c',
     '_mul.c',
     '_print.c',
@@ -13,7 +13,7 @@ number_files = [
     '_round.c',
     '_scale.c',
     '_shift.c',
-    # '_sqr.c',
+    '_sqr.c',
     '_sub.c',
     'stp_number.c',
 ]
