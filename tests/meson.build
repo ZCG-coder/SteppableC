@@ -1,6 +1,7 @@
 test_suites = [
     'stp_number',
     'stp_string',
+    'stn_serialize',
 ]
 
 foreach test_suite : test_suites
@@ -14,7 +15,7 @@ foreach test_suite : test_suites
         exe = executable(
             test_case_name,
             test_suite_name / file_name,
-            dependencies: [stp_number_dep, stp_string_dep],
+            dependencies: [stp_number_dep, stp_string_dep, stn_serialize_dep],
         )
         test(
             test_case_name,

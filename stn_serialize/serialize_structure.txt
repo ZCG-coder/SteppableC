@@ -1,0 +1,19 @@
+[STP_001][\0] (8-byte header)
+[number of records]
+
+[uint64_t size][int64_t scale][sign]
+[data block]
+...
+[data block]
+
+[uint64_t size][int64_t scale][01/11/00 sign]
+[data block]
+...
+[data block]
+
+[uint64_t size][int64_t scale][sign]
+[data block]
+...
+[data block]
+
+...

@@ -20,8 +20,10 @@ inc = include_directories([
     'include',
     'stp_number',
     'stp_string',
+    'stn_serialize',
 ])
 
 subdir('stp_string')
 subdir('stp_number')
+subdir('stn_serialize')
 subdir('tests')
