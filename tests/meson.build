@@ -1,32 +1,25 @@
-test_cases = [
-    'add',
-    'sub',
-    'mul',
-    'div',
-    'log',
-    'self_add',
-    'self_sub',
-    'self_mul',
-    'self_div',
-    'sqr',
-    'exp',
-    'string',
-    'print',
+test_suites = [
+    'stp_number',
+    'stp_string',
 ]
 
-foreach test_case : test_cases
-    test_case_name = 'test_' + test_case
-    file_name = 'test_' + test_case + '.c'
+foreach test_suite : test_suites
+    test_suite_name = 'test_' + test_suite
 
-    exe = executable(
-        test_case_name,
-        file_name,
-        dependencies: [stp_number_dep, stp_string_dep]
-    )
+    subdir(test_suite_name)
+    foreach test_case : test_cases
+        file_name = 'test_' + test_case + '.c'
+        test_case_name = 'test_' + test_suite + '_' + test_case
 
-    test(
+        exe = executable(
             test_case_name,
-            exe
+            test_suite_name / file_name,
+            dependencies: [stp_number_dep, stp_string_dep],
         )
-
+        test(
+            test_case_name,
+            exe,
+            suite: [test_suite],
+        )
+    endforeach
 endforeach

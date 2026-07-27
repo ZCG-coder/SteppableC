@@ -73,6 +73,7 @@ int STP_Number_ln(STP_Number* n, int64_t wp)
         /* neg_guess = n * exp(-guess) */
         if (!STP_Number_mul(&neg_guess, n))
             goto fail;
+        STP_Number_round(&neg_guess, iter_wp + n_digits);
 
         /* guess = guess + (n * exp(-guess)) - 1 */
         if (!STP_Number_add(&guess, &neg_guess) || !STP_Number_sub(&guess, &one))
