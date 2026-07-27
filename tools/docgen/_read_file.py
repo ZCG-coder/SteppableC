@@ -5,10 +5,10 @@ import pyparsing as pp
 
 from ._file import File
 from ._function import Function
-from ._struct import Struct
+from ._parse_doc import parse_doc
 from ._parse_fn import parse_c_signature
 from ._parse_struct import parse_c_struct
-from ._parse_doc import parse_doc
+from ._struct import Struct
 
 
 def _process_fn(doc_comment: str, signature_parsed: dict) -> Function:
@@ -35,6 +35,7 @@ def _process_struct(doc_comment: str, signature_parsed: dict) -> Struct:
         fields=fields,
         doc=doc_parsed,
     )
+
 
 def _process_file(file: Path) -> File:
     doc_comment_encountered = False
@@ -122,6 +123,7 @@ def _process_file(file: Path) -> File:
                 exit(1)
 
     return current_file_obj
+
 
 def process_file(file: Path) -> File:
     res = []

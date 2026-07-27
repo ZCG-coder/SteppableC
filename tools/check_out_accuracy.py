@@ -1,7 +1,7 @@
 """Checks accuracy of add, sub, mul, div outputs"""
 
 import argparse
-from decimal import Decimal, getcontext, ROUND_HALF_UP
+import decimal
 
 SUPPORTED_OPS = {
     "add": lambda x, y: x + y,
@@ -23,50 +23,56 @@ def main():
 
     args = parser.parse_args()
     opcode = args.operation
+
     fn = SUPPORTED_OPS[opcode]
     filename = args.filename
+    nargs = fn.__code__.co_argcount
 
     prec = int(args.prec)
-    getcontext().prec = prec * 2
-    getcontext().rounding = ROUND_HALF_UP
+    decimal.getcontext().prec = prec * 2
+    decimal.getcontext().rounding = decimal.ROUND_HALF_UP
 
     line_counter = 0
-    lhs: Decimal
-    rhs: Decimal
-    result: Decimal
+    inputs = []
+    result: decimal.Decimal
     with open(filename, "r", encoding="utf-8") as f:
         while l := f.readline():
             l = l[:-1]
-            if line_counter == 0:
-                lhs = Decimal(l)
-            elif line_counter == 1:
-                rhs = Decimal(l)
-            elif line_counter == 2:
-                result = Decimal(l)
+            if line_counter <= nargs - 1:
+                n = decimal.Decimal(l)
+                inputs.append(n)
+                line_counter += 1
+                continue
 
-            line_counter += 1
-            if line_counter == 3:
-                line_counter = 0
+            result = decimal.Decimal(l)
+            line_counter = 0
 
-                # Perform operation
-                py_result = fn(lhs, rhs)
+            # Perform operation
+            py_result = fn(*inputs)
+            try:
                 py_result = round(py_result, prec)
-                diff = abs(result - py_result)
-                equal = diff < 10 ** (-prec - 1)
-                if not equal:
-                    print("FAIL")
-                    print(f"LHS = {lhs:f}")
-                    print(f"RHS = {rhs:f}")
-                    print(f"res = {result:f}")
-                    print(f"cor = {py_result:f}")
+            except decimal.InvalidOperation as e:
+                pass  # not enough digits to round to
 
-                    if py_result != 0:
-                        print(f"dif = {diff} ({diff / py_result * 100:.2f}%)")
-                    else:
-                        print(f"dif = --")
-                    break
+            diff = abs(result - py_result)
+            equal = diff < 10 ** (-prec)
+            if not equal:
+                print("FAIL")
+                for idx, j in enumerate(inputs):
+                    print(f"[IN]{idx:4d} = {j:f}")
 
-                print("PASS", end="\r")
+                print(f"[OUT]    = {result:f}")
+                print(f"[ANS]    = {py_result:f}")
+                inputs = []
+
+                if py_result != 0:
+                    print(f"[dif]    = {diff} ({diff / py_result * 100:.2f}%)")
+                else:
+                    print(f"[dif]    = --")
+                break
+
+            inputs = []
+            print("PASS", end="\r")
 
     print()
 

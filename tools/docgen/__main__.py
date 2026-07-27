@@ -41,7 +41,10 @@ def readman_cb(args: argparse.Namespace):
 
     selected_path: Path
     if len(matches) > 1:
-        opts = [(idx, f"{match.stem} ({match.parent.stem})") for idx, match in enumerate(matches)]
+        opts = [
+            (idx, f"{match.stem} ({match.parent.stem})")
+            for idx, match in enumerate(matches)
+        ]
 
         try:
             result = choice(
@@ -110,10 +113,7 @@ def main():
         default="docs",
     )
     readman_parser.add_argument(
-        "-n",
-        "--ignore-case",
-        help="ignore case while searching",
-        action="store_true"
+        "-n", "--ignore-case", help="ignore case while searching", action="store_true"
     )
     readman_parser.set_defaults(func=readman_cb)
 

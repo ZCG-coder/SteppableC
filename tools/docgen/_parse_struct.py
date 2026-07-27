@@ -1,5 +1,6 @@
 import pyparsing as pp
 
+
 def _c_struct_parser():
     # gcc allows dollar sign in identifiers
     identifier = pp.Word(pp.alphas + "_" + "$", pp.alphanums + "_" + "$")

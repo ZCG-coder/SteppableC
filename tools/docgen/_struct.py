@@ -1,10 +1,11 @@
-from .handlers._note_handler import note_handler
 from .handlers._fld_handler import fld_handler
+from .handlers._note_handler import note_handler
 
 _MAPPING = {
     "NOTE": note_handler,
     "FLD": fld_handler,
 }
+
 
 class Struct(object):
     """Describes a function parsed"""
@@ -21,12 +22,8 @@ class Struct(object):
         self.counters: dict = dict.fromkeys(_MAPPING.keys(), 0)
 
     def generate_documentation(self) -> str:
-        header = (
-            "S+S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S"
-        )
-        footer = (
-            "S---S---S---S---S---S---S---S---S---S---S---S---S---S---S---S---S-S"
-        )
+        header = "S+S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S"
+        footer = "S---S---S---S---S---S---S---S---S---S---S---S---S---S---S---S---S-S"
 
         result = header + "\n"
         result += "  Struct:   " + self.name + "\n\n"
