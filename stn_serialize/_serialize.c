@@ -26,13 +26,13 @@ int STP_Number_serialize(STP_Number* const nums, uint64_t count, char* const fil
 
     for (uint64_t i = 0; i < count; ++i)
     {
-        STP_Number* number = nums + i;
-        fwrite(&number->size, sizeof(uint64_t), 1, file);
-        fwrite(&number->scale, sizeof(int64_t), 1, file);
-        fwrite(&number->sign, sizeof(int8_t), 1, file);
+        STP_Number number = nums[i];
+        fwrite(&number.size, sizeof(uint64_t), 1, file);
+        fwrite(&number.scale, sizeof(int64_t), 1, file);
+        fwrite(&number.sign, sizeof(int8_t), 1, file);
 
-        for (uint64_t j = 0; j < number->size; ++j)
-            fwrite(&(number->arr[j]), sizeof(uint64_t), 1, file);
+        for (uint64_t j = 0; j < number.size; ++j)
+            fwrite(&(number.arr[j]), sizeof(uint64_t), 1, file);
     }
 
     fclose(file);
