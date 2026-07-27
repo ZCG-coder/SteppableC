@@ -19,7 +19,7 @@ char* _generate_random_number(uint64_t len)
 
     for (uint64_t i = 1; i < len; ++i)
     {
-        if (!placed_decimal && i != 0)
+        if (!placed_decimal && i > 1)
         {
             float place_decimal_now = (float)rand() / (float)RAND_MAX;
             if (place_decimal_now < (1.0F / len))

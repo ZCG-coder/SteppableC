@@ -1,6 +1,7 @@
 """Checks accuracy of add, sub, mul, div outputs"""
 
 import argparse
+import math
 import decimal
 
 SUPPORTED_OPS = {
@@ -8,6 +9,7 @@ SUPPORTED_OPS = {
     "sub": lambda x, y: x - y,
     "mul": lambda x, y: x * y,
     "div": lambda x, y: x / y,
+    "exp": lambda x: x.exp(),
 }
 
 
@@ -29,7 +31,7 @@ def main():
     nargs = fn.__code__.co_argcount
 
     prec = int(args.prec)
-    decimal.getcontext().prec = prec * 2
+    decimal.getcontext().prec = prec * 4
     decimal.getcontext().rounding = decimal.ROUND_HALF_UP
 
     line_counter = 0

@@ -8,32 +8,56 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define DECIMALS 152
+
 void test_exp(void)
 {
-    STP_Number n1;
-    STP_Number n2;
+    srand(time(NULL));
 
+    STP_Number n1;
     STP_String str;
+    char* res1 = NULL;
+
+    FILE* f = fopen("test_exp.out.txt", "wb");
+    if (f == NULL)
+        return;
+
     STP_String_init(&str);
 
-    (void)STP_Number_conv(&n1, "500");
-    (void)STP_Number_conv(
-        &n2,
-        "14035922178528374107397703328409120821806021155655454250255643688895552313943821922640079350083432091928424275"
-        "200106921063850971260135477134602885117174978399377774315602187475245307510202478280037493197625688184439170."
-        "92385517766798217100267638607046412149763067370417662828830278999461466402166601077281845642576861331889755511"
-        "781962166652995998098147863957197170783796571893294115785689810061183663432395764256573372");
+    for (unsigned short i = 0; i < 5000; ++i)
+    {
+        res1 = _generate_random_number(5);
+        if (res1 == NULL)
+            goto res_fail;
 
-    if (!STP_Number_exp(&n1, 200))
-        goto fail;
+        (void)STP_Number_conv(&n1, res1);
+        if (!STP_Number_print(&n1, &str))
+            goto fail;
+        fprintf(f, "%s\n", str.str);
 
-    STP_Number_print(&n1, &str);
-    TEST_ASSERT_(STP_Number_cmp(&n1, &n2) == 0, "%s", str.str);
+        if (!STP_Number_exp(&n1, DECIMALS))
+            goto fail;
+
+        if (!STP_Number_print(&n1, &str))
+            goto fail;
+        fprintf(f, "%s\n", str.str);
+
+        STP_Number_destroy(&n1);
+        free(res1);
+        res1 = NULL;
+    }
+
+    fclose(f);
+    STP_String_destroy(&str);
+    return;
 
 fail:
-    STP_Number_destroy(&n1);
-    STP_Number_destroy(&n2);
     STP_String_destroy(&str);
+    STP_Number_destroy(&n1);
+
+res_fail:
+    free(res1);
+    fclose(f);
 }
 
 void test_e_generation(void)
