@@ -1,0 +1,19 @@
+This manual provides building instructions.
+
+SteppableC builds with Meson (https://mesonbuild.com/). To compile, ensure that
+you have a supported compiler.
+
+    Features needed
+    - uint64_t for number storage
+    - C99 support
+    - Has a Meson-detectable compiler ID
+      (https://mesonbuild.com/Reference-tables.html#compiler-ids)
+
+In the project directory, run
+    meson setup build
+    meson compile -C build
+to build.
+
+In the project directory, run
+    meson test -C build -t 0
+to test.
