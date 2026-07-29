@@ -6,14 +6,14 @@
 
 uint64_t _STP_add64_carry(uint64_t* acc, uint64_t value)
 {
-    *acc += value;
-
-    if (*acc >= _BASE_10_19)
+    uint64_t diff = _BASE_10_19 - *acc;
+    if (value >= diff)
     {
-        *acc -= _BASE_10_19;
+        *acc = value - diff;
         return 1ULL;
     }
 
+    *acc += value;
     return 0ULL;
 }
 
