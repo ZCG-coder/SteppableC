@@ -14,7 +14,7 @@ int STP_Number_serialize(STP_Number* const nums, uint64_t count, char* const fil
     if (count == 0)
         return 1;
 
-    FILE* file = fopen(filename, "w");
+    FILE* file = fopen(filename, "wb");
     if (!file)
     {
         fprintf(stderr, "%s: unable to open %s for writing", STP_CURRENT_FUNCTION, filename);
@@ -31,8 +31,7 @@ int STP_Number_serialize(STP_Number* const nums, uint64_t count, char* const fil
         fwrite(&number.scale, sizeof(int64_t), 1, file);
         fwrite(&number.sign, sizeof(int8_t), 1, file);
 
-        for (uint64_t j = 0; j < number.size; ++j)
-            fwrite(&(number.arr[j]), sizeof(uint64_t), 1, file);
+        fwrite(number.arr, sizeof(uint64_t), number.size, file);
     }
 
     fclose(file);

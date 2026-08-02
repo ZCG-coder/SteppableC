@@ -23,8 +23,8 @@ int _to_string(const STP_Number* num, STP_String* str)
     uint64_t msb = num->arr[num->size - 1];
     offset += sprintf(buffer + offset, "%" PRIu64, msb);
 
-    for (int64_t i = (int64_t)num->size - 2; i >= 0; i--)
-        offset += sprintf(buffer + offset, "%019" PRIu64, num->arr[i]);
+    for (uint64_t i = num->size - 1; i >= 1; i--)
+        offset += sprintf(buffer + offset, "%019" PRIu64, num->arr[i - 1]);
 
     *str = STP_String_lit(buffer);
     free(buffer);
