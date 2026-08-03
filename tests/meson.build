@@ -14,7 +14,7 @@ foreach test_suite : test_suites
 
         exe = executable(
             test_case_name,
-            test_suite_name / file_name,
+            [test_suite_name / file_name, '_utils.h'],
             dependencies: [stp_number_dep, stp_string_dep, stn_serialize_dep],
         )
         test(

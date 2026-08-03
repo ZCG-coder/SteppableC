@@ -17,9 +17,17 @@ number_files = [
     'stp_number.c',
 ]
 
+number_headers = [
+    'stp_number.h',
+    '_div.h',
+    '_mul.h',
+    '_shift.h',
+    '_utils.h',
+]
+
 stp_number_lib = static_library(
     'stp_number',
-    number_files,
+    [number_files, number_headers],
     include_directories: inc,
     dependencies: stp_string_dep,
 )

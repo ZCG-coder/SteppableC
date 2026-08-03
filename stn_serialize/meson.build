@@ -3,9 +3,14 @@ serialize_files = [
     '_deserialize.c',
 ]
 
+serialize_headers = [
+    '_utils.h',
+    'stn_serialize.h',
+]
+
 stn_serialize = static_library(
     'serialize',
-    serialize_files,
+    [serialize_files, serialize_headers],
     include_directories: inc,
     dependencies: stp_number_dep,
 )
