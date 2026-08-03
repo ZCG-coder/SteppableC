@@ -1,5 +1,6 @@
 cmplx_files = [
     'stp_cmplx.c',
+    '_cmpl_arithmetic.c',
 ]
 
 cmplx_headers = [
@@ -13,7 +14,7 @@ cmplx = static_library(
     dependencies: [stp_number_dep, stp_string_dep],
 )
 
-cmplx_dep = declare_dependency(
+stp_cmplx_dep = declare_dependency(
     link_with: cmplx,
     include_directories: inc,
 )
