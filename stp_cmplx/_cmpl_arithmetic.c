@@ -1,6 +1,8 @@
 #include "stp_number.h"
 #include "stp_cmplx.h"
 
+#include <stdlib.h>
+
 int STP_Cmplx_eq(STP_Cmplx* lhs, STP_Cmplx* rhs)
 {
     if (lhs == NULL || rhs == NULL)
@@ -72,5 +74,5 @@ int STP_Cmplx_mul(STP_Cmplx* lhs, STP_Cmplx* rhs)
     *lhs->imag = new_imag;
 
     STP_Number_destroy(&l_imag);
-    return 1;
+    return status;
 }

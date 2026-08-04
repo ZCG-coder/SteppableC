@@ -1,5 +1,7 @@
 #include "stp_cmplx.h"
 
+#include <stdlib.h>
+
 int STP_Cmplx_init(STP_Cmplx* cmplx)
 {
     if (cmplx == NULL)
