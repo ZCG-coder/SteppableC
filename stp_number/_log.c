@@ -48,7 +48,7 @@ int STP_Number_ln(STP_Number* n, int64_t wp)
         goto fail;
 
     int64_t current_wp = 15;
-    uint64_t n_digits = _STP_Number_count_digits(n);
+    uint64_t n_digits = _STP_Number_int_digits(n);
 
     /* y_(n + 1) = y_n + n * exp(-y_n) - 1 */
     while (1)

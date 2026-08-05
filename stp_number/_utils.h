@@ -15,6 +15,10 @@ static const uint64_t _EXPS[] = {
 
 int _clz64(uint64_t x);
 
+uint64_t _count_digits(uint64_t x);
+
+int _STP_Number_sig_digits(const STP_Number* num);
+
 /* add */
 /**
  * Add a 64-bit value to num.
@@ -131,7 +135,7 @@ int _STP_Number_slice(STP_Number* dst, const STP_Number* src, uint64_t start, ui
  */
 int _STP_Number_ensure_capacity(STP_Number* num, uint64_t min_capacity);
 
-int _STP_Number_count_digits(const STP_Number* num);
+int _STP_Number_int_digits(const STP_Number* num);
 
 #define _STP_PRINT_NUM(n, L)             \
     do                                   \
