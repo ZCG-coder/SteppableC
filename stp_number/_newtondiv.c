@@ -45,18 +45,8 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
     if (M_u >= 10000000000000000000ULL)
         M_u = 9999999999999999999ULL;
 
-    int64_t mantissa_digits = (int64_t)((rhs->size - 1) * 19 + d_top);
+    int64_t mantissa_digits = _STP_Number_sig_digits(rhs);
     int64_t recip_scale = -(18 + mantissa_digits + rhs->scale);
-
-    uint64_t guard = 4;
-    uint64_t needed = decimal_places + guard;
-    double acc = 18.0;
-    int iters = 0;
-    while (acc < (double)needed)
-    {
-        acc *= 2.0;
-        ++iters;
-    }
 
     STP_Number two, T1, T2, x0;
     STP_Number_init(&two);
@@ -66,12 +56,17 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
 
     STP_Number_set(&x0, M_u);
     x0.scale = recip_scale;
+    x0.sign = 1;
 
-    for (int k = 0; k < iters; ++k)
+    uint64_t cur_sig = 15;
+    uint64_t target_sig = _STP_Number_sig_digits(rhs);
+    do
     {
         /* T1 = rhs * x0 */
         STP_Number_copy(rhs, &T1);
+        T1.sign = 1;
         STP_Number_mul(&T1, &x0);
+        STP_Number_round(&T1, decimal_places);
 
         STP_Number_set(&two, 2);
 
@@ -81,9 +76,11 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
 
         /* x0 = x0 * T2 */
         STP_Number_mul(&x0, &T2);
-    }
+        STP_Number_round(&x0, decimal_places);
 
-    /* Final quotient */
+        cur_sig <<= 1;
+    } while (cur_sig < target_sig);
+
     STP_Number_mul(lhs, &x0);
     STP_Number_round(lhs, decimal_places);
     lhs->sign = final_sign;
