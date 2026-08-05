@@ -201,6 +201,16 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
 int STP_Number_abs(STP_Number* num);
 
 /**
+ * Calculate sqrt(x)
+ *
+ * ARG x
+ * ARG wp precision to be accurate to
+ * RETURNS 1 if successful, 0 otherwise
+ * REQUIRES x is initialized
+ */
+int STP_Number_sqrt(STP_Number* x, uint64_t wp);
+
+/**
  * Calculate exp(x), i.e., e^x
  *
  * ARG x

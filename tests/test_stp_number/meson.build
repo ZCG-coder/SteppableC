@@ -4,6 +4,7 @@ test_cases = [
     'mul',
     'div',
     'log',
+    'sqrt',
     'self_add',
     'self_sub',
     'self_mul',

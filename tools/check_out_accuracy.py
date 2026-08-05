@@ -10,6 +10,7 @@ SUPPORTED_OPS = {
     "mul": lambda x, y: x * y,
     "div": lambda x, y: x / y,
     "exp": lambda x: x.exp(),
+    "sqrt": lambda x: x.sqrt(),
 }
 
 
