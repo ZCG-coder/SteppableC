@@ -85,12 +85,12 @@ uint64_t _count_digits(uint64_t x)
     return 1;
 }
 
-int _STP_Number_int_digits(const STP_Number* num)
+int64_t _STP_Number_int_digits(const STP_Number* num)
 {
     return _count_digits(num->arr[num->size - 1]) + (num->size - 1) * 19 + num->scale;
 }
 
-int _STP_Number_sig_digits(const STP_Number* num)
+int64_t _STP_Number_sig_digits(const STP_Number* num)
 {
     return (int64_t)(num->size - 1) * 19 + (int64_t)_count_digits(num->arr[num->size - 1]);
 }
