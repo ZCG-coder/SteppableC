@@ -236,3 +236,5 @@ int STP_Number_ln(STP_Number* n, int64_t wp);
  * NOTE Call it only before returning.
  */
 int STP_Number_round(STP_Number* num, int64_t wp);
+
+int STP_Number_pi(STP_Number* out, int64_t wp);

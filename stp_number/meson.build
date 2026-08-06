@@ -9,6 +9,7 @@ number_files = [
     '_karatsuba.c',
     '_mul.c',
     '_print.c',
+    '_pi.c',
     '_log.c',
     '_round.c',
     '_scale.c',
@@ -16,6 +17,7 @@ number_files = [
     '_shift.c',
     '_sqr.c',
     '_sub.c',
+    '_trig.c',
     'stp_number.c',
 ]
 

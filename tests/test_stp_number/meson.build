@@ -12,4 +12,5 @@ test_cases = [
     'sqr',
     'exp',
     'print',
+    'pi',
 ]
