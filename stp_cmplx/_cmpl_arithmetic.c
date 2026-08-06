@@ -1,6 +1,8 @@
-#include "stp_number.h"
+#include "_utils.h"
 #include "stp_cmplx.h"
+#include "stp_number.h"
 
+#include <stdint.h>
 #include <stdlib.h>
 
 int STP_Cmplx_eq(STP_Cmplx* lhs, STP_Cmplx* rhs)
@@ -41,9 +43,9 @@ int STP_Cmplx_mul(STP_Cmplx* lhs, STP_Cmplx* rhs)
         return 0;
 
     /*
-    *   (a + ib) * (c + id)
-    * = (ac - bd) + i(ad + bc)
-    */
+     *   (a + i*b) * (c + i*d)
+     * = (ac - bd) + i*(ad + bc)
+     */
     int status = 1;
     STP_Number l_real;
     STP_Number l_imag;
@@ -74,5 +76,57 @@ int STP_Cmplx_mul(STP_Cmplx* lhs, STP_Cmplx* rhs)
     *lhs->imag = new_imag;
 
     STP_Number_destroy(&l_imag);
+    return status;
+}
+
+int STP_Cmplx_div(STP_Cmplx* lhs, STP_Cmplx* rhs, int64_t wp)
+{
+    if (lhs == NULL || rhs == NULL)
+        return 0;
+
+    int status = 1;
+
+    /*
+     * 1 / (c + id) = c / (c^2 + d^2) - id / (c^2 + d^2)
+     */
+    STP_Number denom;
+    STP_Number c;
+    STP_Number d;
+    status &= STP_Number_init(&denom);
+    status &= STP_Number_copy(rhs->real, &denom);
+    status &= STP_Number_sqr(&denom); /* c^2 */
+
+    status &= STP_Number_init(&c);
+    status &= STP_Number_copy(rhs->real, &c);
+    status &= STP_Number_init(&d);
+    status &= STP_Number_copy(rhs->imag, &d);
+
+    status &= STP_Number_sqr(&d); /* d^2 */
+    status &= STP_Number_add(&denom, &d); /* c^2 + d^2 */
+
+    /* calculate wp */
+    int64_t D_a = _STP_Number_int_digits(lhs->real);
+    int64_t D_b = _STP_Number_int_digits(lhs->imag);
+    int64_t D_max = (D_a > D_b) ? D_a : D_b;
+    D_max++;
+
+    status &= STP_Number_copy(rhs->imag, &d);
+    status &= STP_Number_div(&c, &denom, D_max + wp); /* c / (c^2 + d^2) */
+    status &= STP_Number_div(&d, &denom, D_max + wp); /* -d / (c^2 + d^2) */
+    d.sign = -d.sign;
+
+    STP_Cmplx new_rhs;
+    new_rhs.real = &c;
+    new_rhs.imag = &d;
+    status &= STP_Cmplx_mul(lhs, &new_rhs);
+
+    /* rounding */
+    status &= STP_Number_round(lhs->real, wp);
+    status &= STP_Number_round(lhs->imag, wp);
+
+    status &= STP_Number_destroy(&c);
+    status &= STP_Number_destroy(&d);
+    status &= STP_Number_destroy(&denom);
+
     return status;
 }

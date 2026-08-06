@@ -1,5 +1,7 @@
 cmplx_files = [
     'stp_cmplx.c',
+    '_abs.c',
+    '_conjg.c',
     '_cmpl_arithmetic.c',
 ]
 

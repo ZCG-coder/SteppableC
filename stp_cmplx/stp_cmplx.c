@@ -78,11 +78,11 @@ int STP_Cmplx_print(STP_Cmplx* cmplx, STP_String* out)
     STP_String_init(&real_str);
     STP_String_init(&imag_str);
 
-    STP_String plus_i_times = STP_String_lit(" + i ");
+    STP_String plus_i_times = STP_String_lit(" + i * ");
 
     /*
     format:
-    real + i imag
+    real + i * imag
     */
     STP_Number_print(cmplx->real, &real_str);
     STP_Number_print(cmplx->imag, &imag_str);
