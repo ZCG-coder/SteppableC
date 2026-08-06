@@ -1,6 +1,8 @@
 #include "stp_number.h"
 
 #include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
 int _atan(STP_Number* num_inv, uint64_t iters, int64_t wp)
 {
