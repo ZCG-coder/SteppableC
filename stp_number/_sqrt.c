@@ -94,5 +94,6 @@ int STP_Number_sqrt(STP_Number* x, uint64_t wp)
     *x = x0;
 
     STP_Number_destroy(&two);
+    STP_Number_destroy(&S);
     return 1;
 }

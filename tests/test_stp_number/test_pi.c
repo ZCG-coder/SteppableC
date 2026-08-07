@@ -51,11 +51,12 @@ void test_pi(void)
 
     STP_String str;
     STP_String_init(&str);
-    //STP_Number_print(&pi, &str);
+    STP_Number_print(&pi, &str);
 
-    //TEST_ASSERT_(STP_Number_cmp(&pi, &corr) == 0, "%s", str.str);
+    TEST_ASSERT_(STP_Number_cmp(&pi, &corr) == 0, "%s", str.str);
 
     STP_Number_destroy(&pi);
+    STP_Number_destroy(&corr);
     STP_String_destroy(&str);
 }
 
