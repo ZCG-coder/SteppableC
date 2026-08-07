@@ -12,13 +12,7 @@ if get_option('buildtype') == 'debug'
     add_project_arguments(extra_args, language: 'c')
 endif
 
-m_dep = cc.find_library('m', required : true)
-
-if cc.get_id() not in ['msvc', 'clang-cl']
-    m_dep = cc.find_library('m', required : true)
-else
-    m_dep = dependency('', required : false)
-endif
+m_dep = cc.find_library('m', required : false)
 
 inc = include_directories([
     'include',
