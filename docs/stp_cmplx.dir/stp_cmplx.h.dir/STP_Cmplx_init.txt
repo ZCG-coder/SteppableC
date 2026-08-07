@@ -1,0 +1,11 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Cmplx_init
+
+  Summary:  Initializes cmplx.
+
+  Args:     STP_Cmplx* cmplx
+              .
+
+  Returns:  int
+              1 if successful
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

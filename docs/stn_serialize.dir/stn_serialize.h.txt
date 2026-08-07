@@ -1,0 +1,8 @@
++===================================================================
+  File:      STN_SERIALIZE.H
+
+  Functions: STP_Number_serialize - Serialize an array of count STP_Number objects (nums) to filename.
+             STP_Number_deserialize - Deserialize STP_Number objects from a filename.
+
+  Copyright (C) 2026 Andy Zhang, licensed under MIT License
+===================================================================+

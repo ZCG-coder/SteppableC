@@ -15,9 +15,8 @@
              STP_Number_mul - Multiplies lhs and rhs. Result stored in lhs.
              STP_Number_sqr - Squares num. Result stored in num.
              STP_Number_div - Divides lhs by rhs. Result stored in lhs.
-             STP_Number_lshift - Left-shifts a number by bits. Result stored in num.
-             STP_Number_rshift - Right-shifts a number by bits. Result stored in num.
              STP_Number_abs - Takes absolute value.
+             STP_Number_sqrt - Calculate sqrt(x).
              STP_Number_exp - Calculate exp(x), i.e., e^x.
              STP_Number_round - Rounds num to precision of wp.
 

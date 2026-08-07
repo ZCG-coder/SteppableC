@@ -1,8 +1,8 @@
 """Checks accuracy of add, sub, mul, div outputs"""
 
 import argparse
-import math
 import decimal
+import math
 
 SUPPORTED_OPS = {
     "add": lambda x, y: x + y,

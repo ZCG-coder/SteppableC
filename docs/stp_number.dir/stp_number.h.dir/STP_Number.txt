@@ -8,7 +8,7 @@ S+S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S
             uint64_t capacity
               Number of blocks allocated.
             uint64_t* arr
-              Array of blocks.
+              Array of blocks (10^19-base).
             int64_t scale
               Exponent n, multiplies 10^n to number.
             int8_t sign

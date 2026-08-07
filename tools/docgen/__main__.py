@@ -1,4 +1,5 @@
 import argparse
+import shutil
 from pathlib import Path
 
 from prompt_toolkit.shortcuts import choice
@@ -7,9 +8,18 @@ from pypager.source import FormattedTextSource
 
 from . import COPYRIGHT_NOTICE
 from ._format_docpage import highlight_docblock
+from ._gh_wiki import gh_process_dir
 from ._read_dir import process_dir
 from ._read_file import process_file
 from ._search_file import search_file
+
+
+def empty_out_dir(pth: Path):
+    for child in pth.iterdir():
+        if child.is_file():
+            child.unlink()
+        else:
+            shutil.rmtree(child)
 
 
 def generate_parser_cb(args: argparse.Namespace):
@@ -26,6 +36,56 @@ def generate_parser_cb(args: argparse.Namespace):
         directory = Path(directory)
         current_output = output / (directory.name + ".dir")
         process_dir(directory, current_output)
+
+
+def generate_ghwiki_cb(args: argparse.Namespace):
+    output = args.output_directory
+    output = Path(output)
+
+    if not args.include:
+        print("E011 - no directories specified")
+        print("E011 - please specify some directories")
+
+        exit(1)
+
+    readme_file = Path(args.readme)
+    if not readme_file.is_file():
+        print("E031 - README.txt is not a file")
+        exit(1)
+
+    output_dirs = []
+
+    for directory in args.include:
+        directory = Path(directory)
+        current_output = output / (directory.name + ".dir")
+        process_dir(directory, current_output)
+
+        output_dirs.append(current_output)
+
+    output_items = []
+    for directory in output_dirs:
+        output_items += gh_process_dir(directory, output)
+        shutil.rmtree(directory)
+
+    # create readme
+    shutil.copy(str(readme_file.resolve()), output / "Home.md")
+    home_md = output / "Home.md"
+    contents = home_md.read_text(encoding="utf-8")
+    contents = f"# Home\n\n```plaintext\n{contents}\n```"
+    home_md.write_text(contents, encoding="utf-8")
+
+    # create sidebar
+    with (output / "_Sidebar.mediawiki").open("w", encoding="utf-8") as f:
+        contents = ""
+
+        contents += "== Pages ==\n"
+        contents += "* '''[[Home]]'''\n"
+        contents += "* '''[[Status]]'''\n"
+        contents += "* '''Developer Reference'''\n"
+        for name, link in output_items:
+            contents += f"** [[{link}|<code>{name}</code>]]\n"
+
+        f.write(contents)
 
 
 def readman_cb(args: argparse.Namespace):
@@ -100,6 +160,30 @@ def main():
         default=[],
     )
     generate_parser.set_defaults(func=generate_parser_cb)
+
+    generate_parser = subparsers.add_parser(
+        "gen_ghwiki", help="generate GitHub wiki-styled documentation"
+    )
+    generate_parser.add_argument(
+        "-o",
+        "--output-directory",
+        help="directory to write documentation to",
+        default="docs",
+    )
+    generate_parser.add_argument(
+        "-I",
+        "--include",
+        help="include directories to go through",
+        action="append",
+        default=[],
+    )
+    generate_parser.add_argument(
+        "-r",
+        "--readme",
+        help="README.txt file",
+        default="README.txt",
+    )
+    generate_parser.set_defaults(func=generate_ghwiki_cb)
 
     readman_parser = subparsers.add_parser("man", help="read documentation generated")
     readman_parser.add_argument(

@@ -1,0 +1,15 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Cmplx_copy
+
+  Summary:  Copy lhs to rhs.
+
+  Args:     STP_Cmplx* const lhs
+              .
+            STP_Cmplx* rhs
+              .
+
+  Returns:  int
+              1 if successfully copied, 0 if not.
+
+  Requires: * lhs and rhs are initialized and non-NULL.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

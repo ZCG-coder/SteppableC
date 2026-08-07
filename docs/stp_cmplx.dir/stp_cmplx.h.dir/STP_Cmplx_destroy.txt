@@ -1,0 +1,13 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Cmplx_destroy
+
+  Summary:  Destroys cmplx object.
+
+  Args:     STP_Cmplx* cmplx
+              .
+
+  Returns:  int
+              1 if successful, 0 if not.
+
+  Requires: * cmplx is initialized and non-NULL.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

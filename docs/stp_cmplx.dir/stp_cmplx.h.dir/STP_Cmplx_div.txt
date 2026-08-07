@@ -1,0 +1,18 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Cmplx_div
+
+  Summary:  Divide lhs to rhs, stores result in lhs.
+
+  Args:     STP_Cmplx* lhs
+              .
+            STP_Cmplx* rhs
+              .
+            int64_t wp
+              decimal digits to be precise to.
+
+  Returns:  int
+              1 if successful, 0 if not.
+
+  Requires: * lhs and rhs are initialized and non-NULL.
+            * wp > 10. If lower value is given, 10 is used.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

@@ -6,6 +6,7 @@ def _c_fn_parser():
     identifier = pp.Word(pp.alphas + "_" + "$", pp.alphanums + "_" + "$")
     single_space = pp.White().add_parse_action(pp.replace_with(" "))
 
+    const = pp.Keyword("const")
     type_qualifiers = (
         pp.Keyword("const")
         | pp.Keyword("unsigned")
@@ -14,7 +15,17 @@ def _c_fn_parser():
         | pp.Keyword("static")
         | pp.Keyword("inline")
     )
-    pointers = pp.ZeroOrMore("*")
+
+    ptr_qualifiers = (
+        pp.Keyword("const") | pp.Keyword("volatile") | pp.Keyword("restrict")
+    )
+    pointer_level = (
+        pp.ZeroOrMore(single_space)
+        + pp.Literal("*")
+        + pp.ZeroOrMore(single_space)
+        + pp.Optional(ptr_qualifiers)
+    )
+    pointers = pp.ZeroOrMore(pointer_level)
 
     type_expr = pp.Combine(
         pp.Optional(pp.OneOrMore(type_qualifiers + single_space))
@@ -47,7 +58,7 @@ def parse_c_signature(signature: str) -> dict:
     parser = _c_fn_parser()
 
     try:
-        result = parser.parse_string(signature)
+        result = parser.parse_string(signature, parse_all=False)
     except pp.exceptions.ParseException as e:
         return {}
 
@@ -68,3 +79,16 @@ def parse_c_signature(signature: str) -> dict:
             )
 
     return data
+
+
+if __name__ == "__main__":
+    sig = parse_c_signature("""\
+int _STP_String_realloc(char* const *const p_str, uint64_t new_str_len);
+
+#define _STP_STRING_REALLOC_S(p_str, len)                   \
+do                                                      \
+{                                                       \
+if (_STP_String_realloc(&(p_str->str), (len)) == 0) \
+return 0;                                       \
+} while (0);""")
+    print(sig)

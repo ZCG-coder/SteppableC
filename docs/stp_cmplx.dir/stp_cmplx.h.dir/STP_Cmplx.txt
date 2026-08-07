@@ -1,0 +1,10 @@
+S+S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S
+  Struct:   STP_Cmplx
+
+  Summary:  Complex number object.
+
+  Fields:   STP_Number* real
+              pointer to real part.
+            STP_Number* imag
+              pointer to imaginary part.
+S---S---S---S---S---S---S---S---S---S---S---S---S---S---S---S---S-S

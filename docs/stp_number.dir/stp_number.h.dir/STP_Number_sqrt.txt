@@ -1,0 +1,15 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_sqrt
+
+  Summary:  Calculate sqrt(x).
+
+  Args:     STP_Number* x
+              .
+            uint64_t wp
+              precision to be accurate to.
+
+  Returns:  int
+              1 if successful, 0 otherwise
+
+  Requires: * x is initialized
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

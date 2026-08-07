@@ -47,7 +47,9 @@ def _process_file(file: Path) -> File:
     current_file_obj = File(file)
 
     with file.open("r", encoding="utf-8") as f:
+        idx = 0
         while line := f.readline():
+            idx += 1
             line = line.strip()
 
             if can_read_signature:
@@ -74,6 +76,7 @@ def _process_file(file: Path) -> File:
 
                 if line.startswith("/**"):
                     print("E003 - missing or invalid signature for doc comment")
+                    print(f"E003 - when parsing {file.name} line {idx}")
                     exit(1)
 
                 # keep looking
@@ -86,7 +89,6 @@ def _process_file(file: Path) -> File:
                     print("E002 - duplicate start")
                     exit(1)
 
-                # Fix 5: Flexible end delimiter check
                 if line.startswith("*/") or line.endswith("*/"):
                     doc_comment_encountered = False
                     doc_comment = doc_comment.strip("\n")
@@ -107,7 +109,6 @@ def _process_file(file: Path) -> File:
                 doc_comment += line + "\n"
                 continue
 
-            # Fix 5: Flexible start delimiter check
             if line.startswith("/**"):
                 doc_comment_encountered = True
 
@@ -119,6 +120,7 @@ def _process_file(file: Path) -> File:
                 struct = _process_struct(doc_comment, parsed)
                 current_file_obj.add_struct(struct)
             else:
+                print(signature)
                 print("E003 - missing or invalid signature for doc comment at EOF")
                 exit(1)
 

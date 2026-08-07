@@ -7,3 +7,5 @@ ERRs
 012: unable to open dir
 
 021: unable to find documentation
+
+031: README.txt is not a file

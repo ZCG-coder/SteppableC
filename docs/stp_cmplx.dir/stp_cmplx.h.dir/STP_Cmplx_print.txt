@@ -1,0 +1,16 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Cmplx_print
+
+  Summary:  Prints a cmplx object to out.
+
+  Args:     STP_Cmplx* cmplx
+              .
+            STP_String* out
+              Output string.
+
+  Returns:  int
+              1 if successful, 0 if not.
+
+  Requires: * cmplx is initialized and non-NULL.
+            * out is initialized and non-NULL.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

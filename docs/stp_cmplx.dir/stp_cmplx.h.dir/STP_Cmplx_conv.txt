@@ -1,0 +1,17 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Cmplx_conv
+
+  Summary:  Initializes cmplx from real and imag strings.
+
+  Args:     STP_Cmplx* cmplx
+              .
+            char* const real
+              .
+            char* const imag
+              .
+
+  Returns:  int
+              1 if successful, 0 otherwise.
+
+  Requires: * real and imag are NULL-terminated.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

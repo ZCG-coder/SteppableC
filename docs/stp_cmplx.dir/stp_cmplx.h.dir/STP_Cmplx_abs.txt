@@ -1,0 +1,20 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Cmplx_abs
+
+  Summary:  Gets magnitude |z| of cmplx.
+
+  Args:     STP_Cmplx* cmplx
+              .
+            STP_Number* out
+              output number. If NULL, outputs to cmplx->real.
+            int64_t wp
+              decimal digits to be correct to.
+
+  Returns:  int
+              1 if successful, 0 if not.
+
+  Requires: * cmplx is initialized and non-NULL.
+            * wp > 10. If not, 10 is used.
+
+  Note:     1. if out is NULL, writes result to cmplx->real.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

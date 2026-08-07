@@ -1,0 +1,19 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_serialize
+
+  Summary:  Serialize an array of count STP_Number objects (nums) to filename.
+
+  Args:     STP_Number* const nums
+              .
+            uint64_t count
+              .
+            char* const filename
+              .
+
+  Returns:  int
+              1 if successful, 0 otherwise
+
+  Requires: * nums to contain more or equal to count STP_Number objects
+
+  Note:     1. it is recommended to end filename with ".stn"
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

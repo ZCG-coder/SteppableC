@@ -1,0 +1,18 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_deserialize
+
+  Summary:  Deserialize STP_Number objects from a filename.
+
+  Args:     char* const filename
+              .
+            STP_Number* nums
+              .
+            uint64_t count
+              .
+
+  Returns:  int
+              1 if successful, 0 otherwise
+
+  Requires: * filename is an existent file
+            * filename contains at least count STP_Number objects
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

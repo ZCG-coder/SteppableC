@@ -1,0 +1,15 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Cmplx_mul
+
+  Summary:  Multiplies rhs to lhs, stores result in lhs.
+
+  Args:     STP_Cmplx* lhs
+              .
+            STP_Cmplx* rhs
+              .
+
+  Returns:  int
+              1 if successful, 0 if not.
+
+  Requires: * lhs and rhs are initialized and non-NULL.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F

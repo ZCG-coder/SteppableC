@@ -1,0 +1,20 @@
++===================================================================
+  File:      STP_CMPLX.H
+
+  Functions: STP_Cmplx_init - Initializes cmplx.
+             STP_Cmplx_conv - Initializes cmplx from real and imag strings.
+             STP_Cmplx_copy - Copy lhs to rhs.
+             STP_Cmplx_destroy - Destroys cmplx object.
+             STP_Cmplx_print - Prints a cmplx object to out.
+             STP_Cmplx_eq - Tests if lhs and rhs are equal in value.
+             STP_Cmplx_add - Adds rhs to lhs, stores result in lhs.
+             STP_Cmplx_sub - Subtracts rhs from lhs, stores result in lhs.
+             STP_Cmplx_mul - Multiplies rhs to lhs, stores result in lhs.
+             STP_Cmplx_div - Divide lhs to rhs, stores result in lhs.
+             STP_Cmplx_abs - Gets magnitude |z| of cmplx.
+             STP_Cmplx_conjg - Gets conjugate of cmplx, stores result in cmplx.
+
+  Structs:   STP_Cmplx - Complex number object.
+
+  Copyright (C) 2026 Andy Zhang, licensed under MIT License
+===================================================================+
