@@ -12,8 +12,12 @@ if get_option('buildtype') == 'debug'
     add_project_arguments(extra_args, language: 'c')
 endif
 
-if host_machine.system() == 'darwin'
-    leaks_util = find_program('leaks', required: false)
+m_dep = cc.find_library('m', required : true)
+
+if cc.get_id() not in ['msvc', 'clang-cl']
+    m_dep = cc.find_library('m', required : true)
+else
+    m_dep = dependency('', required : false)
 endif
 
 inc = include_directories([

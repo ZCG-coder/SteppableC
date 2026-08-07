@@ -13,7 +13,7 @@ cmplx = static_library(
     'stp_cmplx',
     [cmplx_files, cmplx_headers],
     include_directories: inc,
-    dependencies: [stp_number_dep, stp_string_dep],
+    dependencies: [stp_number_dep, stp_string_dep, m_dep],
 )
 
 stp_cmplx_dep = declare_dependency(

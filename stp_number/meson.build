@@ -33,7 +33,7 @@ stp_number_lib = static_library(
     'stp_number',
     [number_files, number_headers],
     include_directories: inc,
-    dependencies: stp_string_dep,
+    dependencies: [stp_string_dep, m_dep],
 )
 
 stp_number_dep = declare_dependency(
