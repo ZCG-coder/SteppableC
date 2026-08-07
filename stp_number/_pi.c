@@ -1,6 +1,7 @@
-#include "stp_number.h"
 #include "_utils.h"
+#include "stp_number.h"
 
+#include <math.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -102,10 +103,10 @@ int STP_Number_pi(STP_Number* out, int64_t wp)
         STP_Number_sub(&a, &a_next);
         STP_Number_sqr(&a);
         STP_Number_round(&a, wp + 10);
-        
+
         STP_Number_mul(&a, &p);
         STP_Number_round(&a, wp + 10);
-        
+
         STP_Number_sub(&t, &a);
 
         /* a = a_next */
