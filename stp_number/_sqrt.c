@@ -53,7 +53,7 @@ int STP_Number_sqrt(STP_Number* x, uint64_t wp)
             T = sqrtl(T);
     }
 
-    sprintf(buf, "%Lf", T);
+    sprintf(buf, "%.15Lf", T);
 
     STP_Number x0;
     STP_Number_conv(&x0, buf);

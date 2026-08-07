@@ -1,4 +1,5 @@
 #include "stp_number.h"
+#include "_utils.h"
 
 #include <stdint.h>
 #include <stdlib.h>
@@ -12,7 +13,7 @@ int _atan(STP_Number* num_inv, uint64_t iters, int64_t wp)
     /* inverse number */
     STP_Number x;
     STP_Number_conv(&x, "1");
-    STP_Number_div(&x, num_inv, wp + 4);
+    STP_Number_div(&x, num_inv, wp + 10);
 
     STP_Number term;
     STP_Number sum;
@@ -26,7 +27,7 @@ int _atan(STP_Number* num_inv, uint64_t iters, int64_t wp)
 
     /* x^2 */
     STP_Number_sqr(&x);
-    STP_Number_round(&x, wp + 4);
+    STP_Number_round(&x, wp + 10);
 
     STP_Number denom;
     STP_Number_init(&denom);
@@ -40,7 +41,7 @@ int _atan(STP_Number* num_inv, uint64_t iters, int64_t wp)
         /* sum += term / (2n + 1) */
         STP_Number_set(&denom, 2 * n + 1);
         STP_Number_copy(&term, &tmp);
-        STP_Number_div(&tmp, &denom, wp + 4);
+        STP_Number_div(&tmp, &denom, wp + 10);
         STP_Number_add(&sum, &tmp);
     }
 
@@ -55,45 +56,80 @@ int _atan(STP_Number* num_inv, uint64_t iters, int64_t wp)
 
 int STP_Number_pi(STP_Number* out, int64_t wp)
 {
-    STP_Number i1;
-    STP_Number i2;
-    STP_Number_conv(&i1, "5");
-    STP_Number_conv(&i2, "239");
+    if (out == NULL)
+        return 0;
 
-    /* log10(5) = 0.698970004336019 */
-    double iter_5ld = (double)wp / 0.698970004336019L;
-    iter_5ld -= 1.0L;
-    iter_5ld /= 2.0L;
-    iter_5ld += 2.0L;
+    STP_Number a, b, t, p;
 
-    /* log10(239) = 2.37839790094814 */
-    double iter_239ld = (double)wp / 2.37839790094814L;
-    iter_239ld -= 1.0L;
-    iter_239ld /= 2.0L;
-    iter_239ld += 2.0L;
+    /* a = 1 */
+    STP_Number_init(&a);
+    STP_Number_set(&a, 1);
 
-    STP_Number mul1, mul2;
-    STP_Number_conv(&mul1, "16");
-    STP_Number_conv(&mul2, "4");
+    /* b = 1/sqrt(2) */
+    STP_Number_conv(&b, "0.5");
+    STP_Number_sqrt(&b, wp + 10);
 
-    /* atan(1/5) */
-    _atan(&i1, (uint64_t)iter_5ld + 1, wp + 4);
-    /* atan(1/239) */
-    _atan(&i2, (uint64_t)iter_239ld + 1, wp + 4);
+    /* t = 1/4 */
+    STP_Number_conv(&t, "0.25");
 
-    /* 16*atan(1/5) */
-    STP_Number_mul(&i1, &mul1);
-    /* 4*atan(1/239) */
-    STP_Number_mul(&i2, &mul2);
+    /* p = 1 */
+    STP_Number_init(&p);
+    STP_Number_set(&p, 1);
 
-    /* 16*atan(1/5) - 4*atan(1/239) = pi */
-    STP_Number_sub(&i1, &i2);
-    STP_Number_round(&i1, wp);
+    STP_Number two;
+    STP_Number_init(&two);
+    STP_Number_set(&two, 2);
 
-    *out = i1;
+    STP_Number a_next;
+    STP_Number_init(&a_next);
 
-    STP_Number_destroy(&i2);
-    STP_Number_destroy(&mul1);
-    STP_Number_destroy(&mul2);
+    double iters_d = (double)wp;
+    iters_d = log2(iters_d);
+    uint64_t iterations = (uint64_t)iters_d + 1;
+
+    for (uint64_t i = 0; i < iterations; ++i)
+    {
+        /* a_next = (a + b) / 2 */
+        STP_Number_copy(&a, &a_next);
+        STP_Number_add(&a_next, &b);
+        STP_Number_div(&a_next, &two, wp + 10);
+
+        /* b = sqrt(a * b) */
+        STP_Number_mul(&b, &a);
+        STP_Number_sqrt(&b, wp + 10);
+
+        /* t -= p * (a - a_next)^2 */
+        STP_Number_sub(&a, &a_next);
+        STP_Number_sqr(&a);
+        STP_Number_round(&a, wp + 10);
+        
+        STP_Number_mul(&a, &p);
+        STP_Number_round(&a, wp + 10);
+        
+        STP_Number_sub(&t, &a);
+
+        /* a = a_next */
+        STP_Number_copy(&a_next, &a);
+        /* p *= 2 */
+        STP_Number_mul(&p, &two);
+    }
+
+    /* (a+b)^2 */
+    STP_Number_add(&a, &b);
+    STP_Number_sqr(&a);
+    STP_Number_round(&a, wp + 10);
+
+    /* t*4 */
+    STP_Number_set(&two, 4);
+    STP_Number_mul(&t, &two);
+    /* (a+b)^2 / t*4 */
+    STP_Number_div(&a, &t, wp);
+
+    *out = a;
+    STP_Number_destroy(&b);
+    STP_Number_destroy(&t);
+    STP_Number_destroy(&p);
+    STP_Number_destroy(&two);
+    STP_Number_destroy(&a_next);
     return 1;
 }
