@@ -1,6 +1,7 @@
 #include "_mul.h"
 
 #include "_utils.h"
+#include "config.h"
 #include "stp_number.h"
 
 #include <stdlib.h>
@@ -8,7 +9,13 @@
 
 void _mul_add(uint64_t A, uint64_t B, uint64_t C, uint64_t K, uint64_t* out_digit, uint64_t* out_carry)
 {
-    /* A, B, C, K -> 3 base-10^9 blocks */
+#if INT128_ENABLED
+    __uint128_t prod = (__uint128_t)A * B + C + K;
+
+    *out_digit = (uint64_t)(prod % _BASE_10_19);
+    *out_carry = (uint64_t)(prod / _BASE_10_19);
+#else
+    /* No int128 support, split A, B, C, K -> 3 base-10^9 blocks */
     uint64_t a0 = A % _BASE_10_9, a1 = (A / _BASE_10_9) % _BASE_10_9, a2 = A / (_BASE_10_9 * _BASE_10_9);
     uint64_t b0 = B % _BASE_10_9, b1 = (B / _BASE_10_9) % _BASE_10_9, b2 = B / (_BASE_10_9 * _BASE_10_9);
     uint64_t c0 = C % _BASE_10_9, c1 = (C / _BASE_10_9) % _BASE_10_9, c2 = C / (_BASE_10_9 * _BASE_10_9);
@@ -34,8 +41,9 @@ void _mul_add(uint64_t A, uint64_t B, uint64_t C, uint64_t K, uint64_t* out_digi
 
     uint64_t d4 = p4; /* p4 <= 100 */
 
-    *out_digit = d0 + (d1 * _BASE_10_9) + ((d2 % 10) * 1000000000000000000ULL);
-    *out_carry = (d2 / 10) + (d3 * 100000000ULL) + (d4 * 100000000000000000ULL);
+    *out_digit = d0 + (d1 * _BASE_10_9) + ((d2 % 10) * 1000000000000000000ULL); /* 10^18 */
+    *out_carry = (d2 / 10) + (d3 * 100000000ULL /* 10^8 */) + (d4 * 100000000000000000ULL /* 10^18 */);
+#endif
 }
 
 int _STP_Number_mul_abs_schoolbook(STP_Number* out, const STP_Number* lhs, const STP_Number* rhs)

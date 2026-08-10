@@ -141,7 +141,6 @@ int _STP_Number_mul_abs_karatsuba(STP_Number* out, const STP_Number* lhs, const 
     out->size = lhs->size + rhs->size;
     out->scale = 0;
     out->sign = 1;
-    memset(out->arr, 0, out->size * sizeof(uint64_t));
 
     if (!_add_shifted(out, &z0, 0))
         goto fail;

@@ -1,0 +1,2 @@
+#mesondefine VERSION
+#mesondefine INT128_ENABLED

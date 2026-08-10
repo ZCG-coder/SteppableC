@@ -1,4 +1,5 @@
 #include "_utils.h"
+#include "config.h"
 #include "stp_number.h"
 
 #include <stdint.h>

@@ -149,6 +149,7 @@ $RECYCLE.BIN/
 # Compiled directories
 meson-*/
 build/
+build*/
 
 ### SublimeText ###
 

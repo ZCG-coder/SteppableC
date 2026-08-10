@@ -1,4 +1,5 @@
 #include "_utils.h"
+#include "config.h"
 #include "helpers.h"
 #include "stp_number.h"
 
@@ -9,6 +10,11 @@
 
 void _mul_64x64(uint64_t a, uint64_t b, uint64_t* hi, uint64_t* lo)
 {
+#if INT128_ENABLED
+    unsigned __int128 res = (unsigned __int128)a * b;
+    *lo = (uint64_t)res;
+    *hi = (uint64_t)(res >> 64);
+#else
     uint64_t a_lo = (uint32_t)a, a_hi = a >> 32;
     uint64_t b_lo = (uint32_t)b, b_hi = b >> 32;
 
@@ -20,10 +26,17 @@ void _mul_64x64(uint64_t a, uint64_t b, uint64_t* hi, uint64_t* lo)
     uint64_t cross = (p0 >> 32) + (uint32_t)p1 + (uint32_t)p2;
     *lo = (p0 & 0xFFFFFFFFULL) | (cross << 32);
     *hi = p3 + (p1 >> 32) + (p2 >> 32) + (cross >> 32);
+#endif
 }
 
 uint64_t _div_128x64(uint64_t n_hi, uint64_t n_lo, uint64_t d, uint64_t* rem)
 {
+#if INT128_ENABLED
+    unsigned __int128 n = ((unsigned __int128)n_hi << 64) | n_lo;
+    *rem = (uint64_t)(n % d);
+
+    return (uint64_t)(n / d);
+#else
     if (d == 0)
     {
         if (rem)
@@ -51,6 +64,7 @@ uint64_t _div_128x64(uint64_t n_hi, uint64_t n_lo, uint64_t d, uint64_t* rem)
     if (rem)
         *rem = r;
     return q;
+#endif
 }
 
 int _STP_Number_div_abs(const STP_Number* lhs, const STP_Number* rhs, STP_Number* quotient, STP_Number* remainder)

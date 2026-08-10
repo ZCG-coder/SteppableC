@@ -22,6 +22,8 @@ inc = include_directories([
     'stn_serialize',
 ])
 
+subdir('include')
+
 subdir('stp_string')
 subdir('stp_number')
 subdir('stn_serialize')
