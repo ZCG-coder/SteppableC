@@ -25,35 +25,35 @@ int STP_Number_sqrt(STP_Number* x, uint64_t wp)
 
     int64_t scale_shift = (x->scale >= 0) ? (x->scale / 2) : ((x->scale - 1) / 2);
     int64_t remainder = x->scale - (scale_shift * 2);
-    long double scale_adj = (remainder == 1) ? 10.0L : 1.0L;
+    double scale_adj = (remainder == 1) ? 10.0 : 1.0;
 
-    long double T = 0.0L;
+    double T = 0.0;
     int64_t k = 0;
     uint64_t N = x->size;
     char buf[64];
 
     if (N == 1)
     {
-        T = (long double)x->arr[0];
+        T = (double)x->arr[0];
         T = sqrtl(T * scale_adj);
         k = 0;
     }
     else
     {
-        T = (long double)x->arr[N - 1] * 1.0E19L + (long double)x->arr[N - 2];
+        T = (double)x->arr[N - 1] * 1.0E19 + (double)x->arr[N - 2];
         T *= scale_adj;
 
         k = ((int64_t)N - 2) / 2;
 
         /* N is odd */
         if (N % 2 == 1)
-            T = sqrtl(T * 1.0E19L);
+            T = sqrtl(T * 1.0E19);
         /* N is even */
         else
             T = sqrtl(T);
     }
 
-    sprintf(buf, "%.15Lf", T);
+    sprintf(buf, "%.15f", T);
 
     STP_Number x0;
     STP_Number_conv(&x0, buf);
@@ -70,7 +70,7 @@ int STP_Number_sqrt(STP_Number* x, uint64_t wp)
 
     uint64_t n_L = 0;
     if (S_req > 15)
-        n_L = (uint64_t)ceill(log2l((long double)S_req / 15.0L));
+        n_L = (uint64_t)ceil(log2((double)S_req / 15.0));
 
     int64_t guard_places = wp + log_X / 2 + 10;
     if (guard_places < 10)

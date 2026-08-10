@@ -34,16 +34,16 @@ int STP_Number_ln(STP_Number* n, int64_t wp)
     if (!STP_Number_set(&one, 1))
         goto fail;
 
-    long double top_block = (long double)n->arr[n->size - 1];
+    double top_block = (double)n->arr[n->size - 1];
     if (n->size > 1)
-        top_block += (long double)n->arr[n->size - 2] / (long double)_BASE_10_19;
+        top_block += (double)n->arr[n->size - 2] / (double)_BASE_10_19;
 
     int64_t exp10 = (int64_t)19 * (n->size - 1) + n->scale;
-    const long double LN10 = 2.30258509299404568401799145468436L;
-    long double guess_val = log(top_block) + (long double)exp10 * LN10;
+    const double LN10 = 2.3025850929940456;
+    double guess_val = log(top_block) + (double)exp10 * LN10;
 
     char buffer[64];
-    snprintf(buffer, sizeof(buffer), "%.15Lf", guess_val);
+    snprintf(buffer, sizeof(buffer), "%.15f", guess_val);
     if (!STP_Number_conv(&guess, buffer))
         goto fail;
 

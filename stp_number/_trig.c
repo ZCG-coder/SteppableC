@@ -9,13 +9,13 @@
  *              + 0.3990899
  *              + 0.0361912 / x
  */
-long double _log10_gamma(long double x)
+double _log10_gamma(double x)
 {
-    long double l_gamma = (x - 0.5L) * logl(x);
-    l_gamma -= 0.4342945L * x;
+    double l_gamma = (x - 0.5) * log(x);
+    l_gamma -= 0.4342945 * x;
     l_gamma += 0.3990899;
-    l_gamma += 0.0361912L / x;
-    l_gamma = ceill(l_gamma);
+    l_gamma += 0.0361912 / x;
+    l_gamma = ceil(l_gamma);
 
     return l_gamma;
 }
@@ -23,13 +23,13 @@ long double _log10_gamma(long double x)
 uint64_t _sin_loops(int64_t wp)
 {
     int64_t target_log = -(wp + 4);
-    long double log10_pi = 0.4971498726941339L;
+    double log10_pi = 0.4971498726941339;
 
     for (uint64_t n = 1; n < wp + 10; ++n)
     {
-        long double two_n = (long double)n * 2.0L;
-        long double log_fact = _log10_gamma(two_n + 2);
-        long double log_term = (two_n + 1) * log10_pi - log_fact;
+        double two_n = (double)n * 2.0;
+        double log_fact = _log10_gamma(two_n + 2);
+        double log_term = (two_n + 1) * log10_pi - log_fact;
 
         if (log_term < target_log)
             return n;

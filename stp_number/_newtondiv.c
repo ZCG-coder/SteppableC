@@ -36,12 +36,12 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
     /* initial guess */
     uint64_t top = rhs->arr[rhs->size - 1];
     uint64_t d_top = _count_digits(top);
-    long double q_norm = (long double)top * powl(10, -(long double)d_top);
+    double q_norm = (double)top * powl(10, -(double)d_top);
     if (rhs->size > 1)
-        q_norm += (long double)(rhs->arr[rhs->size - 2]) * powl(10, -((long double)d_top + 19));
+        q_norm += (double)(rhs->arr[rhs->size - 2]) * powl(10, -((double)d_top + 19));
 
-    long double x_norm = 1.0L / q_norm;
-    long double M_x0 = x_norm * 1000000000000000000.0L; /* 10^19 */
+    double x_norm = 1.0 / q_norm;
+    double M_x0 = x_norm * 1000000000000000000.0; /* 10^19 */
     uint64_t M_u = (uint64_t)M_x0;
     if (M_u >= _BASE_10_19)
         M_u = _BASE_10_19 - 1;
@@ -68,7 +68,7 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
 
     uint64_t n_L = 0;
     if (S_req > 15)
-        n_L = (uint64_t)ceill(log2l((long double)S_req / 15.0L));
+        n_L = (uint64_t)ceil(log2((double)S_req / 15.0));
 
     int64_t guard_places = decimal_places + log_P + 10;
     if (guard_places < 10)
