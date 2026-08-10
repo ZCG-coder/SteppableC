@@ -9,6 +9,9 @@ you have a supported compiler.
     - Has a Meson-detectable compiler ID
       (https://mesonbuild.com/Reference-tables.html#compiler-ids)
 
+    Optional features
+    - int128 / uint128 for faster computation
+
 In the project directory, run
     meson setup build
     meson compile -C build
