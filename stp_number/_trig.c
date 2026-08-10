@@ -1,39 +1,38 @@
 #include "stp_number.h"
 
 #include <math.h>
-
-/*
- * ln Gamma(x) = (x - .5)ln(x) - x + 0.91894
- * log Gamma(x) = (x - .5)log10(x)
- *              - 0.4342945 x
- *              + 0.3990899
- *              + 0.0361912 / x
- */
-double _log10_gamma(double x)
-{
-    double l_gamma = (x - 0.5) * log(x);
-    l_gamma -= 0.4342945 * x;
-    l_gamma += 0.3990899;
-    l_gamma += 0.0361912 / x;
-    l_gamma = ceil(l_gamma);
-
-    return l_gamma;
-}
+#include <stdint.h>
+#include <string.h>
 
 uint64_t _sin_loops(int64_t wp)
 {
-    int64_t target_log = -(wp + 4);
-    double log10_pi = 0.4971498726941339;
+    double K = (double)wp + 4.0;
 
-    for (uint64_t n = 1; n < wp + 10; ++n)
-    {
-        double two_n = (double)n * 2.0;
-        double log_fact = _log10_gamma(two_n + 2);
-        double log_term = (two_n + 1) * log10_pi - log_fact;
+    /* C = (K * ln(10)) / (e * pi) */
+    double C = 0.26963102436 * K;
+    if (C < 3.0)
+        C = 3.0;
 
-        if (log_term < target_log)
-            return n;
-    }
+    double lnC = log(C);
 
-    return wp + 10;
+    /* ln(u) = C */
+    double u_ub = C / (lnC - log(lnC));
+    double n_est = 4.269867 * u_ub + 7.5;
+
+    return (uint64_t)ceil(n_est);
+}
+
+int STP_Number_sin(STP_Number* num, int64_t wp)
+{
+    if (wp < 0)
+        return 0;
+    if (num == NULL || num->arr == NULL)
+        return 0;
+
+    /* range reduction */
+    STP_Number pi;
+    STP_Number_pi(&pi, wp);
+
+    STP_Number_destroy(&pi);
+    return 1;
 }
