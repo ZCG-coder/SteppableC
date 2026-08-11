@@ -1,6 +1,7 @@
-#include "deps/acutest.h"
 #include "stp_cmplx.h"
 #include "stp_string.h"
+
+#include <acutest.h>
 
 void test_cmpl_mul(void)
 {

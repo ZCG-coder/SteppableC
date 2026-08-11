@@ -1,8 +1,8 @@
 #include "_utils.h"
-#include "deps/acutest.h"
 #include "stp_number.h"
 #include "stp_string.h"
 
+#include <acutest.h>
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>

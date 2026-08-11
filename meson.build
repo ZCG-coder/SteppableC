@@ -14,13 +14,19 @@ endif
 
 m_dep = cc.find_library('m', required : false)
 
-inc = include_directories([
-    'include',
-    'stp_number',
-    'stp_cmplx',
-    'stp_string',
-    'stn_serialize',
-])
+inc = [
+    include_directories([
+        'include',
+        'stp_number',
+        'stp_cmplx',
+        'stp_string',
+        'stn_serialize',
+    ]),
+    include_directories([
+        'include/deps',
+    ],
+    is_system: true),
+]
 
 subdir('include')
 

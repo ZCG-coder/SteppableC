@@ -1,6 +1,6 @@
-#include "deps/acutest.h"
 #include "stp_number.h"
 
+#include <acutest.h>
 #include <stdio.h>
 
 void test_log(void)

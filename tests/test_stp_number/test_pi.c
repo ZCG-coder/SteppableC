@@ -1,6 +1,7 @@
-#include "deps/acutest.h"
 #include "stp_number.h"
 #include "stp_string.h"
+
+#include <acutest.h>
 
 void test_pi(void)
 {

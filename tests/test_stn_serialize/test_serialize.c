@@ -1,8 +1,8 @@
-#include "deps/acutest.h"
 #include "stn_serialize.h"
 #include "stp_number.h"
 #include "stp_string.h"
 
+#include <acutest.h>
 #include <stdint.h>
 
 #define SERIALIZE_N1                                                                                                 \

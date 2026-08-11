@@ -3,6 +3,7 @@
 #include "_utils.h"
 #include "stp_number.h"
 
+#include <alloc.h>
 #include <string.h>
 
 int _add_shifted(STP_Number* out, const STP_Number* add, uint64_t shift)
