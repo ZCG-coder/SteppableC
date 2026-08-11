@@ -67,7 +67,6 @@ fail:
 res_fail:
     free(res1);
     free(res2);
-    fclose(f);
     return;
 }
 
