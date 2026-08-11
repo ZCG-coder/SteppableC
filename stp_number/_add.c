@@ -107,9 +107,8 @@ int STP_Number_add(STP_Number* lhs, STP_Number* _rhs)
     }
 
     STP_Number rhs;
-    if (!STP_Number_init(&rhs))
+    if (!STP_Number_init_capacity(&rhs, _rhs->capacity))
         return 0;
-
     if (!STP_Number_copy(_rhs, &rhs))
         goto fail;
 

@@ -1,4 +1,5 @@
 #include "stp_number.h"
+#include "stp_string.h"
 
 #include <acutest.h>
 #include <stdio.h>
@@ -7,6 +8,9 @@ void test_log(void)
 {
     STP_Number n;
     STP_Number t;
+
+    STP_String str;
+    STP_String_init(&str);
     STP_Number_conv(&n, "998981448371995298506047396.70021088284966627473619");
 
     /* matlab output */
@@ -43,10 +47,12 @@ void test_log(void)
         "8142500065606252144678949383");
 
     STP_Number_ln(&n, 2998);
-    TEST_ASSERT(STP_Number_cmp(&n, &t) == 0);
+    STP_Number_print(&n, &str);
+    TEST_ASSERT_(STP_Number_cmp(&n, &t) == 0, "%s", str.str);
 
     STP_Number_destroy(&n);
     STP_Number_destroy(&t);
+    STP_String_destroy(&str);
 }
 
 TEST_LIST = {

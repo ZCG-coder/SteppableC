@@ -30,6 +30,15 @@ typedef struct
 } STP_Number;
 
 /**
+ * Initializes a STP_Number instance with a capacity.
+ *
+ * ARG num pointer to unitialized number
+ * ARG capacity
+ * RETURNS 1 always.
+ */
+int STP_Number_init_capacity(STP_Number* num, uint64_t capacity);
+
+/**
  * Initializes a STP_Number instance.
  *
  * ARG num pointer to unitialized number

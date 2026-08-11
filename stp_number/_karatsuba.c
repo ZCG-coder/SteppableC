@@ -4,6 +4,7 @@
 #include "stp_number.h"
 
 #include <alloc.h>
+#include <stdint.h>
 #include <string.h>
 
 int _add_shifted(STP_Number* out, const STP_Number* add, uint64_t shift)
@@ -18,7 +19,7 @@ int _add_shifted(STP_Number* out, const STP_Number* add, uint64_t shift)
     if (add->size == 0)
         return 1;
 
-    if (!STP_Number_init(&shifted))
+    if (!STP_Number_init_capacity(&shifted, add->size + shift))
         return 0;
 
     if (!STP_Number_copy(add, &shifted))
@@ -59,7 +60,6 @@ int _STP_Number_mul_abs_karatsuba(STP_Number* out, const STP_Number* lhs, const 
 {
     STP_Number x0, x1, y0, y1;
     STP_Number z0, z1, z2;
-    STP_Number sx, sy;
     uint64_t n, m;
 
     if (out == NULL || lhs == NULL || rhs == NULL)
@@ -86,32 +86,31 @@ int _STP_Number_mul_abs_karatsuba(STP_Number* out, const STP_Number* lhs, const 
     if (m == 0)
         return _STP_Number_mul_abs_schoolbook(out, lhs, rhs);
 
-    if (!STP_Number_init(&x0))
+    uint64_t x1_size = (lhs->size > m) ? lhs->size - m : 0;
+    uint64_t y1_size = (rhs->size > m) ? rhs->size - m : 0;
+
+    if (!STP_Number_init_capacity(&x0, m))
         return 0;
-    if (!STP_Number_init(&x1))
+    if (!STP_Number_init_capacity(&x1, x1_size))
         goto fail_x0;
-    if (!STP_Number_init(&y0))
+    if (!STP_Number_init_capacity(&y0, m))
         goto fail_x1;
-    if (!STP_Number_init(&y1))
+    if (!STP_Number_init_capacity(&y1, y1_size))
         goto fail_y0;
-    if (!STP_Number_init(&z0))
+    if (!STP_Number_init_capacity(&z0, m + x1_size))
         goto fail_y1;
     if (!STP_Number_init(&z1))
         goto fail_z0;
-    if (!STP_Number_init(&z2))
+    if (!STP_Number_init_capacity(&z2, x1_size + y1_size))
         goto fail_z1;
-    if (!STP_Number_init(&sx))
-        goto fail_z2;
-    if (!STP_Number_init(&sy))
-        goto fail_sx;
 
     if (!_STP_Number_slice(&x0, lhs, 0, m))
         goto fail;
-    if (!_STP_Number_slice(&x1, lhs, m, lhs->size - m))
+    if (!_STP_Number_slice(&x1, lhs, m, x1_size))
         goto fail;
     if (!_STP_Number_slice(&y0, rhs, 0, m))
         goto fail;
-    if (!_STP_Number_slice(&y1, rhs, m, rhs->size - m))
+    if (!_STP_Number_slice(&y1, rhs, m, y1_size))
         goto fail;
 
     if (!_STP_Number_mul_abs_karatsuba(&z0, &x0, &y0))
@@ -119,17 +118,13 @@ int _STP_Number_mul_abs_karatsuba(STP_Number* out, const STP_Number* lhs, const 
     if (!_STP_Number_mul_abs_karatsuba(&z2, &x1, &y1))
         goto fail;
 
-    if (!STP_Number_copy(&x0, &sx))
-        goto fail;
-    if (!_STP_Number_add_abs(&sx, &x1))
+    if (!_STP_Number_add_abs(&x0, &x1))
         goto fail;
 
-    if (!STP_Number_copy(&y0, &sy))
-        goto fail;
-    if (!_STP_Number_add_abs(&sy, &y1))
+    if (!_STP_Number_add_abs(&y0, &y1))
         goto fail;
 
-    if (!_STP_Number_mul_abs_karatsuba(&z1, &sx, &sy))
+    if (!_STP_Number_mul_abs_karatsuba(&z1, &x0, &y0))
         goto fail;
 
     if (!_STP_Number_sub_abs(&z1, &z0))
@@ -137,8 +132,10 @@ int _STP_Number_mul_abs_karatsuba(STP_Number* out, const STP_Number* lhs, const 
     if (!_STP_Number_sub_abs(&z1, &z2))
         goto fail;
 
-    if (!_STP_Number_ensure_capacity(out, lhs->size + rhs->size))
-        goto fail;
+    /*
+    DO NOT RESIZE OUT
+    already allocated enough memory to perform operations
+    */
     out->size = lhs->size + rhs->size;
     out->scale = 0;
     out->sign = 1;
@@ -155,8 +152,6 @@ int _STP_Number_mul_abs_karatsuba(STP_Number* out, const STP_Number* lhs, const 
     out->sign = 1;
     out->scale = 0;
 
-    STP_Number_destroy(&sy);
-    STP_Number_destroy(&sx);
     STP_Number_destroy(&z2);
     STP_Number_destroy(&z1);
     STP_Number_destroy(&z0);
@@ -167,10 +162,6 @@ int _STP_Number_mul_abs_karatsuba(STP_Number* out, const STP_Number* lhs, const 
     return 1;
 
 fail:
-    STP_Number_destroy(&sy);
-fail_sx:
-    STP_Number_destroy(&sx);
-fail_z2:
     STP_Number_destroy(&z2);
 fail_z1:
     STP_Number_destroy(&z1);

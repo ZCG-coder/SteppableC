@@ -68,7 +68,6 @@ int _STP_Number_mul_abs_schoolbook(STP_Number* out, const STP_Number* lhs, const
     out->size = lhs->size + rhs->size;
     out->scale = 0;
     out->sign = 1;
-    memset(out->arr, 0, out->size * sizeof(uint64_t));
 
     for (uint64_t i = 0; i < lhs->size; ++i)
     {
@@ -86,9 +85,6 @@ int _STP_Number_mul_abs_schoolbook(STP_Number* out, const STP_Number* lhs, const
 
     if (!_STP_Number_trim(out))
         return 0;
-
-    if (STP_Number_is_zero(out))
-        out->sign = 1;
 
     return 1;
 }
@@ -138,7 +134,7 @@ int STP_Number_mul(STP_Number* lhs, STP_Number* rhs)
     int8_t final_sign = (lhs_sign == rhs_sign) ? 1 : -1;
     int64_t final_scale = lhs_scale + rhs_scale;
 
-    if (!STP_Number_init(&out_abs))
+    if (!STP_Number_init_capacity(&out_abs, lhs->size + rhs->size))
         return 0;
 
     lhs->sign = 1;

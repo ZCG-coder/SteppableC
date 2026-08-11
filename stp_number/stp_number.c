@@ -8,14 +8,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-int STP_Number_init(STP_Number* num)
+int STP_Number_init_capacity(STP_Number* num, uint64_t capacity)
 {
     if (num == NULL)
         return 0;
 
     num->sign = 1;
     num->scale = 0;
-    num->arr = (uint64_t*)calloc(_STP_NUMBER_DEFAULT_CAPACITY, sizeof(uint64_t));
+    num->arr = (uint64_t*)calloc(capacity, sizeof(uint64_t));
     if (num->arr == NULL)
     {
         num->size = 0;
@@ -23,11 +23,13 @@ int STP_Number_init(STP_Number* num)
         return 0;
     }
 
-    num->capacity = _STP_NUMBER_DEFAULT_CAPACITY;
+    num->capacity = capacity;
     num->size = 1;
 
     return 1;
 }
+
+int STP_Number_init(STP_Number* num) { return STP_Number_init_capacity(num, _STP_NUMBER_DEFAULT_CAPACITY); }
 
 int STP_Number_conv(STP_Number* num, const char* from)
 {
@@ -44,9 +46,6 @@ int STP_Number_conv(STP_Number* num, const char* from)
      */
 
     if (num == NULL || from == NULL)
-        return 0;
-
-    if (!STP_Number_init(num))
         return 0;
 
     int sign = 1;
@@ -128,7 +127,7 @@ int STP_Number_conv(STP_Number* num, const char* from)
         total_digits--;
 
     uint64_t num_blocks = (total_digits + 18) / 19;
-    if (!_STP_Number_ensure_capacity(num, num_blocks))
+    if (!STP_Number_init_capacity(num, num_blocks))
         return 0;
 
     int64_t scale = 0;
