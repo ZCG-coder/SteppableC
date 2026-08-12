@@ -36,7 +36,7 @@ jobs:
       - name: set up meson
         env:
           CC: ${{ matrix.cc }}
-        run: meson setup build --buildtype=debug --warnlevel=2
+        run: meson setup build --buildtype=release --warnlevel=2
 
       - name: compile
         run: meson compile -C build
