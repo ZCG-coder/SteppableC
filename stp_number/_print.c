@@ -30,7 +30,7 @@ int _to_string(const STP_Number* num, STP_String* str)
 
     str->str = buffer;
     str->length = max_chars - 19 + initial_offset - 1;
-    str->capacity = max_chars;
+    str->capacity = max_chars - 1;
     return 1;
 }
 
