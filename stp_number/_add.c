@@ -106,25 +106,31 @@ int STP_Number_add(STP_Number* lhs, STP_Number* _rhs)
         return success;
     }
 
-    STP_Number rhs;
-    if (!STP_Number_init_capacity(&rhs, _rhs->capacity))
-        return 0;
-    if (!STP_Number_copy(_rhs, &rhs))
-        goto fail;
-
-    if (!_STP_Number_align_scales(lhs, &rhs))
-        goto fail;
-
-    /* Same-sign addition of magnitudes */
-    if (!_STP_Number_add_abs(lhs, &rhs))
-        goto fail;
-
     lhs->sign = (_rhs->sign >= 0) ? 1 : -1;
+    /* copy rhs prevents aliasing */
+    if (lhs == _rhs)
+    {
+        STP_Number rhs;
+        if (!STP_Number_init_capacity(&rhs, _rhs->capacity))
+            return 0;
+        if (!STP_Number_copy(_rhs, &rhs))
+            goto fail;
 
-    STP_Number_destroy(&rhs);
+        if (!_STP_Number_align_scales(lhs, &rhs))
+            goto fail;
+        if (!_STP_Number_add_abs(lhs, &rhs))
+            goto fail;
+
+        STP_Number_destroy(&rhs);
+        return 1;
+    fail:
+        STP_Number_destroy(&rhs);
+        return 0;
+    }
+
+    if (!_STP_Number_align_scales(lhs, _rhs))
+        return 0;
+    if (!_STP_Number_add_abs(lhs, _rhs))
+        return 0;
     return 1;
-
-fail:
-    STP_Number_destroy(&rhs);
-    return 0;
 }

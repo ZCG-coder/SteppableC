@@ -195,7 +195,7 @@ int STP_Number_sqr(STP_Number* num);
  * REQUIRES lhs and rhs are not null
  * MODIFIES scale of lhs.
  */
-int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_places);
+int STP_Number_div(STP_Number* lhs, STP_Number* rhs, uint64_t decimal_places);
 
 /* abs */
 /**

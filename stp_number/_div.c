@@ -10,7 +10,7 @@
 #include <string.h>
 
 #ifndef STP_DIV_NEWTON
-int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_places)
+int STP_Number_div(STP_Number* lhs, STP_Number* rhs, uint64_t decimal_places)
 {
     int64_t target_exp;
     int8_t final_sign;
@@ -22,8 +22,11 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
     if (lhs->arr == NULL || rhs->arr == NULL)
         return 0;
 
-    if (lhs == rhs)
+    if (STP_Number_cmp(lhs, rhs) == 0)
+    {
+        /* lhs == rhs, set lhs to 1 */
         return STP_Number_set(lhs, 0x1ULL);
+    }
 
     if (STP_Number_is_zero(rhs))
     {
@@ -40,43 +43,33 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
 
     final_sign = (lhs->sign == rhs->sign) ? 1 : -1;
 
-    if (!STP_Number_init(&tmp_rhs))
+    /* calculate the net scaling factor required to achieve the exact target scale */
+    target_exp = lhs->scale - rhs->scale + (int64_t)decimal_places;
+    if (!STP_Number_init_capacity(&tmp_rhs, rhs->size - ((target_exp < 0) ? target_exp : 0)))
         return 0;
-
     if (!STP_Number_copy(rhs, &tmp_rhs))
         goto tmp_rhs_fail;
-
-    if (STP_Number_cmp(lhs, &tmp_rhs) == 0)
-    {
-        /* lhs == rhs, set lhs to 1 */
-        STP_Number_destroy(&tmp_rhs);
-        return STP_Number_set(lhs, 0x1ULL);
-    }
-
-    if (!STP_Number_init(&tmp_q))
-        goto tmp_rhs_fail;
-
-    /* calculate the net scaling factor required to achieve the exact target scale */
-    target_exp = lhs->scale - tmp_rhs.scale + (int64_t)decimal_places;
 
     if (target_exp > 0)
     {
         if (!_STP_Number_mul_exp(lhs, (uint64_t)target_exp))
-            goto fail;
+            goto tmp_rhs_fail;
     }
     else if (target_exp < 0)
     {
         if (!_STP_Number_mul_exp(&tmp_rhs, (uint64_t)(-target_exp)))
-            goto fail;
+            goto tmp_rhs_fail;
     }
 
+    if (!STP_Number_init_capacity(&tmp_q, lhs->size - tmp_rhs.size))
+        goto tmp_rhs_fail;
     /* execute the absolute value base division */
     STP_Number r;
-    if (!STP_Number_init(&r))
-        goto fail;
+    if (!STP_Number_init_capacity(&r, tmp_rhs.size))
+        goto tmp_q_fail;
 
     if (!_STP_Number_div_abs(lhs, &tmp_rhs, &tmp_q, &r))
-        goto fail;
+        goto r_fail;
 
     /* r *= 2 */
     if (!STP_Number_add(&r, &r))
@@ -98,7 +91,7 @@ int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_plac
 
 r_fail:
     STP_Number_destroy(&r);
-fail:
+tmp_q_fail:
     STP_Number_destroy(&tmp_q);
 tmp_rhs_fail:
     STP_Number_destroy(&tmp_rhs);

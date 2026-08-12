@@ -10,7 +10,7 @@
 
 #ifdef STP_DIV_NEWTON
 
-int STP_Number_div(STP_Number* lhs, const STP_Number* rhs, uint64_t decimal_places)
+int STP_Number_div(STP_Number* lhs, STP_Number* rhs, uint64_t decimal_places)
 {
     if (lhs == NULL || rhs == NULL)
         return 0;
