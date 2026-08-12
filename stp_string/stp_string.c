@@ -95,8 +95,18 @@ int STP_String_prepend(STP_String* str, const STP_String* rhs)
     uint64_t new_length = old_length + rhs->length;
 
     _STP_STRING_REALLOC_S(str, new_length);
-    memmove(str->str + rhs->length, str->str, old_length);
-    memmove(str->str, rhs->str, rhs->length);
+    if (str != rhs)
+    {
+        memmove(str->str + rhs->length, str->str, old_length);
+        memmove(str->str, rhs->str, rhs->length);
+    }
+    else
+    {
+        char* rhs_copy = strdup(rhs->str);
+        memmove(str->str + rhs->length, str->str, old_length);
+        memmove(str->str, rhs_copy, rhs->length);
+        free(rhs_copy);
+    }
     str->length = new_length;
     str->str[new_length] = '\0';
 
