@@ -38,12 +38,16 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
 {
     if (num == NULL || num->arr == NULL)
     {
+        free(out->str);
         STP_String_assign_buf(out, "(invalid)");
         return 0;
     }
 
     if (STP_Number_is_zero(num))
+    {
+        free(out->str);
         return STP_String_assign_buf(out, " 0.");
+    }
 
     STP_String digits;
     if (!_to_string(num, &digits))

@@ -1,6 +1,7 @@
 #include "_utils.h"
 #include "stp_number.h"
 
+#include <stdlib.h>
 #include <string.h>
 
 /* precondition: |lhs| >= |rhs| */
@@ -67,66 +68,45 @@ int STP_Number_sub(STP_Number* lhs, STP_Number* rhs)
     }
 
     /* Same-sign path: align scales, then subtract magnitudes */
-    STP_Number rhs_aligned;
-    if (!STP_Number_init(&rhs_aligned))
-        return 0;
 
-    if (!STP_Number_copy(rhs, &rhs_aligned))
-        goto fail;
-
-    if (!_STP_Number_align_scales(lhs, &rhs_aligned))
+    if (!_STP_Number_align_scales(lhs, rhs))
         goto fail;
 
     int lhs_sign = lhs->sign;
-    int cmp_abs = _STP_Number_cmp_abs(lhs, &rhs_aligned);
+    int cmp_abs = _STP_Number_cmp_abs(lhs, rhs);
 
     if (cmp_abs == 0)
     {
         STP_Number_clear(lhs);
-        STP_Number_destroy(&rhs_aligned);
         return 1;
     }
 
     if (cmp_abs > 0)
     {
         /* |lhs| > |rhs| => sign keeps lhs_sign */
-        if (!_STP_Number_sub_abs(lhs, &rhs_aligned))
+        if (!_STP_Number_sub_abs(lhs, rhs))
             goto fail;
         lhs->sign = lhs_sign;
     }
     else
     {
         /* |lhs| < |rhs| => result magnitude = |rhs| - |lhs|, sign flips */
-        STP_Number lhs_copy;
-        if (!STP_Number_init(&lhs_copy))
-            goto fail;
-
-        if (!STP_Number_copy(lhs, &lhs_copy))
+        STP_Number rhs_copy;
+        STP_Number_init(&rhs_copy);
+        STP_Number_copy(rhs, &rhs_copy);
+        if (!_STP_Number_sub_abs(&rhs_copy, lhs))
         {
-            STP_Number_destroy(&lhs_copy);
+            STP_Number_destroy(&rhs_copy);
             goto fail;
         }
 
-        if (!STP_Number_copy(&rhs_aligned, lhs))
-        {
-            STP_Number_destroy(&lhs_copy);
-            goto fail;
-        }
-
-        if (!_STP_Number_sub_abs(lhs, &lhs_copy))
-        {
-            STP_Number_destroy(&lhs_copy);
-            goto fail;
-        }
-
+        free(lhs->arr);
+        *lhs = rhs_copy;
         lhs->sign = -lhs_sign;
-        STP_Number_destroy(&lhs_copy);
     }
 
-    STP_Number_destroy(&rhs_aligned);
     return 1;
 
 fail:
-    STP_Number_destroy(&rhs_aligned);
     return 0;
 }

@@ -62,9 +62,6 @@ int STP_String_assign_buf(STP_String* str, const char* rhs)
 STP_String STP_String_lit(const char* rhs)
 {
     STP_String str;
-    uint64_t length = strlen(rhs);
-
-    STP_String_init_capacity(&str, length);
     STP_String_assign_buf(&str, rhs);
 
     return str;
