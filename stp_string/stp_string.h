@@ -2,17 +2,30 @@
 
 #include <stdint.h>
 
+#define _STP_STRING_DEFAULT_CAPACITY 4
+#define _STP_STRING_CHAR_TYPE char
+
 /**
  * Dynamically-reallocating string.
  *
- * FLD length length of string
+ * FLD length actual length of string
+ * FLD capacity capacity allocated to string
  * FLD str actual string bytes
  */
 typedef struct
 {
     uint64_t length;
+    uint64_t capacity;
     char* str;
 } STP_String;
+
+/**
+ * Initializes str at given capacity.
+ *
+ * ARG str unintialized string
+ * ARG capacity
+ */
+void STP_String_init_capacity(STP_String* str, uint64_t capacity);
 
 /**
  * Initializes str.

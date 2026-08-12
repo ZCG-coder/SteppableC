@@ -1,6 +1,7 @@
 #include "stp_string.h"
 
 #include "_utils.h"
+#include "helpers.h"
 
 #include <ctype.h>
 #include <stdint.h>
@@ -8,15 +9,22 @@
 #include <stdlib.h>
 #include <string.h>
 
-void STP_String_init(STP_String* str)
+void STP_String_init_capacity(STP_String* str, uint64_t capacity)
 {
     str->length = 0;
-    str->str = NULL;
+    str->capacity = capacity;
+    str->str = malloc(capacity * sizeof(_STP_STRING_CHAR_TYPE));
+
+    if (str->str == NULL)
+        fprintf(stderr, "%s: malloc failed.\n", STP_CURRENT_FUNCTION);
 }
+
+void STP_String_init(STP_String* str) { STP_String_init_capacity(str, _STP_STRING_DEFAULT_CAPACITY); }
 
 void STP_String_destroy(STP_String* str)
 {
     str->length = 0;
+    str->capacity = 0;
     free(str->str);
     str->str = NULL;
 }
@@ -41,8 +49,10 @@ int STP_String_assign_buf(STP_String* str, const char* rhs)
     if (rhs == str->str)
         return 0;
 
-    str->length = strlen(rhs);
-    _STP_STRING_REALLOC_S(str, str->length);
+    uint64_t rhs_length = strlen(rhs);
+    STP_String_init_capacity(str, rhs_length);
+    str->length = rhs_length;
+
     memcpy(str->str, rhs, str->length);
     str->str[str->length] = '\0';
 
@@ -52,7 +62,9 @@ int STP_String_assign_buf(STP_String* str, const char* rhs)
 STP_String STP_String_lit(const char* rhs)
 {
     STP_String str;
-    STP_String_init(&str);
+    uint64_t length = strlen(rhs);
+
+    STP_String_init_capacity(&str, length);
     STP_String_assign_buf(&str, rhs);
 
     return str;
@@ -110,20 +122,15 @@ int STP_String_insert(STP_String* str, uint64_t where, const STP_String* rhs)
     if (where == old_length)
         return STP_String_append(str, rhs);
 
+    _STP_STRING_REALLOC_S(str, new_length);
     if (rhs != str)
     {
-        _STP_STRING_REALLOC_S(str, new_length);
         memmove(str->str + where + rhs_length, str->str + where, old_length - where);
         memmove(str->str + where, rhs->str, rhs_length);
     }
     else
     {
         char* temp_rhs = (char*)malloc(rhs_length);
-        if (_STP_String_realloc(&str->str, new_length) == 0)
-        {
-            free(temp_rhs);
-            return 0;
-        }
         if (temp_rhs == NULL)
             return 0;
         memcpy(temp_rhs, str->str, rhs_length);
@@ -168,7 +175,6 @@ int STP_String_remove(STP_String* str, uint64_t start, uint64_t end)
     memmove(str->str + start, str->str + end + 1, tail_size);
     str->length = new_size;
     str->str[str->length] = '\0';
-    _STP_STRING_REALLOC_S(str, new_size);
 
     return 1;
 }
@@ -187,7 +193,6 @@ int STP_String_rtrim(STP_String* str)
     else
         str->length = idx + 1;
     str->str[str->length] = '\0';
-    _STP_STRING_REALLOC_S(str, str->length);
 
     return 1;
 }
@@ -207,7 +212,6 @@ int STP_String_ltrim(STP_String* str)
     uint64_t new_len = str->length - idx;
     memmove(str->str, str->str + idx, new_len + 1);
     str->length = new_len;
-    _STP_STRING_REALLOC_S(str, new_len);
     return 1;
 }
 
@@ -227,11 +231,9 @@ int STP_String_substr(STP_String* str, STP_String* res, uint64_t start, uint64_t
         memmove(str->str, str->str + start, new_size);
         str->length = new_size;
         str->str[str->length] = '\0';
-        _STP_STRING_REALLOC_S(str, new_size);
         return 1;
     }
 
-    _STP_STRING_REALLOC_S(res, new_size);
     res->length = new_size;
     memmove(res->str, str->str + start, new_size);
     res->str[new_size] = '\0';

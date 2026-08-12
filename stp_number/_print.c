@@ -19,15 +19,18 @@ int _to_string(const STP_Number* num, STP_String* str)
         return 0;
     }
     size_t offset = 0;
+    size_t initial_offset = 0;
 
     uint64_t msb = num->arr[num->size - 1];
     offset += sprintf(buffer + offset, "%" PRIu64, msb);
+    initial_offset = offset;
 
     for (uint64_t i = num->size - 1; i >= 1; i--)
         offset += sprintf(buffer + offset, "%019" PRIu64, num->arr[i - 1]);
 
-    *str = STP_String_lit(buffer);
-    free(buffer);
+    str->str = buffer;
+    str->length = max_chars - 19 + initial_offset - 1;
+    str->capacity = max_chars;
     return 1;
 }
 
@@ -43,7 +46,6 @@ int STP_Number_print(const STP_Number* num, STP_String* out)
         return STP_String_assign_buf(out, " 0.");
 
     STP_String digits;
-    STP_String_init(&digits);
     if (!_to_string(num, &digits))
         return 0;
 
