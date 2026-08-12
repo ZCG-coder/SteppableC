@@ -4,7 +4,9 @@ S+S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S+++S
   Summary:  Dynamically-reallocating string.
 
   Fields:   uint64_t length
-              length of string.
+              actual length of string.
+            uint64_t capacity
+              capacity allocated to string.
             char* str
               actual string bytes.
 S---S---S---S---S---S---S---S---S---S---S---S---S---S---S---S---S-S

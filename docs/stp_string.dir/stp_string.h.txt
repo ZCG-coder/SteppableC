@@ -1,7 +1,8 @@
 +===================================================================
   File:      STP_STRING.H
 
-  Functions: STP_String_init - Initializes str.
+  Functions: STP_String_init_capacity - Initializes str at given capacity.
+             STP_String_init - Initializes str.
              STP_String_destroy - Destroys str.
              STP_String_copy - Copies rhs to str.
              STP_String_assign_buf - Assigns buffer in rhs to str.

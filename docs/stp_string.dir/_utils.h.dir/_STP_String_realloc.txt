@@ -3,7 +3,7 @@ F+F+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
   Summary:  Reallocates memory for string.
 
-  Args:     char** p_str
+  Args:     STP_String* p_str
               pointer to string to be resized.
             uint64_t new_str_len
               .

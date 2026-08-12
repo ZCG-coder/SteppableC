@@ -1,0 +1,13 @@
+F+F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F+++F
+  Function: STP_Number_init_capacity
+
+  Summary:  Initializes a STP_Number instance with a capacity.
+
+  Args:     STP_Number* num
+              pointer to unitialized number.
+            uint64_t capacity
+              .
+
+  Returns:  int
+              1 always.
+F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F---F-F
