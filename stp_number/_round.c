@@ -20,6 +20,57 @@ uint64_t _get_pow10(uint64_t exp)
     return res;
 }
 
+int _STP_Number_rough_round(STP_Number* num, int64_t wp)
+{
+    if (num == NULL || num->arr == NULL || wp < 0)
+        return 0;
+
+    /* why round if already integral? */
+    if (num->scale >= 0)
+        return 1;
+
+    int64_t current_wp = -num->scale;
+    if (current_wp <= wp)
+        return 1;
+
+    int64_t diff = current_wp - wp;
+    uint64_t nblocks = diff / 19;
+
+    uint64_t rounding_digit = 0;
+    uint64_t digit_limb_idx = (diff - 1) / 19;
+    uint64_t digit_rem_idx = (diff - 1) % 19;
+
+    if (digit_limb_idx < num->size)
+    {
+        uint64_t pow_divisor = _get_pow10(digit_rem_idx);
+        rounding_digit = (num->arr[digit_limb_idx] / pow_divisor) % 10;
+    }
+
+    if (nblocks > 0)
+    {
+        if (nblocks >= num->size)
+        {
+            num->size = 1;
+            num->arr[0] = 0;
+        }
+        else
+        {
+            uint64_t new_size = num->size - nblocks;
+            for (uint64_t i = 0; i < new_size; i++)
+                num->arr[i] = num->arr[i + nblocks];
+
+            for (uint64_t i = new_size; i < num->size; i++)
+                num->arr[i] = 0;
+
+            num->size = new_size;
+        }
+    }
+
+    if (rounding_digit >= 5)
+        _STP_Number_add(num, 1);
+    return 1;
+}
+
 int STP_Number_round(STP_Number* num, int64_t wp)
 {
     if (num == NULL || num->arr == NULL || wp < 0)

@@ -102,7 +102,13 @@ int STP_String_prepend(STP_String* str, const STP_String* rhs)
     }
     else
     {
-        char* rhs_copy = strdup(rhs->str);
+        char* rhs_copy = malloc(rhs->length + 1);
+        if (!rhs_copy)
+        {
+            fprintf(stderr, "%s: malloc failed", STP_CURRENT_FUNCTION);
+            return 0;
+        }
+        memcpy(rhs_copy, rhs->str, rhs->length);
         memmove(str->str + rhs->length, str->str, old_length);
         memmove(str->str, rhs_copy, rhs->length);
         free(rhs_copy);

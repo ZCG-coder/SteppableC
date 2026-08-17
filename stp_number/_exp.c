@@ -19,8 +19,8 @@ int _STP_Number_exp_taylor(STP_Number* num, int64_t wp)
     STP_Number sum;
     STP_Number k;
 
-    STP_Number_init(&term);
-    STP_Number_init(&sum);
+    STP_Number_init_capacity(&term, num->size * 2);
+    STP_Number_init_capacity(&sum, num->size * 2);
     STP_Number_init(&k);
 
     if (!STP_Number_set(&sum, 1) || !STP_Number_copy(num, &term) || !STP_Number_add(&sum, &term))
@@ -86,7 +86,7 @@ int STP_Number_exp(STP_Number* x, int64_t wp)
         return STP_Number_set(x, 1);
 
     STP_Number x_copy;
-    STP_Number_init(&x_copy);
+    STP_Number_init_capacity(&x_copy, x->size * 2);
     if (!STP_Number_copy(x, &x_copy))
     {
         STP_Number_destroy(&x_copy);
@@ -115,25 +115,25 @@ int STP_Number_exp(STP_Number* x, int64_t wp)
     x_copy.sign = 1;
 
     STP_Number x2, x4;
-    STP_Number_init(&x2);
-    STP_Number_init(&x4);
+    STP_Number_init_capacity(&x2, x->size * 2);
+    STP_Number_init_capacity(&x4, x->size * 4);
     for (int64_t i = 0; i < integer_digits; ++i)
     {
         if (!STP_Number_copy(&x_copy, &x2) || !STP_Number_sqr(&x2))
             goto exp_reconstruct_fail;
-        STP_Number_round(&x2, wp_internal);
+        _STP_Number_rough_round(&x2, wp_internal);
 
         if (!STP_Number_copy(&x2, &x4) || !STP_Number_sqr(&x4))
             goto exp_reconstruct_fail;
-        STP_Number_round(&x4, wp_internal);
+        _STP_Number_rough_round(&x4, wp_internal);
 
         if (!STP_Number_mul(&x_copy, &x4))
             goto exp_reconstruct_fail;
-        STP_Number_round(&x_copy, wp_internal);
+        _STP_Number_rough_round(&x_copy, wp_internal);
 
         if (!STP_Number_sqr(&x_copy))
             goto exp_reconstruct_fail;
-        STP_Number_round(&x_copy, wp_internal);
+        _STP_Number_rough_round(&x_copy, wp_internal);
         continue;
 
     exp_reconstruct_fail:

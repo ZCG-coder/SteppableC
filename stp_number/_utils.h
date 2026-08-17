@@ -135,6 +135,8 @@ int _STP_Number_slice(STP_Number* dst, const STP_Number* src, uint64_t start, ui
  */
 int _STP_Number_ensure_capacity(STP_Number* num, uint64_t min_capacity);
 
+int _STP_Number_rough_round(STP_Number* num, int64_t wp);
+
 int64_t _STP_Number_int_digits(const STP_Number* num);
 
 #define _STP_PRINT_NUM(n, L)             \
