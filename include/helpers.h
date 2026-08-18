@@ -16,7 +16,7 @@
         do                                                  \
         {                                                   \
             char buf[120];                                  \
-            stat = strerror_s(buf, sizeof(buf), err) == 0;  \
+            strerror_s(buf, sizeof(buf), err) == 0;         \
                                                             \
             fprintf(stderr, "%s: (%d) %s\n", fn, err, buf); \
         } while (0)
