@@ -3,3 +3,7 @@
 
 #mesondefine IS_POSIX
 #mesondefine MSVC
+
+#mesondefine HAS_CLZ
+#mesondefine HAS_CLZL
+#mesondefine HAS_CLZLL

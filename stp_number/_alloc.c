@@ -1,4 +1,5 @@
 #include "_utils.h"
+#include "config.h"
 #include "helpers.h"
 #include "stp_number.h"
 
@@ -12,6 +13,10 @@ int _clz64(uint64_t x)
 {
     if (x == 0)
         return 64;
+
+#if HAS_CLZLL
+    return __builtin_clzll(x);
+#else
     int n = 0;
     if ((x >> 32) == 0)
     {
@@ -41,49 +46,93 @@ int _clz64(uint64_t x)
     if ((x >> 63) == 0)
         n += 1;
     return n;
+#endif
 }
 
 uint64_t _count_digits(uint64_t x)
 {
-    if (x >= 10000000000000000000ULL)
+    if (x >= 10000000000000000000ULL) /* 10^19 */
         return 20;
-    if (x >= 1000000000000000000ULL)
+    if (x >= 1000000000000000000ULL) /* 10^18 */
         return 19;
-    if (x >= 100000000000000000ULL)
+    if (x >= 100000000000000000ULL) /* 10^17 */
         return 18;
-    if (x >= 10000000000000000ULL)
+    if (x >= 10000000000000000ULL) /* 10^16 */
         return 17;
-    if (x >= 1000000000000000ULL)
+    if (x >= 1000000000000000ULL) /* 10^15 */
         return 16;
-    if (x >= 100000000000000ULL)
+    if (x >= 100000000000000ULL) /* 10^14 */
         return 15;
-    if (x >= 10000000000000ULL)
+    if (x >= 10000000000000ULL) /* 10^13 */
         return 14;
-    if (x >= 1000000000000ULL)
+    if (x >= 1000000000000ULL) /* 10^12 */
         return 13;
-    if (x >= 100000000000ULL)
+    if (x >= 100000000000ULL) /* 10^11 */
         return 12;
-    if (x >= 10000000000ULL)
+    if (x >= 10000000000ULL) /* 10^10 */
         return 11;
-    if (x >= 1000000000ULL)
+    if (x >= 1000000000ULL) /* 10^9 */
         return 10;
-    if (x >= 100000000ULL)
+    if (x >= 100000000ULL) /* 10^8 */
         return 9;
-    if (x >= 10000000ULL)
+    if (x >= 10000000ULL) /* 10^7 */
         return 8;
-    if (x >= 1000000ULL)
+    if (x >= 1000000ULL) /* 10^6 */
         return 7;
-    if (x >= 100000ULL)
+    if (x >= 100000ULL) /* 10^5 */
         return 6;
-    if (x >= 10000ULL)
+    if (x >= 10000ULL) /* 10^4 */
         return 5;
-    if (x >= 1000ULL)
+    if (x >= 1000ULL) /* 10^3 */
         return 4;
-    if (x >= 100ULL)
+    if (x >= 100ULL) /* 10^2 */
         return 3;
-    if (x >= 10ULL)
+    if (x >= 10ULL) /* 10 */
         return 2;
-    return 1;
+    return 1; /* 1 */
+}
+
+uint64_t _first_digit(uint64_t x)
+{
+    if (x >= 10000000000000000000ULL) /* 10^19 */
+        return x / 10000000000000000000ULL;
+    if (x >= 1000000000000000000ULL) /* 10^18 */
+        return x / 1000000000000000000ULL;
+    if (x >= 100000000000000000ULL) /* 10^17 */
+        return x / 100000000000000000ULL;
+    if (x >= 10000000000000000ULL) /* 10^16 */
+        return x / 10000000000000000ULL;
+    if (x >= 1000000000000000ULL) /* 10^15 */
+        return x / 1000000000000000ULL;
+    if (x >= 100000000000000ULL) /* 10^14 */
+        return x / 100000000000000ULL;
+    if (x >= 10000000000000ULL) /* 10^13 */
+        return x / 10000000000000ULL;
+    if (x >= 1000000000000ULL) /* 10^12 */
+        return x / 1000000000000ULL;
+    if (x >= 100000000000ULL) /* 10^11 */
+        return x / 100000000000ULL;
+    if (x >= 10000000000ULL) /* 10^10 */
+        return x / 10000000000ULL;
+    if (x >= 1000000000ULL) /* 10^9 */
+        return x / 1000000000ULL;
+    if (x >= 100000000ULL) /* 10^8 */
+        return x / 100000000ULL;
+    if (x >= 10000000ULL) /* 10^7 */
+        return x / 10000000ULL;
+    if (x >= 1000000ULL) /* 10^6 */
+        return x / 1000000ULL;
+    if (x >= 100000ULL) /* 10^5 */
+        return x / 100000ULL;
+    if (x >= 10000ULL) /* 10^4 */
+        return x / 10000ULL;
+    if (x >= 1000ULL) /* 10^3 */
+        return x / 1000ULL;
+    if (x >= 100ULL) /* 10^2 */
+        return x / 100ULL;
+    if (x >= 10ULL) /* 10 */
+        return x / 10ULL;
+    return x; /* 1 */
 }
 
 int64_t _STP_Number_int_digits(const STP_Number* num)

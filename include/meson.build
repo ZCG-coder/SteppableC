@@ -12,6 +12,17 @@ if (cc.sizeof('__int128_t', prefix : '#include<stdint.h>') == 16 \
     conf_data.set10('INT128_ENABLED', true)
 endif
 
+# CLZ
+if cc.has_function('__builtin_clz')
+    conf_data.set10('HAS_CLZ', true)
+endif
+if cc.has_function('__builtin_clzl')
+    conf_data.set10('HAS_CLZL', true)
+endif
+if cc.has_function('__builtin_clzll')
+    conf_data.set10('HAS_CLZLL', true)
+endif
+
 # test for MSVC
 if (cc.get_id() == 'msvc')
     conf_data.set('MSVC', true)

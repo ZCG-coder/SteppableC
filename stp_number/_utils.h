@@ -16,6 +16,7 @@ static const uint64_t _EXPS[] = {
 int _clz64(uint64_t x);
 
 uint64_t _count_digits(uint64_t x);
+uint64_t _first_digit(uint64_t x);
 
 int64_t _STP_Number_sig_digits(const STP_Number* num);
 

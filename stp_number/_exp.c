@@ -36,7 +36,7 @@ int _STP_Number_exp_taylor(STP_Number* num, int64_t wp)
             break;
         }
 
-        STP_Number_round(&term, wp);
+        _STP_Number_rough_round(&term, wp);
 
         if (!STP_Number_set(&k, i) || !STP_Number_div(&term, &k, wp))
         {
@@ -95,9 +95,7 @@ int STP_Number_exp(STP_Number* x, int64_t wp)
 
     uint64_t integer_digits = _STP_Number_int_digits(&x_copy);
     uint64_t msb = x_copy.arr[x_copy.size - 1];
-    while (msb >= 10)
-        msb /= 10;
-    uint64_t leading_digit = msb;
+    uint64_t leading_digit = _first_digit(msb);
 
     int64_t safe_bound = leading_digit + 1;
     for (uint64_t i = 1; i < integer_digits; ++i)
