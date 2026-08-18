@@ -3,6 +3,7 @@
 #include "_utils.h"
 #include "helpers.h"
 
+#include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,6 +19,8 @@ int STP_Number_init_capacity(STP_Number* num, uint64_t capacity)
     num->arr = (uint64_t*)calloc(capacity, sizeof(uint64_t));
     if (num->arr == NULL)
     {
+        fprintf(stderr, "%s: calloc failed", STP_CURRENT_FUNCTION);
+        STP_ERRMSG(STP_CURRENT_FUNCTION, errno);
         num->size = 0;
         num->capacity = 0;
         return 0;

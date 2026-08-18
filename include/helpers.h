@@ -1,5 +1,35 @@
 #pragma once
 
+/* make sure strerror_r is the right one */
+#undef _GNU_SOURCE
+#define _POSIX_C_SOURCE 200112L
+
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+
+#ifdef MSVC
+    #define STP_ERRMSG(fn, err)                             \
+        do                                                  \
+        {                                                   \
+            char buf[120];                                  \
+            stat = strerror_s(buf, sizeof(buf), err) == 0;  \
+                                                            \
+            fprintf(stderr, "%s: (%d) %s\n", fn, err, buf); \
+        } while (0)
+#else
+    #define STP_ERRMSG(fn, err)                             \
+        do                                                  \
+        {                                                   \
+            char buf[120];                                  \
+            buf[0] = '\0';                                  \
+            strerror_r(err, buf, sizeof(buf));              \
+            buf[sizeof(buf) - 1] = '\0';                    \
+                                                            \
+            fprintf(stderr, "%s: (%d) %s\n", fn, err, buf); \
+        } while (0)
+#endif
+
 /*
  * Adapted from boost/current_function.hpp - BOOST_CURRENT_FUNCTION
  *

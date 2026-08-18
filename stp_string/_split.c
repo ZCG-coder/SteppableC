@@ -1,3 +1,4 @@
+#include "helpers.h"
 #include "stp_string.h"
 
 #include <stdint.h>
@@ -32,6 +33,7 @@ int STP_String_split(STP_String* str, STP_String* tok, STP_StringSplit* res)
     res->items = (STP_String*)malloc(sizeof(STP_String) * total_tokens);
     if (res->items == NULL)
     {
+        STP_ERRMSG(STP_CURRENT_FUNCTION, errno);
         res->length = 0;
         return 0;
     }

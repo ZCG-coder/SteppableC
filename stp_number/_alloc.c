@@ -2,6 +2,7 @@
 #include "helpers.h"
 #include "stp_number.h"
 
+#include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -112,6 +113,7 @@ int _STP_Number_ensure_capacity(STP_Number* num, uint64_t min_capacity)
     if (new_arr == NULL)
     {
         fprintf(stderr, "%s: realloc failed\n", STP_CURRENT_FUNCTION);
+        STP_ERRMSG(STP_CURRENT_FUNCTION, errno);
         return 0;
     }
     uint64_t diff = new_capacity - num->capacity;

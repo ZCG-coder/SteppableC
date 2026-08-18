@@ -45,7 +45,7 @@ int STP_Number_div(STP_Number* lhs, STP_Number* rhs, uint64_t decimal_places)
 
     /* calculate the net scaling factor required to achieve the exact target scale */
     target_exp = lhs->scale - rhs->scale + (int64_t)decimal_places;
-    if (!STP_Number_init_capacity(&tmp_rhs, rhs->size - ((target_exp < 0) ? target_exp : 0)))
+    if (!STP_Number_init_capacity(&tmp_rhs, rhs->size))
         return 0;
     if (!STP_Number_copy(rhs, &tmp_rhs))
         goto tmp_rhs_fail;
@@ -61,7 +61,8 @@ int STP_Number_div(STP_Number* lhs, STP_Number* rhs, uint64_t decimal_places)
             goto tmp_rhs_fail;
     }
 
-    if (!STP_Number_init_capacity(&tmp_q, lhs->size - tmp_rhs.size))
+    if (!STP_Number_init_capacity(&tmp_q,
+                                  (lhs->size > tmp_rhs.size) ? (lhs->size - tmp_rhs.size) : (tmp_rhs.size - lhs->size)))
         goto tmp_rhs_fail;
     /* execute the absolute value base division */
     STP_Number r;

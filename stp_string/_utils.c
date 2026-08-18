@@ -17,6 +17,7 @@ int _STP_String_realloc(STP_String* p_str, uint64_t new_str_len)
     if (new_ptr == NULL)
     {
         fprintf(stderr, "%s: realloc failed\n", STP_CURRENT_FUNCTION);
+        STP_ERRMSG(STP_CURRENT_FUNCTION, errno);
         return 0;
     }
     p_str->str = new_ptr;

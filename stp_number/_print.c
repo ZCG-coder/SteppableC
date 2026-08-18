@@ -16,6 +16,7 @@ int _to_string(const STP_Number* num, STP_String* str)
     if (!buffer)
     {
         fprintf(stderr, "%s: cannot create buffer", STP_CURRENT_FUNCTION);
+        STP_ERRMSG(STP_CURRENT_FUNCTION, errno);
         return 0;
     }
     size_t offset = 0;

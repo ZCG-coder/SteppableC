@@ -2,6 +2,7 @@
 #include "helpers.h"
 #include "stp_number.h"
 
+#include <errno.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -42,6 +43,7 @@ int STP_Number_deserialize(char* const filename, STP_Number* nums)
         if (!mem)
         {
             fprintf(stderr, "%s: cannot allocate memory for number", STP_CURRENT_FUNCTION);
+            STP_ERRMSG(STP_CURRENT_FUNCTION, errno);
             fclose(file);
             return 0;
         }

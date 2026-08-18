@@ -16,7 +16,10 @@ void STP_String_init_capacity(STP_String* str, uint64_t capacity)
     str->str = malloc(capacity * sizeof(_STP_STRING_CHAR_TYPE));
 
     if (str->str == NULL)
+    {
         fprintf(stderr, "%s: malloc failed.\n", STP_CURRENT_FUNCTION);
+        STP_ERRMSG(STP_CURRENT_FUNCTION, errno);
+    }
 }
 
 void STP_String_init(STP_String* str) { STP_String_init_capacity(str, _STP_STRING_DEFAULT_CAPACITY); }
@@ -106,6 +109,7 @@ int STP_String_prepend(STP_String* str, const STP_String* rhs)
         if (!rhs_copy)
         {
             fprintf(stderr, "%s: malloc failed", STP_CURRENT_FUNCTION);
+            STP_ERRMSG(STP_CURRENT_FUNCTION, errno);
             return 0;
         }
         memcpy(rhs_copy, rhs->str, rhs->length);
@@ -145,7 +149,10 @@ int STP_String_insert(STP_String* str, uint64_t where, const STP_String* rhs)
     {
         char* temp_rhs = (char*)malloc(rhs_length);
         if (temp_rhs == NULL)
+        {
+            STP_ERRMSG(STP_CURRENT_FUNCTION, errno);
             return 0;
+        }
         memcpy(temp_rhs, str->str, rhs_length);
         memmove(str->str + where + rhs_length, str->str + where, old_length - where);
         memcpy(str->str + where, temp_rhs, rhs_length);

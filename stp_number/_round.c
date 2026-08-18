@@ -36,38 +36,37 @@ int _STP_Number_rough_round(STP_Number* num, int64_t wp)
     int64_t diff = current_wp - wp;
     uint64_t nblocks = diff / 19;
 
+    /* cannot further remove full block of 19 */
+    if (nblocks == 0)
+        return 1;
+
     uint64_t rounding_digit = 0;
-    uint64_t digit_limb_idx = (diff - 1) / 19;
-    uint64_t digit_rem_idx = (diff - 1) % 19;
 
-    if (digit_limb_idx < num->size)
+    if (nblocks <= num->size)
+        rounding_digit = num->arr[nblocks - 1] / 1000000000000000000ULL; /* 10^18 */
+
+    if (nblocks >= num->size)
     {
-        uint64_t pow_divisor = _get_pow10(digit_rem_idx);
-        rounding_digit = (num->arr[digit_limb_idx] / pow_divisor) % 10;
+        num->size = 1;
+        num->arr[0] = 0;
+        num->scale += (int64_t)nblocks * 19;
     }
-
-    if (nblocks > 0)
+    else
     {
-        if (nblocks >= num->size)
-        {
-            num->size = 1;
-            num->arr[0] = 0;
-        }
-        else
-        {
-            uint64_t new_size = num->size - nblocks;
-            for (uint64_t i = 0; i < new_size; i++)
-                num->arr[i] = num->arr[i + nblocks];
+        uint64_t new_size = num->size - nblocks;
+        for (uint64_t i = 0; i < new_size; i++)
+            num->arr[i] = num->arr[i + nblocks];
 
-            for (uint64_t i = new_size; i < num->size; i++)
-                num->arr[i] = 0;
+        /*for (uint64_t i = new_size; i < num->size; i++)
+            num->arr[i] = 0;*/
 
-            num->size = new_size;
-        }
+        num->size = new_size;
+        num->scale += (int64_t)nblocks * 19;
     }
 
     if (rounding_digit >= 5)
         _STP_Number_add(num, 1);
+
     return 1;
 }
 
@@ -113,8 +112,8 @@ int STP_Number_round(STP_Number* num, int64_t wp)
             for (uint64_t i = 0; i < new_size; i++)
                 num->arr[i] = num->arr[i + nblocks];
 
-            for (uint64_t i = new_size; i < num->size; i++)
-                num->arr[i] = 0;
+            /*for (uint64_t i = new_size; i < num->size; i++)
+                num->arr[i] = 0;*/
 
             num->size = new_size;
         }

@@ -140,8 +140,11 @@ int _STP_Number_div_abs(const STP_Number* lhs, const STP_Number* rhs, STP_Number
     uint64_t m = u_len - v_len;
     uint64_t* q_arr = (uint64_t*)calloc(m + 1, sizeof(uint64_t));
 
-    if (!v_norm || !u_norm || !q_arr)
+    if (v_norm == NULL || u_norm == NULL || q_arr == NULL)
+    {
+        STP_ERRMSG(STP_CURRENT_FUNCTION, errno);
         goto fail;
+    }
 
     /* normalize */
     uint64_t carry = 0;

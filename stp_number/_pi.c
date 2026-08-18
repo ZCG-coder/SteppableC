@@ -28,7 +28,7 @@ int _atan(STP_Number* num_inv, uint64_t iters, int64_t wp)
 
     /* x^2 */
     STP_Number_sqr(&x);
-    STP_Number_round(&x, wp + 10);
+    _STP_Number_rough_round(&x, wp + 10);
 
     STP_Number denom;
     STP_Number_init(&denom);
@@ -102,10 +102,10 @@ int STP_Number_pi(STP_Number* out, int64_t wp)
         /* t -= p * (a - a_next)^2 */
         STP_Number_sub(&a, &a_next);
         STP_Number_sqr(&a);
-        STP_Number_round(&a, wp + 10);
+        _STP_Number_rough_round(&a, wp + 10);
 
         STP_Number_mul(&a, &p);
-        STP_Number_round(&a, wp + 10);
+        _STP_Number_rough_round(&a, wp + 10);
 
         STP_Number_sub(&t, &a);
 
@@ -118,7 +118,7 @@ int STP_Number_pi(STP_Number* out, int64_t wp)
     /* (a+b)^2 */
     STP_Number_add(&a, &b);
     STP_Number_sqr(&a);
-    STP_Number_round(&a, wp + 10);
+    _STP_Number_rough_round(&a, wp + 10);
 
     /* t*4 */
     STP_Number_set(&two, 4);

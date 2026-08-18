@@ -1,5 +1,7 @@
 #pragma once
 
+#include "helpers.h"
+
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -13,7 +15,10 @@ char* _generate_random_number(uint64_t len)
 
     char* out = malloc((len + 2) * sizeof(char)); /* +1 for NULL, +1 for sign */
     if (out == NULL)
+    {
+        STP_ERRMSG(STP_CURRENT_FUNCTION, errno);
         return NULL;
+    }
 
     int placed_decimal = 0;
 
