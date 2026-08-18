@@ -1,2 +1,5 @@
 #mesondefine VERSION
 #mesondefine INT128_ENABLED
+
+#mesondefine IS_POSIX
+#mesondefine MSVC

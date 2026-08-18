@@ -1,8 +1,11 @@
 #pragma once
+#include "config.h"
 
-/* make sure strerror_r is the right one */
-#undef _GNU_SOURCE
-#define _POSIX_C_SOURCE 200112L
+#ifndef IS_POSIX
+    /* make sure strerror_r is the right one */
+    #undef _GNU_SOURCE
+    #define _POSIX_C_SOURCE 200112L
+#endif
 
 #include <errno.h>
 #include <stdio.h>

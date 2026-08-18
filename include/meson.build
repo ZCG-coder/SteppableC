@@ -17,6 +17,20 @@ if (cc.get_id() == 'msvc')
     conf_data.set('MSVC', true)
 endif
 
+# test for POSIX kernels
+host_kernel = host_machine.kernel()
+posix_kernels = [
+    'xnu',
+    'freebsd',
+    'openbsd',
+    'netbsd',
+    'dragonfly'
+]
+conf_data.set('IS_POSIX', true)
+if posix_kernels.contains(host_kernel)
+    conf_data.set('IS_POSIX', true)
+endif
+
 configure_file(
     input: 'config.h.in',
     output: 'config.h',
