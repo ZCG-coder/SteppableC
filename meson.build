@@ -41,7 +41,7 @@ subdir('stp_cmplx')
 subdir('tests')
 
 # benchmarking script
-sh = find_program('sh', required: false)
+sh = find_program('bash', required: false)
 if sh.found()
     run_target(
         'run_benchmarks',
