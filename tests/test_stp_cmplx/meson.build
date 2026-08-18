@@ -1,3 +1,3 @@
 test_cases = [
-	'cmpl_arithmetic',
+    'cmpl_arithmetic',
 ]

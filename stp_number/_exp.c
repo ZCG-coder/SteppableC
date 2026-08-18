@@ -36,7 +36,7 @@ int _STP_Number_exp_taylor(STP_Number* num, int64_t wp)
             break;
         }
 
-        _STP_Number_rough_round(&term, wp);
+        STP_Number_round(&term, wp);
 
         if (!STP_Number_set(&k, i) || !STP_Number_div(&term, &k, wp))
         {

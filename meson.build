@@ -12,20 +12,24 @@ if get_option('buildtype') == 'debug'
     add_project_arguments(extra_args, language: 'c')
 endif
 
-m_dep = cc.find_library('m', required : false)
+m_dep = cc.find_library('m', required: false)
 
 inc = [
-    include_directories([
-        'include',
-        'stp_number',
-        'stp_cmplx',
-        'stp_string',
-        'stn_serialize',
-    ]),
-    include_directories([
-        'include/deps',
-    ],
-    is_system: true),
+    include_directories(
+        [
+            'include',
+            'stp_number',
+            'stp_cmplx',
+            'stp_string',
+            'stn_serialize',
+        ],
+    ),
+    include_directories(
+        [
+            'include/deps',
+        ],
+        is_system: true,
+    ),
 ]
 
 subdir('include')
@@ -35,3 +39,12 @@ subdir('stp_number')
 subdir('stn_serialize')
 subdir('stp_cmplx')
 subdir('tests')
+
+# benchmarking script
+sh = find_program('sh', required: false)
+if sh.found()
+    run_target(
+        'run_benchmarks',
+        command: [sh, meson.current_source_dir() / 'tools/benchmarks.sh'],
+    )
+endif
