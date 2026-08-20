@@ -11,7 +11,7 @@
 void _mul_64x64(uint64_t a, uint64_t b, uint64_t* hi, uint64_t* lo)
 {
 #if INT128_ENABLED
-    unsigned __int128 res = (unsigned __int128)a * b;
+    __uint128_t res = (__uint128_t)a * b;
     *lo = (uint64_t)res;
     *hi = (uint64_t)(res >> 64);
 #else
@@ -32,7 +32,7 @@ void _mul_64x64(uint64_t a, uint64_t b, uint64_t* hi, uint64_t* lo)
 uint64_t _div_128x64(uint64_t n_hi, uint64_t n_lo, uint64_t d, uint64_t* rem)
 {
 #if INT128_ENABLED
-    unsigned __int128 n = ((unsigned __int128)n_hi << 64) | n_lo;
+    __uint128_t n = ((__uint128_t)n_hi << 64) | n_lo;
     *rem = (uint64_t)(n % d);
 
     return (uint64_t)(n / d);

@@ -14,21 +14,12 @@ int _STP_Number_sqr_abs(STP_Number* out, const STP_Number* in)
         return 1;
     }
 
-    if (!_STP_Number_ensure_capacity(out, 2 * n))
-        return 0;
-
-    /* Initialize the output array to zero */
-    for (uint64_t i = 0; i < 2 * n; ++i)
-        out->arr[i] = 0;
-
-    /* Standard O(n^2) multiplication using the base-10^19 helper */
     for (uint64_t i = 0; i < n; ++i)
     {
         uint64_t carry = 0;
         for (uint64_t j = 0; j < n; ++j)
         {
             uint64_t digit = 0;
-            /* out->arr[i+j] acts as 'C' (current value to add to), carry acts as 'K' */
             _mul_add(in->arr[i], in->arr[j], out->arr[i + j], carry, &digit, &carry);
             out->arr[i + j] = digit;
         }
@@ -49,7 +40,7 @@ int STP_Number_sqr(STP_Number* num)
         return 1;
 
     STP_Number out;
-    if (!STP_Number_init(&out))
+    if (!STP_Number_init_capacity(&out, num->size * 2))
         return 0;
 
     if (!_STP_Number_sqr_abs(&out, num))

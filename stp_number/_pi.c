@@ -63,7 +63,7 @@ int STP_Number_pi(STP_Number* out, int64_t wp)
     STP_Number a, b, t, p;
 
     /* a = 1 */
-    STP_Number_init(&a);
+    STP_Number_init_capacity(&a, wp / 19 + 1);
     STP_Number_set(&a, 1);
 
     /* b = 1/sqrt(2) */
@@ -73,25 +73,25 @@ int STP_Number_pi(STP_Number* out, int64_t wp)
     /* t = 1/4 */
     STP_Number_conv(&t, "0.25");
 
-    /* p = 1 */
-    STP_Number_init(&p);
-    STP_Number_set(&p, 1);
-
     STP_Number two;
     STP_Number_init(&two);
     STP_Number_set(&two, 2);
 
     STP_Number a_next;
-    STP_Number_init(&a_next);
+    STP_Number_init_capacity(&a_next, wp / 19 + 1);
 
     double iters_d = (double)wp;
     iters_d = log2(iters_d);
     uint64_t iterations = (uint64_t)iters_d + 1;
 
+    /* p = 1 */
+    STP_Number_init_capacity(&p, iterations * 643LL / 40584LL);
+    STP_Number_set(&p, 1);
+
+    STP_Number_copy(&a, &a_next);
     for (uint64_t i = 0; i < iterations; ++i)
     {
         /* a_next = (a + b) / 2 */
-        STP_Number_copy(&a, &a_next);
         STP_Number_add(&a_next, &b);
         STP_Number_div(&a_next, &two, wp + 10);
 

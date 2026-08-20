@@ -61,7 +61,7 @@ int STP_Number_sqrt(STP_Number* x, uint64_t wp)
 
     STP_Number two, S;
     STP_Number_conv(&two, "2");
-    STP_Number_init(&S);
+    STP_Number_init_capacity(&S, x->size);
 
     int64_t log_X = _STP_Number_int_digits(x);
     int64_t S_req = wp + 1 + log_X / 2;

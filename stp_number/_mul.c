@@ -9,40 +9,79 @@
 
 void _mul_add(uint64_t A, uint64_t B, uint64_t C, uint64_t K, uint64_t* out_digit, uint64_t* out_carry)
 {
-#if INT128_ENABLED
+    /* change 0 in next line to INT128_ENABLED if your CPU supports native int128 division */
+#if 0 /* hardware int128 might be slow for division */
     __uint128_t prod = (__uint128_t)A * B + C + K;
 
     *out_digit = (uint64_t)(prod % _BASE_10_19);
     *out_carry = (uint64_t)(prod / _BASE_10_19);
 #else
     /* No int128 support, split A, B, C, K -> 3 base-10^9 blocks */
-    uint64_t a0 = A % _BASE_10_9, a1 = (A / _BASE_10_9) % _BASE_10_9, a2 = A / (_BASE_10_9 * _BASE_10_9);
-    uint64_t b0 = B % _BASE_10_9, b1 = (B / _BASE_10_9) % _BASE_10_9, b2 = B / (_BASE_10_9 * _BASE_10_9);
-    uint64_t c0 = C % _BASE_10_9, c1 = (C / _BASE_10_9) % _BASE_10_9, c2 = C / (_BASE_10_9 * _BASE_10_9);
-    uint64_t k0 = K % _BASE_10_9, k1 = (K / _BASE_10_9) % _BASE_10_9, k2 = K / (_BASE_10_9 * _BASE_10_9);
+    uint64_t a_hi = A / _BASE_10_9;
+    uint64_t a0 = A - a_hi * _BASE_10_9;
+    uint64_t a2 = a_hi / _BASE_10_9;
+    uint64_t a1 = a_hi - a2 * _BASE_10_9;
 
-    uint64_t p0 = a0 * b0 + c0 + k0;
-    uint64_t p1 = a0 * b1 + a1 * b0 + c1 + k1;
-    uint64_t p2 = a0 * b2 + a1 * b1 + a2 * b0 + c2 + k2;
+    uint64_t b_hi = B / _BASE_10_9;
+    uint64_t b0 = B - b_hi * _BASE_10_9;
+    uint64_t b2 = b_hi / _BASE_10_9;
+    uint64_t b1 = b_hi - b2 * _BASE_10_9;
+
+    uint64_t p0 = a0 * b0;
+    uint64_t p1 = a0 * b1 + a1 * b0;
+    uint64_t p2 = a0 * b2 + a1 * b1 + a2 * b0;
     uint64_t p3 = a1 * b2 + a2 * b1;
     uint64_t p4 = a2 * b2;
 
-    uint64_t d0 = p0 % _BASE_10_9;
-    p1 += p0 / _BASE_10_9;
+    uint64_t p0_hi = p0 / _BASE_10_9;
+    uint64_t d0 = p0 - p0_hi * _BASE_10_9;
+    p1 += p0_hi;
 
-    uint64_t d1 = p1 % _BASE_10_9;
-    p2 += p1 / _BASE_10_9;
+    uint64_t p1_hi = p1 / _BASE_10_9;
+    uint64_t d1 = p1 - p1_hi * _BASE_10_9;
+    p2 += p1_hi;
 
-    uint64_t d2 = p2 % _BASE_10_9;
-    p3 += p2 / _BASE_10_9;
+    uint64_t p2_hi = p2 / _BASE_10_9;
+    uint64_t d2 = p2 - p2_hi * _BASE_10_9;
+    p3 += p2_hi;
 
-    uint64_t d3 = p3 % _BASE_10_9;
-    p4 += p3 / _BASE_10_9;
+    uint64_t p3_hi = p3 / _BASE_10_9;
+    uint64_t d3 = p3 - p3_hi * _BASE_10_9;
+    p4 += p3_hi;
 
-    uint64_t d4 = p4; /* p4 <= 100 */
+    uint64_t d2_carry = d2 / 10;
+    uint64_t d2_rem = d2 - d2_carry * 10;
 
-    *out_digit = d0 + (d1 * _BASE_10_9) + ((d2 % 10) * 1000000000000000000ULL); /* 10^18 */
-    *out_carry = (d2 / 10) + (d3 * 100000000ULL /* 10^8 */) + (d4 * 100000000000000000ULL /* 10^18 */);
+    uint64_t ab_digit = d0 + (d1 * _BASE_10_9) + (d2_rem * 1000000000000000000ULL /* 10^18 */);
+    uint64_t ab_carry = d2_carry + (d3 * 100000000ULL /* 10^8 */) + (p4 * 100000000000000000ULL /* 10^17 */);
+
+    uint64_t diff;
+    /* add C */
+    diff = _BASE_10_19 - ab_digit;
+    if (C >= diff)
+    {
+        ab_digit = C - diff;
+        ab_carry++;
+    }
+    else
+    {
+        ab_digit += C;
+    }
+
+    /* add K */
+    diff = _BASE_10_19 - ab_digit;
+    if (K >= diff)
+    {
+        ab_digit = K - diff;
+        ab_carry++;
+    }
+    else
+    {
+        ab_digit += K;
+    }
+
+    *out_digit = ab_digit;
+    *out_carry = ab_carry;
 #endif
 }
 
