@@ -4,22 +4,6 @@
 #include <stdint.h>
 #include <string.h>
 
-uint64_t _get_pow10(uint64_t exp)
-{
-    uint64_t res = _EXPS[0];
-    if (exp & 1)
-        res *= _EXPS[1];
-    if (exp & 2)
-        res *= _EXPS[2];
-    if (exp & 4)
-        res *= _EXPS[3];
-    if (exp & 8)
-        res *= _EXPS[4];
-    if (exp & 16)
-        res *= _EXPS[5];
-    return res;
-}
-
 int _STP_Number_rough_round(STP_Number* num, int64_t wp)
 {
     if (num == NULL || num->arr == NULL || wp < 0)
@@ -54,11 +38,7 @@ int _STP_Number_rough_round(STP_Number* num, int64_t wp)
     else
     {
         uint64_t new_size = num->size - nblocks;
-        for (uint64_t i = 0; i < new_size; i++)
-            num->arr[i] = num->arr[i + nblocks];
-
-        /*for (uint64_t i = new_size; i < num->size; i++)
-            num->arr[i] = 0;*/
+        memmove(num->arr, num->arr + nblocks, new_size * sizeof(uint64_t));
 
         num->size = new_size;
         num->scale += (int64_t)nblocks * 19;
@@ -68,6 +48,23 @@ int _STP_Number_rough_round(STP_Number* num, int64_t wp)
         _STP_Number_add(num, 1);
 
     return 1;
+}
+
+void _trunc_div(STP_Number* num, uint64_t P, uint64_t Q)
+{
+    for (uint64_t i = 0; i < num->size; i++)
+    {
+        uint64_t lower_part = num->arr[i] / P;
+        uint64_t upper_part = 0;
+        if (i + 1 < num->size)
+        {
+            uint64_t high = num->arr[i + 1];
+            uint64_t high_mod_P = high - (high / P) * P;
+            upper_part = high_mod_P * Q;
+        }
+
+        num->arr[i] = lower_part + upper_part;
+    }
 }
 
 int STP_Number_round(STP_Number* num, int64_t wp)
@@ -95,7 +92,7 @@ int STP_Number_round(STP_Number* num, int64_t wp)
 
     if (digit_limb_idx < num->size)
     {
-        uint64_t pow_divisor = _get_pow10(digit_rem_idx);
+        uint64_t pow_divisor = _POW10[digit_rem_idx];
         rounding_digit = (num->arr[digit_limb_idx] / pow_divisor) % 10;
     }
 
@@ -109,31 +106,17 @@ int STP_Number_round(STP_Number* num, int64_t wp)
         else
         {
             uint64_t new_size = num->size - nblocks;
-            for (uint64_t i = 0; i < new_size; i++)
-                num->arr[i] = num->arr[i + nblocks];
-
-            /*for (uint64_t i = new_size; i < num->size; i++)
-                num->arr[i] = 0;*/
-
+            memmove(num->arr, num->arr + nblocks, new_size * sizeof(uint64_t));
             num->size = new_size;
         }
     }
 
     if (rem_diff > 0 && !(num->size == 1 && num->arr[0] == 0))
     {
-        uint64_t P = _get_pow10(rem_diff);
-        uint64_t Q = _get_pow10(19 - rem_diff);
+        uint64_t P = _POW10[rem_diff];
+        uint64_t Q = _POW10[19 - rem_diff];
 
-        for (uint64_t i = 0; i < num->size; i++)
-        {
-            uint64_t lower_part = num->arr[i] / P;
-            uint64_t upper_part = 0;
-            if (i + 1 < num->size)
-                upper_part = (num->arr[i + 1] % P) * Q;
-
-            num->arr[i] = lower_part + upper_part;
-        }
-
+        _trunc_div(num, P, Q);
         _STP_Number_trim(num);
     }
 

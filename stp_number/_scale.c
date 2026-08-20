@@ -51,31 +51,16 @@ int _STP_Number_mul_exp(STP_Number* num, uint64_t diff_scale)
         return 1;
 
     uint64_t remaining_diff = diff_scale;
-    while (remaining_diff >= 16)
+    while (remaining_diff >= 19)
     {
-        _mul10(num, 10000000000000000ULL); /* 10^16 */
-        remaining_diff -= 16;
+        _mul10(num, 10000000000000000000ULL); /* 10^19 */
+        remaining_diff -= 19;
     }
 
-    /*
-     * remaining_diff = 37
-     *
-     * Pass 1 -> * 10^16, * 10^16
-     * remaining_diff = 5
-     *
-     * Pass 2
-     * 5 = 0b101
-     *       4 1
-     * -> * 10^4, * 10^1
-     */
-    for (uint64_t index = 1; remaining_diff > 0; index++)
+    if (remaining_diff > 0)
     {
-        if (remaining_diff & 1ULL)
-        {
-            if (!_mul10(num, _EXPS[index]))
-                return 0;
-        }
-        remaining_diff >>= 1;
+        if (!_mul10(num, _POW10[remaining_diff]))
+            return 0;
     }
     return 1;
 }
